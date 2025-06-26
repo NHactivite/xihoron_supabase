@@ -1,5 +1,9 @@
+import { CommonLayout } from "@/components/common-layout";
+import { ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ReduxProvider from "./ReduxProvider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,12 +22,22 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+   <ClerkProvider>
+     <html lang="en" >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ClerkLoading>
+          Loading....
+        </ClerkLoading>
+        <ReduxProvider>
+
+                <CommonLayout>{children}</CommonLayout>
+        
+        </ReduxProvider>
+        
       </body>
     </html>
+   </ClerkProvider>
   );
 }
