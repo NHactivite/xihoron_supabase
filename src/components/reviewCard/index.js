@@ -21,7 +21,7 @@ const ReviewCard = ({ productId }) => {
         <div key={review._id} className="min-w-96 relative bg-gray-100 rounded-md p-3" >
           <p className="text-xl">{review.comment}</p>
           <p className="text-xl ">{review.user}</p>
-          <p className="mt-2"><Rating  value={review.rating}/></p>
+          <div className="mt-2"><Rating  value={review.rating}/></div>
           <button className="absolute -top-2 -right-2 bg-gray-900 p-2 rounded-full text-white text-sm"><FaTrash/></button>
         </div>
         

@@ -32,8 +32,10 @@ export async function POST(req) {
   const category = formData.get("category");
   const occasion = formData.get("occasion");
   const files = formData.getAll("photos");
-
-  if (!name || !description || !price || !stock || !category || !occasion) {
+  const details=formData.get("details")
+   console.log("oojjjjjjo",details);
+   
+  if (!name || !description || !price || !stock || !category || !occasion ||!details) {
     return NextResponse.json({ success: false, message: "All fields required" }, { status: 400 });
   }
 
@@ -57,6 +59,13 @@ export async function POST(req) {
       url: result.secure_url,
     });
   }
+  const parse = JSON.parse(details);
+  const parsedDetails={...parse}
+console.log("Final Insert Payload:", {
+  name,
+  details: parsedDetails,
+  type: typeof parsedDetails,
+});
 
   const product = await Product.create({
     name,
@@ -65,6 +74,7 @@ export async function POST(req) {
     stock,
     category,
     occasion,
+    details:parsedDetails,
     photos: uploadedPhotos,
   });
 

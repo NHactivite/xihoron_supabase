@@ -1,5 +1,6 @@
 "use client";
 
+import { useRating } from "6pp";
 import { addReview } from "@/action";
 import {
   Dialog,
@@ -10,13 +11,12 @@ import {
 import { addToCart } from "@/redux/reducer/cartReducer";
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import { useDispatch } from "react-redux";
+import Rating from "../rating";
 import ReviewCard from "../reviewCard";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import Rating from "../rating";
-import { useRating } from "6pp";
-import { FaRegStar, FaStar } from "react-icons/fa";
 export default function ProductSlider({ Product, user }) {
   console.log("Rendering ProductSlider");
   console.log("product", Product);
@@ -33,12 +33,21 @@ export default function ProductSlider({ Product, user }) {
   const productId = Product._id;
   console.log("ProductSlider ID", productId);
 
-  const {Ratings:RatingEdit,rating,setRating}=useRating({IconFilled:<FaStar/>,
-    IconOutline:<FaRegStar/>,
-    value:0,
-    selectable:true,
-   styles:{fontSize:"1.5rem",color:"coral" ,justifyContent:"flex-start"}
-  })
+  const {
+    Ratings: RatingEdit,
+    rating,
+    setRating,
+  } = useRating({
+    IconFilled: <FaStar />,
+    IconOutline: <FaRegStar />,
+    value: 0,
+    selectable: true,
+    styles: {
+      fontSize: "1.5rem",
+      color: "coral",
+      justifyContent: "flex-start",
+    },
+  });
 
   const dispatch = useDispatch();
 
@@ -97,8 +106,6 @@ export default function ProductSlider({ Product, user }) {
       alert("Failed to submit review: " + res.message);
     }
   };
-
-  
 
   return (
     <div>
@@ -167,10 +174,10 @@ export default function ProductSlider({ Product, user }) {
               {Product.name || "Product Name"}
             </h1>
             <p className="font-bold">Price $ 1244</p>
-            <em className="flex gap-1 items-center mt-0.5" >
-              <Rating value={Product?.rating ||0} />
-              ({Product?.numOfReviews} reviews)
-              </em>
+            <em className="flex gap-1 items-center mt-0.5">
+              <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
+              reviews)
+            </em>
             <div>
               <Button
                 onClick={() =>
@@ -195,33 +202,17 @@ export default function ProductSlider({ Product, user }) {
             </div>
             <h1 className="font-bold">Product description</h1>
           </div>
-          {/* <div className="w-2/3 mt-3">
-            {Product.description}
-            <p className="my-4">Product Details:</p>
-            <li>5 Sunflowers</li>
-            <li>5 Sunflowers</li>
-            <li>5 Sunflowers</li>
-            <li>5 Sunflowers</li>
-          </div> */}
           <div>
-            <p>
-              Celebrate love and togetherness with this enchanting bouquet of
-              red roses paired with two personalized fridge magnets that say
-              Happy Anniversary. The magnets printed with your favourite images
-              add a personal touch to this thoughtful gift. Perfect for your
-              partner spouse or a special couple this gift beautifully combines
-              the timeless elegance of roses with heartfelt personalization. Its
-              an unforgettable way to mark the anniversary and create lasting
-              memories. </p>
-              <strong>Product Details:</strong>
-              <li>Red rose: 6</li>
-              <li>Filler: White gypsophila murraya leaves</li>
-              <li>Fridge magnet: 3.7x3 inch:2</li>
-              <li>For personalisation please provide us with two images</li>
-              <li>Net Quantity: 1 Bouquet</li>
-              <li>Dimensions: 18x10 inch</li>
-              <li>Weight: Approx 250 to 500 gms</li>
-              <li>Country of Origin: India</li>       
+            <p>{Product.description}</p>
+            <strong>Product Details:</strong>
+            {Object.entries(Product.details).map(([key, value]) => (
+              <li key={key}>
+                <strong>{key}:</strong>{" "}
+                {typeof value === "object"
+                  ? JSON.stringify(value)
+                  : String(value)}
+              </li>
+            ))}
           </div>
         </div>
       </div>
@@ -237,7 +228,7 @@ export default function ProductSlider({ Product, user }) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           ></Input>
-          <RatingEdit/>
+          <RatingEdit />
           <Button className="mt-4" onClick={submitReview}>
             Submit
           </Button>

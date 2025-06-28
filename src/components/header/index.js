@@ -3,55 +3,86 @@
 // import { UserButton ,SignOutButton} from "@clerk/nextjs";
 import { AlignJustify, Search } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Input } from "../ui/input";
 import { SignOutButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
   
-  const menuItems = [
-    {
-      label: "Home",
-      path: "/",
-      show: true,
-    },
-    {
-      label: "Login",
-      path: "/sign-in",
-      show: !user,
-    },
-    {
-      label: "Register",
-      path: "/sign-up",
-      show: !user,
-    },
-    {
-      label: "cart",
-      path: "/cart",
-      show: user,
-    },
-    {
-      label: "wishlist",
-      path: "/wishList",
-      show: user,
-    },
+  // const menuItems = [
+  //   {
+  //     label: "Home",
+  //     path: "/",
+  //     show: true,
+  //   },
+  //   {
+  //     label: "admin",
+  //     path: "/admin",
+  //     show: user,
+  //   },
+  //   {
+  //     label: "Login",
+  //     path: "/sign-in",
+  //     show: !user,
+  //   },
+  //   {
+  //     label: "Register",
+  //     path: "/sign-up",
+  //     show: !user,
+  //   },
+  //   {
+  //     label: "cart",
+  //     path: "/cart",
+  //     show: user,
+  //   },
+  //   {
+  //     label: "wishlist",
+  //     path: "/wishList",
+  //     show: user,
+  //   },
 
-    {
-      label: "Admin",
-      path: "/admin/newProduct",
-      show: role==="admin",
-    },
-    {
-      label: "Account",
-      path: "/account",
-      show: user,
-    },
+  //   {
+  //     label: "Admin",
+  //     path: "/admin/newProduct",
+  //     show: user,
+  //   },
+  //   {
+  //     label: "Account",
+  //     path: "/account",
+  //     show: user,
+  //   },
    
-  ];
+  // ];
   
+  const pathname = usePathname();
+
+  // Use memo to avoid recalculating on every render
+  const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
+
+const menuItems = useMemo(() => {
+  if (isAdminPage) {
+    return [
+      { label: "DashBoard", path: "/admin", show: true },
+      { label: "Products", path: "/admin/product", show: user },
+      { label: "Transactions", path: "/transactions", show: user },
+      { label: "Home", path: "/", show: !user },
+    ];
+  }
+
+  return [
+    { label: "Home", path: "/", show: true },
+    { label: "admin", path: "/admin", show: user },
+    { label: "Login", path: "/sign-in", show: !user },
+    { label: "Register", path: "/sign-up", show: !user },
+    { label: "cart", path: "/cart", show: user },
+    { label: "wishlist", path: "/wishList", show: user },
+    { label: "Account", path: "/account", show: user },
+  ];
+}, [pathname, user]);
 
   
   return (
@@ -142,6 +173,7 @@ function Header({ user, role, isAdmin }) {
         {isAdmin && <Link href="/admin" className="group inline-flex h-9 w-max items-center rounded-md bg-white px-4 py-2 text-sm font-medium active:bg-black active:text-white">Admin</Link>}
         {user && <SignOutButton className="group inline-flex h-9 w-max items-center rounded-md bg-white px-4 py-2 text-sm font-medium active:bg-black active:text-white">Logout</SignOutButton>}
       </nav>
+      <Button><Link href="/admin/newProduct">goo</Link></Button>
     </header>
   );
 }
