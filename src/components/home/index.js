@@ -51,8 +51,7 @@ console.log("Products",Products);
                   stock={i.stock} 
                   photos={i.photos[0].url}
                   userId={user?.id} 
-                  //  handler={addCartHandler} 
-                  //  wishHandler={addWishHandler}
+                
               />
             ))}
       </main>

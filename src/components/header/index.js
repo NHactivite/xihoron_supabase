@@ -8,58 +8,13 @@ import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Input } from "../ui/input";
 import { SignOutButton } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
-  
-  // const menuItems = [
-  //   {
-  //     label: "Home",
-  //     path: "/",
-  //     show: true,
-  //   },
-  //   {
-  //     label: "admin",
-  //     path: "/admin",
-  //     show: user,
-  //   },
-  //   {
-  //     label: "Login",
-  //     path: "/sign-in",
-  //     show: !user,
-  //   },
-  //   {
-  //     label: "Register",
-  //     path: "/sign-up",
-  //     show: !user,
-  //   },
-  //   {
-  //     label: "cart",
-  //     path: "/cart",
-  //     show: user,
-  //   },
-  //   {
-  //     label: "wishlist",
-  //     path: "/wishList",
-  //     show: user,
-  //   },
-
-  //   {
-  //     label: "Admin",
-  //     path: "/admin/newProduct",
-  //     show: user,
-  //   },
-  //   {
-  //     label: "Account",
-  //     path: "/account",
-  //     show: user,
-  //   },
    
-  // ];
-  
   const pathname = usePathname();
-
+ 
   // Use memo to avoid recalculating on every render
   const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
 
@@ -75,14 +30,16 @@ const menuItems = useMemo(() => {
 
   return [
     { label: "Home", path: "/", show: true },
-    { label: "admin", path: "/admin", show: user },
+    { label: "admin", path: "/admin", show: role },
     { label: "Login", path: "/sign-in", show: !user },
     { label: "Register", path: "/sign-up", show: !user },
     { label: "cart", path: "/cart", show: user },
-    { label: "wishlist", path: "/wishList", show: user },
+    { label: "wishlist", path: "/wishlist", show: user },
     { label: "Account", path: "/account", show: user },
+    { label: "Boquets", path: "/search", show: user },
   ];
 }, [pathname, user]);
+
 
   
   return (
@@ -123,8 +80,7 @@ const menuItems = useMemo(() => {
                 </Link>
               ) : null
             )}
-            <div className="mt-4 border-t border-white/20 pt-4 z-50 flex justify-around">
-            {isAdmin && <Link href="/admin" className="group inline-flex h-9 w-max items-center bg-white text-black  rounded-md  px-4 py-2 text-sm font-medium active:bg-black active:text-white">Admin</Link>}
+            <div className="mt-4 border-t border-white/20 pt-4 z-50">
             {user && <SignOutButton className="group inline-flex h-9 w-max items-center rounded-md bg-white text-black px-4 py-2 text-sm font-medium active:bg-black active:text-white">Logout</SignOutButton>}
             </div>
           </div>
@@ -137,26 +93,26 @@ const menuItems = useMemo(() => {
       >
         Flower Store
       </Link>
-        <div className="flex gap-2 ml-45">
+        {/* <div className="flex gap-2 ml-45">
                 <Input
                   placeholder="find the best choice..."
                   className="flex-1 text-sm"
-                //   value={query}
-                //   onChange={(e) => {
-                //     setJobResult({});
-                //     setQuery(e.target.value);
-                //     setShowBox(false)
-                //   }}
+                  value={query}
+                  onChange={(e) => {
+                    // setJobResult({});
+                    setQuery(e.target.value);
+                    // setShowBox(false)
+                  }}
                 />
                 <Button
                   size="icon"
                   className="bg-violet-600 hover:bg-violet-700"
-                //   onClick={handleSearch}
+                  onClick={handleSearch}
                 //   disabled={isPending}
                 >
                   <Search className="h-4 w-4" />
                 </Button>
-        </div>
+        </div> */}
       <nav className="ml-auto hidden lg:flex gap-6">
         {menuItems.map((item, idx) =>
           item.show ? (
@@ -173,7 +129,6 @@ const menuItems = useMemo(() => {
         {isAdmin && <Link href="/admin" className="group inline-flex h-9 w-max items-center rounded-md bg-white px-4 py-2 text-sm font-medium active:bg-black active:text-white">Admin</Link>}
         {user && <SignOutButton className="group inline-flex h-9 w-max items-center rounded-md bg-white px-4 py-2 text-sm font-medium active:bg-black active:text-white">Logout</SignOutButton>}
       </nav>
-      <Button><Link href="/admin/newProduct">goo</Link></Button>
     </header>
   );
 }

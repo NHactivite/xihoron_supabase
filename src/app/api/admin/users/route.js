@@ -15,7 +15,9 @@ export async function GET() {
     }
 
     const users = await res.json();
-    return NextResponse.json({ success: true, users });
+    const admins = users.filter(user => user.public_metadata?.role === 'admin');
+    
+    return NextResponse.json({ success: true, admins, users:users.length });
   } catch (error) {
     console.error("Error fetching users:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

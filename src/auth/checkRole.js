@@ -6,5 +6,5 @@ export const checkRole = async ( role) => {
   
   console.log(sessionClaims?.metadata.role, 'role' );
 
-  return sessionClaims?.metadata.role === role
+  return sessionClaims?.metadata.role === "admin"
 }

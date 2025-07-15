@@ -2,27 +2,53 @@
 
 import { useEffect, useState } from "react";
 import WigetItem from "@/components/admin/WigetItem";
+import { AdminTable } from "@/components/admin/adminTable";
+import { Loader } from "@/components/loading";
+import { getAllProduct, getProductCount } from "@/action";
 
 const Page = () => {
-  const properties = ["Product", "Users", "transactions", "Orders"];
-  const [users, setUsers] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const [admin, setAdmins] = useState([]);
+  const [users, setUsers] = useState(0);
+  const [product,setProduct]=useState(0)
   useEffect(() => {
-    const getUsers = async () => {
-      const res = await fetch("/api/admin/users");
-      const data = await res.json();
-      console.log("user list", data);
-      setUsers(data.users);
+    const getDashboardData = async () => {
+      setLoading(true);
+
+      try {
+        // fetch users and admins
+        const res = await fetch("/api/admin/users");
+        const data = await res.json();
+        setUsers(data.users);
+        setAdmins(data.admins);
+         const ProductCount = await getProductCount();
+        setProduct(ProductCount.count)
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getUsers();
-  }, []); // ✅ empty dependency = runs only once
+    getDashboardData();
+  }, []);
 
   return (
     <div>
-      <section>
-        <WigetItem properties={properties} users={users}/>
-        {/* You can also pass users to props here */}
+      <section className='grid grid-cols-4 gap-6'>
+        <WigetItem properties={"Product"} value={product} />
+        <WigetItem properties={"Users"} value={users} />
+        <WigetItem properties={"transactions"} value={""} />
+        <WigetItem properties={"Orders"} value={""} />
+      </section>
+      <section className="mt-6">
+        {loading ? (
+          <div className="m-20"><Loader /></div>
+        ) : admin.length > 0 ? (
+          <AdminTable admins={admin} />
+        ) : (
+          <p>No Admin Sign</p>
+        )}
       </section>
     </div>
   );

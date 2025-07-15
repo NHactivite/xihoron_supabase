@@ -10,7 +10,7 @@ const Wishlist = async () => {
   const wishes = res?.wish || [];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 ">
       {wishes.map((i, idx) => (
         <WishCard key={idx} productId={i.Product} />
       ))}
@@ -19,3 +19,5 @@ const Wishlist = async () => {
 };
 
 export default Wishlist;
+
+
