@@ -7,7 +7,7 @@ const CartItems = ({cartItem,incrementHandler,decrementHandler,removeHandler}) =
  const {photos,productId,name,price,quantity}=cartItem
   return (
     <div className="flex items-center justify-between mt-4">
-       <img className="w-60 rounded-md " src={photos} alt={name} />
+       <img className="w-40 rounded-md " src={photos} alt={name} />
        <article >
         <Link className="mx-3"  href={`/product/${productId}`}>{name}</Link>
         <span>&#x20B9;{price}</span>

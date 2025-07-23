@@ -6,7 +6,147 @@ import { Review } from "@/model/review";
 import { Wish } from "@/model/wish";
 
 import { NextResponse } from "next/server";
-import { connect } from "react-redux";
+import { Cashfree, CFEnvironment } from "cashfree-pg";
+import { Order } from "@/model/order";
+
+if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
+  throw new Error("Cashfree credentials are missing in environment variables");
+}
+// Initialize Cashfree with your credentials
+
+
+const cashfree = new Cashfree(
+	CFEnvironment.SANDBOX,
+	process.env.CLIENT_ID,
+	process.env.CLIENT_SECRET
+);
+// crete profile action
+
+export const createPaymentAction=async(data)=> {
+  console.log(data,"payment");
+  
+  const { user, cartItems } = data;
+  
+  const products = cartItems.map((item) => ({
+    id: item.productId,
+    quantity: item.quantity,
+  }));
+
+  const amounts = await Promise.all(
+    products.map(async (i) => {
+      const product = await Product.findById(i.id, "price");
+      if (!product) throw new Error(`Product with ID ${i.id} not found`);
+      return product.price * i.quantity;
+    })
+  );
+
+  const finalAmount = amounts.reduce((acc, curr) => acc + curr, 0);
+
+  const request = {
+    order_id: `order_${Date.now()}`,
+    order_amount: finalAmount,
+    order_currency: "INR",
+    customer_details: {
+      customer_id: user.userId,
+      customer_phone: user.phone,
+      customer_email: user.email,
+      customer_name: `${user.firstName} ${user.lastName}`,
+    },
+  };
+
+  try {
+    const response = await cashfree.PGCreateOrder(request);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating Cashfree order:", error?.response?.data || error);
+    throw error;
+  }
+}
+
+
+export const paymentVerify = async (order_id) => {
+  try {
+    const response = await cashfree.PGOrderFetchPayments(order_id);
+    return response.data; // Ensure data is returned
+  } catch (error) {
+    console.error("Error fetching payment:", error);
+    throw error; // Re-throw the error to handle it upstream
+  }
+};
+
+// payment end here-------------------------------------
+
+export const createOrder = async (data) => {
+  try {
+    await ConnectDB();
+
+    const { Address, cartItems, total, subtotal, userId, userName } = data;
+
+    const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
+
+    const newOrder = await Order.create({
+      shippingInfo: {
+        address: Address.address,
+        city: Address.city,
+        state: Address.state,
+        country: Address.country,
+        pinCode: Address.pinCode,
+        phnNo: Address.phnNo,
+      },
+      userId,
+      userName,
+      subtotal,
+      shippingCharges,
+      total,
+      orderItems: cartItems.map((item) => ({
+        name: item.name,
+        photos: item.photos, // If this is an array, use item.photos[0] or update schema
+        price: item.price,
+        quantity: item.quantity,
+        productId: item._id,
+      })),
+    });
+    console.log("endingggggggggggg");
+    
+   for (const item of cartItems) {
+  console.log(item.productId, "active");
+
+  await Product.findByIdAndUpdate(
+    item.productId,
+    { $inc: { stock: -item.quantity } },
+    { new: true }
+  );
+}
+
+    return { success: true, order: newOrder };
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getSingleOrder=async(userid)=>{
+  try {
+
+    await ConnectDB();
+    const data=await Order.find({userId:userid});
+     return {
+      success: true,
+      data
+    };
+    
+  } catch (error) {
+      return {
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    };
+  }
+}
+
+
+
+//...........................order action end
 
 export const addReview = async (data) => {
   try {
@@ -120,7 +260,6 @@ export const getProductById = async (id) => {
   }
 };
 
-
 export const wishHandle = async (productId, userId) => {
   await ConnectDB();
   console.log("wish", productId, userId);
@@ -172,9 +311,6 @@ export const deleteWish = async (id) => {
     };
   }
 };
-
-
-
 
 export const getSearchProducts = async (req) => {
   try {
@@ -262,3 +398,10 @@ export const getOccasion=async()=>{
   }
 
 }
+
+
+// cashfreeee
+
+
+
+

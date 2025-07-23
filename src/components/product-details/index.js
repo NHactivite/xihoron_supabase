@@ -17,11 +17,10 @@ import Rating from "../rating";
 import ReviewCard from "../reviewCard";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 export default function ProductSlider({ Product, user }) {
-  console.log("Rendering ProductSlider");
-  console.log("product", Product);
-  console.log("user", user.id);
-
+  
   const [selectedImage, setSelectedImage] = useState(0);
   const [showMagnifier, setShowMagnifier] = useState(false);
   const [magnifierPosition, setMagnifierPosition] = useState({ x: 0, y: 0 });
@@ -31,8 +30,7 @@ export default function ProductSlider({ Product, user }) {
   // const [rating, setRating] = useState(0);
   const imageRef = useRef(null);
   const productId = Product._id;
-  console.log("ProductSlider ID", productId);
-
+  const router=useRouter()
   const {
     Ratings: RatingEdit,
     rating,
@@ -52,7 +50,6 @@ export default function ProductSlider({ Product, user }) {
   const dispatch = useDispatch();
 
   const addCartHandler = (cartItem) => {
-    console.log("cart clicking", cartItem);
     if (cartItem.stock < 1) return console.log("out Of Stock");
     dispatch(addToCart(cartItem));
     console.log("Added to Cart");
@@ -106,6 +103,7 @@ export default function ProductSlider({ Product, user }) {
       alert("Failed to submit review: " + res.message);
     }
   };
+
 
   return (
     <div>
@@ -180,7 +178,7 @@ export default function ProductSlider({ Product, user }) {
             </em>
             <div>
               <Button
-                onClick={() =>
+                onClick={() =>user?
                   addCartHandler({
                     photos: Product.photos[0].url,
                     price: Product.price,
@@ -188,17 +186,17 @@ export default function ProductSlider({ Product, user }) {
                     quantity: 1,
                     name: Product.name,
                     stock: Product.stock,
-                  })
+                  }):toast.error("please login")
                 }
               >
                 Add To Cart
               </Button>
-              <Link
-                href={"/order"}
+              <Button
+                onClick={()=>{user?router.push("/order"):toast.error("please login")}}
                 className="ml-10 bg-black rounded-md text-white py-2 px-3"
               >
                 Buy Now
-              </Link>
+              </Button>
             </div>
             <h1 className="font-bold">Product description</h1>
           </div>
@@ -216,7 +214,7 @@ export default function ProductSlider({ Product, user }) {
           </div>
         </div>
       </div>
-      <Button onClick={() => setOpenDialog(true)}>Add Review</Button>
+      <Button onClick={() => user?setOpenDialog(true):toast.error("please login")}>Add Review</Button>
       <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
         <DialogContent>
           <DialogHeader>

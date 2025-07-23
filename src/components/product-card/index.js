@@ -6,6 +6,7 @@ import Link from "next/link"
 import { CiHeart } from "react-icons/ci"
 import { useState } from "react"
 import { wishHandle } from "@/action"
+import toast from "react-hot-toast"
 
 
 
@@ -18,7 +19,8 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
   const handleWishClick = async () => {
     try {
       setLoading(true)
-      const result = await wishHandle(id, userId)
+      
+      const result = userId?await wishHandle(id, userId):toast.error("login first")
       console.log("Wishlist Result:", result)
 
       if (result.success) setIsWished(true)

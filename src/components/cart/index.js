@@ -9,7 +9,7 @@ const Cart = () => {
 
   const dispatch=useDispatch()
 
-  const {cartItems,subtotal,shippingCharges,total,discount}=useSelector((state)=>state.cartReducer)
+  const {cartItems,subtotal,shippingCharges,total}=useSelector((state)=>state.cartReducer)
  
   const incrementHandler=(cartItem)=>{
   
@@ -49,7 +49,7 @@ const Cart = () => {
         </div>    
 
           {
-            cartItems.length>0 && <Link href={"/shipping"}>Checkout</Link>
+            cartItems.length>0 && <Link className="bg-black text-white px-3 py-2 rounded-md" href={"/order"}>Checkout</Link>
           }
       </aside>
     </div>

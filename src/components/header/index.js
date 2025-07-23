@@ -1,14 +1,13 @@
 "use client";
 
 // import { UserButton ,SignOutButton} from "@clerk/nextjs";
-import { AlignJustify, Search } from "lucide-react";
+import { SignOutButton } from "@clerk/nextjs";
+import { AlignJustify } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { Input } from "../ui/input";
-import { SignOutButton } from "@clerk/nextjs";
-import { usePathname, useRouter } from "next/navigation";
 
 function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
@@ -37,6 +36,7 @@ const menuItems = useMemo(() => {
     { label: "wishlist", path: "/wishlist", show: user },
     { label: "Account", path: "/account", show: user },
     { label: "Boquets", path: "/search", show: user },
+    { label: "Orders", path: "/shipping", show: user },
   ];
 }, [pathname, user]);
 
