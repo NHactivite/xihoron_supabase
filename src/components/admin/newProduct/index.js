@@ -8,22 +8,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
-const NewProduct = () => {
+const NewProduct = ({ mode = "create", initialProduct }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [occasion, setOccasion] = useState("");
-  const [details, setDetails] = useState([{ key: "", value: "" }]);
+  const [name, setName] = useState(initialProduct.name || "");
+  const [price, setPrice] = useState(initialProduct.price || "");
+  const [stock, setStock] = useState(initialProduct.stock || "");
+  const [category, setCategory] = useState(initialProduct.category || "");
+  const [description, setDescription] = useState(initialProduct.description || "");
+  const [occasion, setOccasion] = useState(initialProduct.occasion || "");
+  const [details, setDetails] = useState(() => {
+    if (initialProduct.details) {
+      return Object.entries(initialProduct.details).map(([key, value]) => ({
+        key,
+        value,
+      }));
+    }
+    return [{ key: "", value: "" }];
+  });
 
   const [photos, setPhotos] = useState({
     file: [],
-    preview: [],
+    preview: initialProduct.photos
+      ? initialProduct.photos.map((p) => p.url)
+      : [],
     error: "",
   });
-
   const changeHandler = (e) => {
     const files = Array.from(e.target.files);
 

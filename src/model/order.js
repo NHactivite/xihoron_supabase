@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
- const schema = new mongoose.Schema(
+ const orderSchema = new mongoose.Schema(
     {
      shippingInfo:{
         address:{
@@ -36,6 +36,10 @@ import mongoose from "mongoose";
       type:String,
        required:true
      },
+    orderId:{
+      type:String,
+       required:true
+    },
      subtotal:{
       type:Number,
       required:true
@@ -75,4 +79,5 @@ import mongoose from "mongoose";
   );
   
   
-  export const Order =mongoose.models.Order|| mongoose.model("Order", schema);
+  export const Order = mongoose.models.Order|| mongoose.model("Order", orderSchema);
+

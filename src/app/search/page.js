@@ -6,16 +6,13 @@ import { currentUser } from "@clerk/nextjs/server";
 import React from "react";
 
 const Search = async ({ searchParams }) => {
-  // const res = await getAllProduct();
-  // const data = await res.json();
-  // const Products = data.products;
+ 
   const user = await currentUser();
   
 
 
   const categories = await getCategory()
   const occasion=await getOccasion()
-  console.log(categories,"backenddd");
   
   const currentFilters = {
   search: searchParams.search || "",
@@ -28,10 +25,6 @@ const Search = async ({ searchParams }) => {
 
 const searchProducts=await getSearchProducts(currentFilters)
 
-console.log(searchProducts,"lorrrrrrr");
-
-  
-  console.log(currentFilters, "ppppppppppp");
 
   return (
     <div >

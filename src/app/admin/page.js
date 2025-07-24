@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import WigetItem from "@/components/admin/WigetItem";
 import { AdminTable } from "@/components/admin/adminTable";
 import { Loader } from "@/components/loading";
-import { getAllProduct, getProductCount } from "@/action";
+import {  getProductCount } from "@/action";
+import Link from "next/link";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
   const [admin, setAdmins] = useState([]);
   const [users, setUsers] = useState(0);
+  const [orders, setOrders] = useState(0);
   const [product,setProduct]=useState(0)
   useEffect(() => {
     const getDashboardData = async () => {
@@ -35,11 +37,9 @@ const Page = () => {
 
   return (
     <div>
-      <section className='grid grid-cols-4 gap-6'>
+      <section className='grid grid-cols-2 gap-6'>
         <WigetItem properties={"Product"} value={product} />
         <WigetItem properties={"Users"} value={users} />
-        <WigetItem properties={"transactions"} value={""} />
-        <WigetItem properties={"Orders"} value={""} />
       </section>
       <section className="mt-6">
         {loading ? (

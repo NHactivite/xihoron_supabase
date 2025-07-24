@@ -73,7 +73,7 @@ const cashfreeRef = useRef(null);
       if (data && data[0].payment_status === "SUCCESS") {
         console.log(data,"daataaaaaaaaaaaa");
         
-         await createOrder({Address,cartItems,total:data[0].payment_amount,subtotal,userId:user.userId,userName:`${user.firstName}" "${user.lastName}`})
+         await createOrder({Address,cartItems,total:data[0].payment_amount,subtotal,userId:user.userId,userName:`${user.firstName} ${user.lastName}`,orderId:data[0].order_id})
       }
       toast.success("Payment successful! Your membership has been updated.");
     } catch (error) {

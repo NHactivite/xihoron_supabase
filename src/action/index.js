@@ -23,7 +23,6 @@ const cashfree = new Cashfree(
 // crete profile action
 
 export const createPaymentAction=async(data)=> {
-  console.log(data,"payment");
   
   const { user, cartItems } = data;
   
@@ -80,7 +79,7 @@ export const createOrder = async (data) => {
   try {
     await ConnectDB();
 
-    const { Address, cartItems, total, subtotal, userId, userName } = data;
+    const { Address, cartItems, total, subtotal, userId, userName,orderId } = data;
 
     const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
 
@@ -95,6 +94,7 @@ export const createOrder = async (data) => {
       },
       userId,
       userName,
+      orderId,
       subtotal,
       shippingCharges,
       total,
@@ -143,6 +143,74 @@ export const getSingleOrder=async(userid)=>{
     };
   }
 }
+
+export const getAllOrders=async()=>{
+  try {
+    await ConnectDB();
+    const data=await Order.find();
+    return {
+      success: true,
+      data
+    };
+    
+  } catch (error) {
+    return {
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    };
+  }
+}
+export const getSpacificOrders=async(option)=>{
+  try {
+    await ConnectDB();
+    
+    const data=await Order.find({status:option});
+    return {
+      success: true,
+      data
+    };
+    
+  } catch (error) {
+    return {
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    };
+  }
+}
+
+export const updateStatus = async (data) => {
+  try {
+    await ConnectDB();
+
+    const { newStatus, orderId} = data;
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { status: newStatus },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return {
+        success: false,
+        message: "Order not found",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Order status updated successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    };
+  }
+};
 
 
 
@@ -220,8 +288,7 @@ export const getAllProduct = async () => {
   try {
     await ConnectDB();
     const products = await Product.find({});
-    console.log("ProductsAction", products);
-
+    
     return NextResponse.json({ success: true, products });
   } catch (error) {
     return NextResponse.json(

@@ -6,8 +6,6 @@ import React from 'react'
 const Shipped = async() => {
     const user=await currentUser();
     const orderData=await getSingleOrder(user.id);
-    console.log(orderData.data,"orders");
-    
   return (
     <div><Orders order={orderData.data}/></div>
   )

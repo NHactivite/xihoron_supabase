@@ -21,9 +21,9 @@ const menuItems = useMemo(() => {
   if (isAdminPage) {
     return [
       { label: "DashBoard", path: "/admin", show: true },
-      { label: "Products", path: "/admin/product", show: user },
-      { label: "Transactions", path: "/transactions", show: user },
-      { label: "Home", path: "/", show: !user },
+      { label: "Products", path: "/admin/allProduct", show: user },
+      { label: "Orders", path: "/admin/orders", show: user },
+     
     ];
   }
 
