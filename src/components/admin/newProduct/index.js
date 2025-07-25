@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
-const NewProduct = ({ mode = "create", initialProduct }) => {
+const NewProduct = ({ mode, initialProduct }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(initialProduct.name || "");
+  const [deletephoto, setDeletePhoto] = useState([]);
   const [price, setPrice] = useState(initialProduct.price || "");
   const [stock, setStock] = useState(initialProduct.stock || "");
   const [category, setCategory] = useState(initialProduct.category || "");
@@ -37,18 +38,25 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
     const files = Array.from(e.target.files);
 
     const filePreviews = files.map((file) => URL.createObjectURL(file));
-
+         
     setPhotos({
       file: files,
       preview: filePreviews,
       error: "",
     });
+
+    
   };
 
   const removeImage = (index) => {
+  const removedPhoto = photos.preview[index];
+
+// Append to the array instead of replacing
+setDeletePhoto((prev) => [...prev, removedPhoto]);
+
     const newFiles = photos.file.filter((_, i) => i !== index);
     const newPreviews = photos.preview.filter((_, i) => i !== index);
-
+   
     setPhotos({
       file: newFiles,
       preview: newPreviews,
@@ -126,6 +134,101 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
     }
   };
 
+  const updateHandler = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  try {
+    const formData = new FormData();
+    let hasChanges = false;
+
+    // Compare and append only if changed
+    if (name !== initialProduct.name) {
+      formData.set("name", name);
+      hasChanges = true;
+    }
+
+    if (description !== initialProduct.description) {
+      formData.set("description", description);
+      hasChanges = true;
+    }
+
+    if (price !== initialProduct.price) {
+      formData.set("price", price.toString());
+      hasChanges = true;
+    }
+
+    if (stock !== initialProduct.stock) {
+      formData.set("stock", stock.toString());
+      hasChanges = true;
+    }
+
+    if (category !== initialProduct.category) {
+      formData.set("category", category);
+      hasChanges = true;
+    }
+
+    if (occasion !== initialProduct.occasion) {
+      formData.set("occasion", occasion);
+      hasChanges = true;
+    }
+
+    // Handle details object comparison
+    const detailsObject = {};
+    details.forEach((detail) => {
+      if (detail.key.trim() && detail.value.trim()) {
+        detailsObject[detail.key.trim()] = detail.value.trim();
+      }
+    });
+
+    const initialDetails = initialProduct.details || {};
+    if (JSON.stringify(detailsObject) !== JSON.stringify(initialDetails)) {
+      formData.set("details", JSON.stringify(detailsObject));
+      hasChanges = true;
+    }
+
+    // Handle deleted photos (if any)
+    if (deletephoto && deletephoto.length > 0) {
+      formData.set("removedPhotos", JSON.stringify(deletephoto));
+      hasChanges = true;
+    }
+
+    // Handle newly added photos
+    if (photos.file && photos.file.length > 0) {
+      photos.file.forEach((file) => {
+        formData.append("photos", file);
+      });
+      hasChanges = true;
+    }
+
+    if (!hasChanges) {
+      toast("No changes detected.");
+      setIsLoading(false);
+      return;
+    }
+
+    // Make API request
+    const res = await fetch(`/api/product/?id=${initialProduct._id}`, {
+      method: "PUT",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      toast.success("Product updated successfully!");
+    } else {
+      toast.error(data.message || "Failed to update product");
+    }
+  } catch (error) {
+    console.error("Product update failed:", error);
+    toast.error("Something went wrong.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
   return (
     <div className="max-w-2xl mx-auto min-h-screen">
       <Card>
@@ -135,7 +238,7 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submitHandler} className="space-y-6">
+          <form onSubmit={mode==="edit"?updateHandler:submitHandler} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-sm font-medium">
@@ -174,7 +277,6 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
               </Label>
               <Textarea
                 id="description"
-                required
                 placeholder="Enter product description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -189,7 +291,6 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
                 </Label>
                 <Input
                   id="price"
-                  required
                   type="number"
                   placeholder="0.00"
                   min="0"
@@ -206,7 +307,6 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
                 </Label>
                 <Input
                   id="stock"
-                  required
                   type="number"
                   placeholder="0"
                   min="0"
@@ -222,7 +322,6 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
                 </Label>
                 <Input
                   id="occasion"
-                  required
                   type="text"
                   placeholder="Enter occasion"
                   value={occasion}
@@ -284,7 +383,7 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
               <Label className="text-sm font-medium">Product Photos</Label>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-gray-400 transition-colors">
                 <input
-                  required
+                  name="photos" 
                   accept="image/*"
                   type="file"
                   multiple
@@ -321,7 +420,7 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
                       <button
                         type="button"
                         onClick={() => removeImage(i)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1  transition-opacity hover:bg-red-600"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -332,7 +431,7 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
             </div>
 
             <div className="pt-6">
-              <Button
+              {mode!=="edit"?<Button
                 type="submit"
                 disabled={isLoading}
                 className="w-full h-12 text-base font-medium"
@@ -346,6 +445,21 @@ const NewProduct = ({ mode = "create", initialProduct }) => {
                   "Create Product"
                 )}
               </Button>
+              :<Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 text-base font-medium"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Update Product...
+                  </>
+                ) : (
+                  "update Product"
+                )}
+              </Button>
+              }
             </div>
           </form>
         </CardContent>

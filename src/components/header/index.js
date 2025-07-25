@@ -13,7 +13,7 @@ function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
    
   const pathname = usePathname();
- 
+
   // Use memo to avoid recalculating on every render
   const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
 

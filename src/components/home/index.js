@@ -8,7 +8,7 @@ import p2 from '../../utils/home_section/price2.png'
 import p3 from '../../utils/home_section/price3.png'
 import p4 from '../../utils/home_section/price4.png'
 import pink from '../../utils/home_section/pink.png'
-import { getAllProduct, wishHandle } from '@/action';
+import { getAllOrders, getAllProduct, wishHandle } from '@/action';
 import { currentUser } from '@clerk/nextjs/server';
 import ProductCard from '../product-card'
  const Home = async() => {
@@ -16,12 +16,7 @@ const res = await getAllProduct();
 const data = await res.json();
 const Products = data.products;
 const user= await currentUser();
-console.log("Products", Products); // ✅ Now it will be an array
 
-
-console.log("Products",Products);
-
- 
   return (
     <div>
       <section>

@@ -1,12 +1,35 @@
+import { clerkClient } from '@clerk/clerk-sdk-node';
+import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(request, { params }) {
-  const { id } = params;
+    const { userId } = await auth();
+  
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized: Please login" },
+        { status: 401 }
+      );
+    }
+  
+    const user = await clerkClient.users.getUser(userId);
+    console.log(user,"nnnn");
+    
+    const role = user.publicMetadata?.role;
+  
+    if (role !== "admin") {
+      return NextResponse.json(
+        { success: false, message: "Forbidden: Admin access only" },
+        { status: 403 }
+      );
+    }
+
+
+  try {
+    const { id } = params;
 
   const body = await request.json();
   const { firstName, lastName, email, phone } = body;
-
-  try {
     const res = await fetch(`https://api.clerk.com/v1/users/${id}`, {
       method: 'PATCH',
       headers: {

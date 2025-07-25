@@ -1,10 +1,7 @@
 import { getCategory, getOccasion, getSearchProducts } from '@/action';
 import AllProduct from '@/components/admin/allProduct';
-import SearchAndFilters from '@/components/filter';
 import Pagination from '@/components/pagination';
-import ProductCard from '@/components/product-card';
 import { currentUser } from '@clerk/nextjs/server';
-import React from 'react'
 
 const AdminProduct = async({ searchParams }) => {
    const user = await currentUser();

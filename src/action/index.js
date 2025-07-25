@@ -8,6 +8,8 @@ import { Wish } from "@/model/wish";
 import { NextResponse } from "next/server";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { Order } from "@/model/order";
+import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/clerk-sdk-node";
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
@@ -145,6 +147,22 @@ export const getSingleOrder=async(userid)=>{
 }
 
 export const getAllOrders=async()=>{
+   const { userId } = await auth();
+  
+    if (!userId) {
+      return{ success: false, message: "Unauthorized: Please login" }
+      
+    }
+    
+    const user = await clerkClient.users.getUser(userId);
+    
+    
+    const role = user.publicMetadata?.role;
+  
+    if (role !== "admin") {
+      return  { success: false, message: "Forbidden: Admin access only" }
+    }
+
   try {
     await ConnectDB();
     const data=await Order.find();
@@ -181,6 +199,22 @@ export const getSpacificOrders=async(option)=>{
 }
 
 export const updateStatus = async (data) => {
+  const { userId } = await auth();
+  
+    if (!userId) {
+      return{ success: false, message: "Unauthorized: Please login" }
+      
+    }
+    
+    const user = await clerkClient.users.getUser(userId);
+    
+    
+    const role = user.publicMetadata?.role;
+  
+    if (role !== "admin") {
+      return  { success: false, message: "Forbidden: Admin access only" }
+    }
+
   try {
     await ConnectDB();
 

@@ -12,14 +12,16 @@ import NewProduct from '../newProduct'
 
 const AllProduct = ({products}) => {
  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState(null);
+ const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+const [productToEdit, setProductToEdit] = useState(null);
 
-  const openEditDialog = (product) => {
-    setProductToEdit(product);
+  const openEditDialog = () => {
     setIsEditDialogOpen(true);
   };
+  const openNewDialog = () => {
+    setIsNewDialogOpen(true);
+  };
 
-    console.log(products,"lpppwe");
     
  return (
     <div className="container mx-auto p-6">
@@ -27,6 +29,9 @@ const AllProduct = ({products}) => {
         <div>
           <h1 className="text-3xl font-bold">Product Management</h1>
           <p className="text-muted-foreground">Manage your flower bouquet inventory</p>
+        </div>
+        <div>
+          <Button onClick={() => {openNewDialog()} }>Add Product </Button>
         </div>
       </div>
 
@@ -87,7 +92,7 @@ const AllProduct = ({products}) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" onClick={() => {setProductToEdit(product)|| openEditDialog(product)} }>
+                        <Button variant="outline" size="sm" onClick={() => {setProductToEdit(product)|| openEditDialog()} }>
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product.id)}>
@@ -102,7 +107,7 @@ const AllProduct = ({products}) => {
           </div>
         </CardContent>
       </Card>
-
+     
      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
           <DialogHeader>
@@ -111,6 +116,17 @@ const AllProduct = ({products}) => {
           {productToEdit && (
             <NewProduct mode="edit" initialProduct={productToEdit} />
           )}
+        </DialogContent>
+      </Dialog>
+     
+     <Dialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen}>
+        <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Add Product</DialogTitle>
+          </DialogHeader>
+         
+            <NewProduct mode="create" initialProduct={""}  />
+          
         </DialogContent>
       </Dialog>
     </div>
