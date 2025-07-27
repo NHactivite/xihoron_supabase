@@ -20,7 +20,6 @@ import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 export default function ProductSlider({ Product, user }) {
-  
   const [selectedImage, setSelectedImage] = useState(0);
   const [showMagnifier, setShowMagnifier] = useState(false);
   const [magnifierPosition, setMagnifierPosition] = useState({ x: 0, y: 0 });
@@ -50,9 +49,9 @@ export default function ProductSlider({ Product, user }) {
   const dispatch = useDispatch();
 
   const addCartHandler = (cartItem) => {
-    if (cartItem.stock < 1) return console.log("out Of Stock");
+    if (cartItem.stock < 1) return toast.error("out Of Stock");
     dispatch(addToCart(cartItem));
-    console.log("Added to Cart");
+    toast.success("Added to Cart");
   };
 
   const images = Product.photos?.map((i) => i.url);
@@ -84,7 +83,7 @@ export default function ProductSlider({ Product, user }) {
 
   const submitReview = async () => {
     if (!comment || !rating) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
     const reviewData = {
@@ -95,20 +94,21 @@ export default function ProductSlider({ Product, user }) {
     };
     const res = await addReview(reviewData);
     if (res.success) {
-      alert(res.message);
+      toast.success(res.message);
       setComment("");
       setRating(0);
       setOpenDialog(false);
+      router.refresh()
     } else {
-      alert("Failed to submit review: " + res.message);
+      toast.error("Failed to submit review: " + res.message);
     }
   };
 
 
   return (
     <div>
-      <div className="grid grid-cols-[1.5fr_2fr] pl-36">
-        <div className="w-[350px] h-[400px] p-6">
+      <div className="grid md:grid-cols-[1.5fr_2fr] md:pl-36">
+        <div className="w-[350px] h-[400px] md:ml-0 ml-3">
           {/* Main Image Display */}
           <div className="relative overflow-hidden rounded-lg border bg-gray-50">
             <div className="aspect-square relative cursor-crosshair">
@@ -144,7 +144,7 @@ export default function ProductSlider({ Product, user }) {
           </div>
 
           {/* Thumbnail Images */}
-          <div className="flex gap-3 justify-center">
+          <div className="flex gap-3 justify-center mt-2">
             {images.map((image, index) => (
               <button
                 key={index}
@@ -155,7 +155,7 @@ export default function ProductSlider({ Product, user }) {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <div className="aspect-square w-20 relative">
+                <div className="aspect-square md:w-20 w-15 relative">
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Product thumbnail ${index + 1}`}
@@ -166,8 +166,8 @@ export default function ProductSlider({ Product, user }) {
             ))}
           </div>
         </div>
-        <div className="p-10">
-          <div className="space-y-4">
+        <div className="pl-10 pt-15">
+          <div className="space-y-4 ">
             <h1 className="text-2xl font-bold leading-tight">
               {Product.name || "Product Name"}
             </h1>
@@ -214,11 +214,11 @@ export default function ProductSlider({ Product, user }) {
           </div>
         </div>
       </div>
-      <Button onClick={() => user?setOpenDialog(true):toast.error("please login")}>Add Review</Button>
-      <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
+      <Button onClick={() => user?setOpenDialog(true):toast.error("please login")} className="m-2 mt-10">Add Review</Button>
+      <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)} >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Review</DialogTitle>
+            <DialogTitle >Add Review</DialogTitle>
           </DialogHeader>
           <Input
             type="text"
@@ -233,14 +233,14 @@ export default function ProductSlider({ Product, user }) {
         </DialogContent>
       </Dialog>
       {Product.numOfReviews !== 0 && (
-        <main>
+        <main className="mb-10">
           <ReviewCard productId={Product._id} />
         </main>
       )}
-      <div className="mt-10">
-        <h1>Recommended For You</h1>
+      {/* <div className="mt-10 ml-2">
+        <h1 > Recommended For You</h1>
         <main className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide"></main>
-      </div>
+      </div> */}
     </div>
   );
 }

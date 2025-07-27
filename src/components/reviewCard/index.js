@@ -16,11 +16,10 @@ const ReviewCard = ({ productId }) => {
   }, [productId]);
   
   return (
-    <div className='flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pt-4 scrollbar-hide min-h-36'>
+    <div className='flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pt-4 scrollbar-hide md:min-h-36 ml-3'>
       {reviews.map((review) => (
-        <div key={review._id} className="min-w-96 relative bg-gray-100 rounded-md p-3" >
+        <div key={review._id} className="md:min-w-96 min-w-52 relative bg-gray-100 rounded-md p-3" >
           <p className="text-xl">{review.comment}</p>
-          <p className="text-xl ">{review.user}</p>
           <div className="mt-2"><Rating  value={review.rating}/></div>
           <button className="absolute -top-2 -right-2 bg-gray-900 p-2 rounded-full text-white text-sm"><FaTrash/></button>
         </div>

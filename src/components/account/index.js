@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -58,7 +57,6 @@ export default function AccountPage({ planUser }) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
 
-    console.log("✅ User updated:", data.user);
   } catch (error) {
     console.error("❌ Failed to update user:", error);
   }
@@ -68,10 +66,10 @@ export default function AccountPage({ planUser }) {
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between ">
           <div>
-            <h1 className="text-3xl font-bold">Account Settings</h1>
-            <p className="text-muted-foreground">
+            <h1 className="lg:text-3xl font-bold text-xl">Account Settings</h1>
+            <p className="text-muted-foreground ">
               Manage your account information and preferences
             </p>
           </div>

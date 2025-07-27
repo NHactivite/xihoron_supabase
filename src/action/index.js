@@ -246,6 +246,29 @@ export const updateStatus = async (data) => {
   }
 };
 
+export const deleteProduct=async(productId)=>{
+  const {userId}=await auth();
+  if (!userId) {
+      return{ success: false, message: "Unauthorized: Please login" }
+      
+    }
+    
+    const user = await clerkClient.users.getUser(userId);
+    
+    
+    const role = user.publicMetadata?.role;
+  
+    if (role !== "admin") {
+      return  { success: false, message: "Forbidden: Admin access only" }
+    }
+  try {
+    await Product.findByIdAndDelete(productId)
+    return{success:true,message:"Product delete Successfully"}
+    
+  } catch (error) {
+      return{success:false,message:"Product delete Successfully"}
+  } 
+}
 
 
 //...........................order action end
@@ -426,7 +449,7 @@ export const getSearchProducts = async (req) => {
       page = 1,
     } = req;
 
-    const limit = Number(process.env.PRODUCT_PER_PAGE) || 1;
+    const limit = Number(process.env.PRODUCT_PER_PAGE) || 10;
     const skip = (page - 1) * limit;
 
     let baseQuery = {};

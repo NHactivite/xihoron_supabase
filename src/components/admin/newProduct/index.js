@@ -7,8 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const NewProduct = ({ mode, initialProduct }) => {
+  const router=useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(initialProduct.name || "");
   const [deletephoto, setDeletePhoto] = useState([]);
@@ -112,8 +114,7 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
       });
 
       const data = await res.json();
-      console.log("Response:", data);
-
+      
       if (data.success) {
         toast.success("Product created!");
         setName("");
@@ -124,6 +125,8 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
         setOccasion("");
         setDetails([{ key: "", value: "" }]);
         setPhotos({ file: [], preview: [], error: "" });
+        
+      router.refresh()
       } else {
         toast.error(data.message || "Something went wrong");
       }
@@ -217,6 +220,8 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
 
     if (data.success) {
       toast.success("Product updated successfully!");
+
+      router.refresh()
     } else {
       toast.error(data.message || "Failed to update product");
     }

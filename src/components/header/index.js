@@ -48,19 +48,19 @@ const menuItems = useMemo(() => {
         <SheetTrigger asChild>
           <Button
             variant="ghost"
-            className="lg:hidden flex items-center gap-2 p-2 rounded-md bg-white/10 backdrop-blur-md border border-white/20 shadow-md hover:bg-white/20 transition"
+            className="lg:hidden flex items-center gap-2  rounded-md bg-white/10 backdrop-blur-md border border-white/20 shadow-md hover:bg-white/20 transition"
           >
-            <AlignJustify className="h-6 w-6  text-white" />
+            <AlignJustify className="h-6 w-6" />
             <span className="sr-only">Toggle Navigation Menu</span>
           </Button>
         </SheetTrigger>
 
         <SheetContent
           side="left"
-          className="w-64 bg-[#0F172A] text-white border-r border-white/10 shadow-xl"
+          className="w-64 bg-[#0F172A] text-white border-r border-white/10 shadow-xl p-3 rounded-md"
         >
           <Link href="/" className="flex items-center mb-6">
-            <SheetTitle className="text-2xl font-bold text-white">
+            <SheetTitle className="text-2xl font-bold text-white ">
               Flower Store
             </SheetTitle>
           </Link>
@@ -93,26 +93,6 @@ const menuItems = useMemo(() => {
       >
         Flower Store
       </Link>
-        {/* <div className="flex gap-2 ml-45">
-                <Input
-                  placeholder="find the best choice..."
-                  className="flex-1 text-sm"
-                  value={query}
-                  onChange={(e) => {
-                    // setJobResult({});
-                    setQuery(e.target.value);
-                    // setShowBox(false)
-                  }}
-                />
-                <Button
-                  size="icon"
-                  className="bg-violet-600 hover:bg-violet-700"
-                  onClick={handleSearch}
-                //   disabled={isPending}
-                >
-                  <Search className="h-4 w-4" />
-                </Button>
-        </div> */}
       <nav className="ml-auto hidden lg:flex gap-6">
         {menuItems.map((item, idx) =>
           item.show ? (

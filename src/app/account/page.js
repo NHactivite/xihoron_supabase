@@ -4,7 +4,6 @@ import React from 'react'
 
 const Account = async() => {
     const user= await currentUser();
-    console.log(user,"account");
      const planUser = {
     firstName: user.firstName || '',
     lastName: user.lastName || '',

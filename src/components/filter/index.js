@@ -1,119 +1,147 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { ChevronDown, ChevronUp, Filter, Search, X } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ChevronDown, ChevronUp, Filter, Search, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-
-export default function SearchAndFilters({ categories,currentFilters,occasion }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+export default function SearchAndFilters({
+  categories,
+  currentFilters,
+  occasion,
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   // Local state for form inputs
-  const [search, setSearch] = useState(currentFilters.search)
-  const [category, setCategory] = useState(currentFilters.category)
-  const [priceRange, setPriceRange] = useState([currentFilters.minPrice || 0, currentFilters.maxPrice || 500])
-  const [occa, setOccasion] = useState(currentFilters.occasion)
+  const [search, setSearch] = useState(currentFilters.search);
+  const [category, setCategory] = useState(currentFilters.category);
+  const [priceRange, setPriceRange] = useState([
+    currentFilters.minPrice || 0,
+    currentFilters.maxPrice || 500,
+  ]);
+  const [occa, setOccasion] = useState(currentFilters.occasion);
 
   const createURL = (updates) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams);
 
     // Remove page when filters change
-    params.delete("page")
+    params.delete("page");
 
     Object.entries(updates).forEach(([key, value]) => {
       if (value && value !== "" && value !== "0") {
-        params.set(key, value)
+        params.set(key, value);
       } else {
-        params.delete(key)
+        params.delete(key);
       }
-    })
+    });
 
-    return `?${params.toString()}`
-  }
+    return `?${params.toString()}`;
+  };
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault()
-    const url = createURL({ search })
-    router.push(url)
-  }
+    e.preventDefault();
+    const url = createURL({ search });
+    router.push(url);
+  };
 
   const handleFilterChange = (filterUpdates) => {
-    const url = createURL(filterUpdates)
-    router.push(url)
-  }
+    const url = createURL(filterUpdates);
+    router.push(url);
+  };
 
   const clearAllFilters = () => {
-    setSearch("")
-    setCategory("")
-    setPriceRange([0, 500])
-    setOccasion("")
-    router.push("/")
-  }
+    setSearch("");
+    setCategory("");
+    setPriceRange([0, 500]);
+    setOccasion("");
+    router.push("/");
+  };
 
-  const hasActiveFilters = search || category || priceRange[0] > 0 || priceRange[1] < 500 || occa
+  const hasActiveFilters =
+    search || category || priceRange[0] > 0 || priceRange[1] < 500 || occa;
 
   // Update local state when URL changes
   useEffect(() => {
-    setSearch(currentFilters.search)
-    setCategory(currentFilters.category)
-    setPriceRange([currentFilters.minPrice || 0, currentFilters.maxPrice || 500])
-    setOccasion(currentFilters.occasion)
-  }, [currentFilters])
+    setSearch(currentFilters.search);
+    setCategory(currentFilters.category);
+    setPriceRange([
+      currentFilters.minPrice || 0,
+      currentFilters.maxPrice || 500,
+    ]);
+    setOccasion(currentFilters.occasion);
+  }, [currentFilters]);
 
   return (
     <div className=" relative">
       {/* Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="px-9"
-              />
-            </div>
-            <Button type="submit">Search</Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="flex items-center gap-2"
-            >
-              <Filter className="w-4 h-4" />
-              Filters
-              {isFiltersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </Button>
-          </form>
-       
+      <form onSubmit={handleSearchSubmit} className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="px-9"
+          />
+        </div>
+        <Button type="submit">Search</Button>
+        <Filter className="w-4 h-4 md:hidden flex mt-2" onClick={() => setIsFiltersOpen(!isFiltersOpen)} />
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+          className="hidden md:flex items-center gap-2"
+        >
+          <Filter className="w-4 h-4" />
+          <span>Filters</span>
+          {isFiltersOpen ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </Button>
+      </form>
 
       {/* Filters Panel */}
       {isFiltersOpen && (
-        <Card  className="w-56 absolute right-0 mt-5 z-50">
-          <CardContent >
-            <div >
+        <Card className="w-56 absolute right-0 mt-5 z-50">
+          <CardContent>
+            <div>
               {/* Category Filter */}
               <div className="mb-3">
-                <Label htmlFor="category" className="mb-3">Category</Label>
+                <Label htmlFor="category" className="mb-3">
+                  Category
+                </Label>
                 <Select
                   value={category}
                   onValueChange={(value) => {
-                    setCategory(value)
+                    setCategory(value);
                     handleFilterChange({
                       search,
                       category: value === "all" ? "" : value,
-                      minPrice: priceRange[0] > 0 ? priceRange[0].toString() : undefined,
-                      maxPrice: priceRange[1] < 500 ? priceRange[1].toString() : undefined,
-                    })
+                      minPrice:
+                        priceRange[0] > 0
+                          ? priceRange[0].toString()
+                          : undefined,
+                      maxPrice:
+                        priceRange[1] < 500
+                          ? priceRange[1].toString()
+                          : undefined,
+                    });
                   }}
                 >
                   <SelectTrigger>
@@ -130,17 +158,25 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
                 </Select>
               </div>
               <div className="mb-3">
-                <Label htmlFor="category" className="mb-3">occasion</Label>
+                <Label htmlFor="category" className="mb-3">
+                  occasion
+                </Label>
                 <Select
                   value={occa}
                   onValueChange={(value) => {
-                    setCategory(value)
+                    setCategory(value);
                     handleFilterChange({
                       search,
                       occa: value === "all" ? "" : value,
-                      minPrice: priceRange[0] > 0 ? priceRange[0].toString() : undefined,
-                      maxPrice: priceRange[1] < 500 ? priceRange[1].toString() : undefined,
-                    })
+                      minPrice:
+                        priceRange[0] > 0
+                          ? priceRange[0].toString()
+                          : undefined,
+                      maxPrice:
+                        priceRange[1] < 500
+                          ? priceRange[1].toString()
+                          : undefined,
+                    });
                   }}
                 >
                   <SelectTrigger>
@@ -158,7 +194,7 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
               </div>
 
               {/* Price Range Filter */}
-              <div >
+              <div>
                 <Label>
                   Price Range: ${priceRange[0]} - ${priceRange[1]}
                 </Label>
@@ -170,9 +206,11 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
                       handleFilterChange({
                         search,
                         category: category || undefined,
-                        minPrice: value[0] > 0 ? value[0].toString() : undefined,
-                        maxPrice: value[1] < 500 ? value[1].toString() : undefined,
-                      })
+                        minPrice:
+                          value[0] > 0 ? value[0].toString() : undefined,
+                        maxPrice:
+                          value[1] < 500 ? value[1].toString() : undefined,
+                      });
                     }}
                     max={500}
                     min={0}
@@ -181,14 +219,16 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
                   />
                 </div>
               </div>
-
-            
             </div>
 
             {/* Clear Filters */}
             {hasActiveFilters && (
               <div className="mt-6 pt-4 border-t">
-                <Button variant="outline" onClick={clearAllFilters} className="flex items-center gap-2 bg-transparent">
+                <Button
+                  variant="outline"
+                  onClick={clearAllFilters}
+                  className="flex items-center gap-2 bg-transparent"
+                >
                   <X className="w-4 h-4" />
                   Clear All Filters
                 </Button>
@@ -206,8 +246,8 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
               Search: "{search}"
               <button
                 onClick={() => {
-                  setSearch("")
-                  handleFilterChange({ search: "" })
+                  setSearch("");
+                  handleFilterChange({ search: "" });
                 }}
                 className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
               >
@@ -220,8 +260,8 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
               Category: {category}
               <button
                 onClick={() => {
-                  setCategory("")
-                  handleFilterChange({ category: "" })
+                  setCategory("");
+                  handleFilterChange({ category: "" });
                 }}
                 className="ml-1 hover:bg-green-200 rounded-full p-0.5"
               >
@@ -234,8 +274,11 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
               Price: ${priceRange[0]} - ${priceRange[1]}
               <button
                 onClick={() => {
-                  setPriceRange([0, 500])
-                  handleFilterChange({ minPrice: undefined, maxPrice: undefined })
+                  setPriceRange([0, 500]);
+                  handleFilterChange({
+                    minPrice: undefined,
+                    maxPrice: undefined,
+                  });
                 }}
                 className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
               >
@@ -245,11 +288,11 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
           )}
           {occasion && (
             <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                occasion:{occasion}
+              occasion:{occasion}
               <button
                 onClick={() => {
-                  setOccasion("")
-                  handleFilterChange({ rating: undefined })
+                  setOccasion("");
+                  handleFilterChange({ rating: undefined });
                 }}
                 className="ml-1 hover:bg-yellow-200 rounded-full p-0.5"
               >
@@ -257,9 +300,8 @@ export default function SearchAndFilters({ categories,currentFilters,occasion })
               </button>
             </div>
           )}
-         
         </div>
       )}
     </div>
-  )
+  );
 }

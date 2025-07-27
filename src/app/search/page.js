@@ -33,7 +33,7 @@ const searchProducts=await getSearchProducts(currentFilters)
         currentFilters={currentFilters}
         occasion={occasion.occasions}
       />
-      <main className="flexgap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide min-h-screen">
+      <main className="grid grid-cols-2 md:grid-cols-5  gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide mt-10">
         {searchProducts.products?.map((i, idx) => (
           <ProductCard
             key={idx}

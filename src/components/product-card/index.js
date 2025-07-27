@@ -1,45 +1,40 @@
+"use client";
 
-"use client"
-
-import Image from "next/image"
-import Link from "next/link"
-import { CiHeart } from "react-icons/ci"
-import { useState } from "react"
-import { wishHandle } from "@/action"
-import toast from "react-hot-toast"
-
-
+import Image from "next/image";
+import Link from "next/link";
+import { CiHeart } from "react-icons/ci";
+import { useState } from "react";
+import { wishHandle } from "@/action";
+import toast from "react-hot-toast";
 
 const ProductCard = ({ id, price, photos, name, userId }) => {
-  const [isWished, setIsWished] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  console.log("Rendering ProductCard")
+  const [isWished, setIsWished] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleWishClick = async () => {
     try {
-      setLoading(true)
-      
-      const result = userId?await wishHandle(id, userId):toast.error("login first")
-      console.log("Wishlist Result:", result)
+      setLoading(true);
 
-      if (result.success) setIsWished(true)
+      const result = userId
+        ? await wishHandle(id, userId)
+        : toast.error("login first");
+
+      if (result.success) setIsWished(true);
     } catch (err) {
-      console.error("Error adding to wishlist:", err)
+      console.error("Error adding to wishlist:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="w-56 min-w-56 group">
-      <div className="relative w-full h-60 overflow-hidden rounded-lg">
+  <div className="group">
+      <div className="relative md:w-[200px] md:h-50 w-[110px] h-[110px]  overflow-hidden rounded-lg bg-red-200 group ">
         <Image
           src={photos || "/placeholder.svg"}
           alt={name}
           fill
           className="object-cover rounded transition-transform duration-300 group-hover:scale-105"
-          sizes="(max-width: 600px) 100vw, 300px"
         />
 
         {/* Buy Now Button */}
@@ -58,7 +53,11 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
           {loading ? (
             <div className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
           ) : (
-            <CiHeart className={`w-6 h-6 ${isWished ? "text-red-500" : "text-pink-600"} transition-colors`} />
+            <CiHeart
+              className={`w-6 h-6 ${
+                isWished ? "text-red-500" : "text-pink-600"
+              } transition-colors`}
+            />
           )}
         </span>
       </div>
@@ -67,7 +66,7 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
       <p className="mt-2 font-medium">{name}</p>
       <span className="text-sm text-gray-600">&#x20B9; {price}</span>
     </div>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;

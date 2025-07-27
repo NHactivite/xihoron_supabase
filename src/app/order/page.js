@@ -3,7 +3,6 @@ import { currentUser } from '@clerk/nextjs/server';
 
 const Order= async() => {
   const user= await currentUser();
-      console.log(user,"account");
        const planUser = {
       userId:user.id,
       firstName: user.firstName || '',

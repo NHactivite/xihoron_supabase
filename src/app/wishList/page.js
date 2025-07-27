@@ -10,7 +10,7 @@ const Wishlist = async () => {
   console.log(wishes, "kkkkkpppp");
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 place-items-center sm:place-items-start md:place-items-stretch" >
       {wishes && wishes.length > 0 ? (
         wishes.map((i, idx) => <WishCard key={idx} productId={i.Product} />)
       ) : (

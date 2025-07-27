@@ -7,7 +7,7 @@ const Shipped = async() => {
     const user=await currentUser();
     const orderData=await getSingleOrder(user.id);
   return (
-    <div><Orders order={orderData.data}/></div>
+    <div>{orderData?<Orders order={orderData.data}/>:<h1>No order</h1>}</div>
   )
 }
 

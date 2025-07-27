@@ -9,18 +9,27 @@ import { Edit, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import NewProduct from '../newProduct'
+import { deleteProduct } from '@/action'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 const AllProduct = ({products}) => {
  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
  const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
 const [productToEdit, setProductToEdit] = useState(null);
-
+const router=useRouter()
   const openEditDialog = () => {
     setIsEditDialogOpen(true);
   };
   const openNewDialog = () => {
     setIsNewDialogOpen(true);
   };
+
+ const handleDeleteProduct=async(id)=>{
+   const res=await deleteProduct(id)
+   res.success?toast.success(res.message):toast.success(res.message)
+   router.replace("/admin/allProduct")
+ }
 
     
  return (
@@ -95,7 +104,7 @@ const [productToEdit, setProductToEdit] = useState(null);
                         <Button variant="outline" size="sm" onClick={() => {setProductToEdit(product)|| openEditDialog()} }>
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product.id)}>
+                        <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product._id)}>
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>

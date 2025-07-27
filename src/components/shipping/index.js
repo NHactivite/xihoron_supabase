@@ -11,8 +11,7 @@ const Shipping = ({user}) => {
   const { cartItems, subtotal, shippingCharges, total } = useSelector(
     (state) => state.cartReducer
   );
-  console.log(user,"mmmmmmmmmm");
-  
+ 
   const {
     register,
     handleSubmit,

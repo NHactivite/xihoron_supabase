@@ -31,7 +31,7 @@ const Cart = () => {
 
 
   return (
-    <div className="h-lvh">
+    <div className="h-lvh ">
       <main className="min-h-3/4">
         {
          cartItems.length >0 ? ( cartItems.map((i,idx)=>(
@@ -39,8 +39,8 @@ const Cart = () => {
         ))) :(<h1>No Items Add</h1>)
         }
       </main>
-      <aside className=" flex flex-col justify-center items-center gap-3" >
-        <div className="flex gap-10 ">
+      <aside className=" flex flex-col justify-center items-center lg:gap-3 gap-4" >
+        <div className="flex lg:gap-10 gap-2 mx-0.5">
         <p>Subtotal: &#x20B9;{subtotal}</p>
         <p>Shipping Charges: &#x20B9;{shippingCharges}</p>
         <p>

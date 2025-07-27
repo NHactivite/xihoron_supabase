@@ -14,17 +14,30 @@ const WishCard = async ({ productId }) => {
   const product = res.product;
 
   return (
-    <div className="border rounded-md flex flex-col items-center justify-around bg-gray-200 relative">
-      <Image src={product.photos[0].url} alt={product.name} width={150} height={150} />
-      <div className="flex flex-col items-center gap-3 mt-3">
-        <p className="font-semibold">{product.name}</p>
-        <p className="text-sm text-gray-600">&#x20B9; {product.price}</p>
-        <Button>
-          <Link href={`/product/${product._id}`}>View Product</Link>
-        </Button>
-      </div>
-      <DeleteItem productId={productId} />
-    </div>
+   <div className="border rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 bg-white p-4 flex flex-col items-center relative w-full max-w-xs ">
+  <Image
+    src={product.photos[0].url}
+    alt={product.name}
+    width={80}
+    height={180}
+    className="rounded-md object-cover"
+  />
+  
+  <div className="flex flex-col items-center gap-2 mt-4 text-center">
+    <p className="font-semibold text-lg text-gray-800">{product.name}</p>
+    <p className="text-sm text-gray-600">&#x20B9; {product.price}</p>
+    <Link href={`/product/${product._id}`} passHref>
+      <Button className="mt-2 px-4 py-2 text-sm bg-black text-white rounded-lg">
+        View Product
+      </Button>
+    </Link>
+  </div>
+
+  <div className="absolute top-2 right-2">
+    <DeleteItem productId={productId} />
+  </div>
+</div>
+
   );
 };
 
