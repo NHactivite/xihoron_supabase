@@ -12,7 +12,6 @@ import { updateStatus } from "@/action";
 import toast from "react-hot-toast";
 
 const UpdateStatus = ({ status, orderId }) => {
-   console.log(orderId,"lpppp");
    
   const handleStatusChange = async (newStatus) => {
     try {

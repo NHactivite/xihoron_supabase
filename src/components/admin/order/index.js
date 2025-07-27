@@ -44,7 +44,7 @@ const OrderMangement = ({ orders }) => {
           <div className="space-y-4">
             {filteredOrders.map((item,idx) => (
               <div key={idx} className="gap-4 p-4 border rounded-lg">
-                <div className="ml-5 mb-5 flex flex-wrap">
+                <div className="ml-5 mb-5 flex flex-wrap md:flex-row flex-col md:gap-0 gap-2">
                   <span className="font-medium mr-5">
                     Total:{" "}
                     <span className="text-muted-foreground">{item.total}</span>
@@ -72,7 +72,7 @@ const OrderMangement = ({ orders }) => {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-3 items-center">
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
                   {item.orderItems.map((i, idx) => (
                     <div key={idx} className="col-span-2">
                       <div className="mt-2 flex items-center gap-2">
@@ -84,7 +84,7 @@ const OrderMangement = ({ orders }) => {
                           height={50}
                           priority
                         />
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground md:block md:ml-0 md:gap-0 flex flex-col ml-10 gap-2">
                           <span className="font-medium mr-5">
                             Name: <span className="text-muted-foreground">{i.name}</span>
                           </span>

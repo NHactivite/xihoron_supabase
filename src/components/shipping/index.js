@@ -8,7 +8,7 @@ import { createOrder, createPaymentAction, paymentVerify } from "@/action";
 import { load } from "@cashfreepayments/cashfree-js";
 
 const Shipping = ({user}) => {
-  const { cartItems, subtotal, shippingCharges, total } = useSelector(
+  const { cartItems, subtotal } = useSelector(
     (state) => state.cartReducer
   );
  
@@ -121,10 +121,10 @@ const cashfreeRef = useRef(null);
     <div>
       <form
         onSubmit={handleSubmit(handlePay)}
-        className="grid grid-cols-1 gap-4 place-items-center mt-8"
+        className="grid grid-cols-1 gap-4 place-items-center md:mt-8 mt-20"
       >
         <h1 className="font-bold text-3xl leading-tight">Shipping Address</h1>
-        <div className="w-2/5 grid gap-4">
+        <div className="md:w-2/5 grid gap-4">
           <Input
             type="text"
             placeholder="Address"

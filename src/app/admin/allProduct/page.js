@@ -26,7 +26,7 @@ const AdminProduct = async({ searchParams }) => {
   return (
      <div >
      
-      <main className="flexgap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide min-h-screen">
+      <main className="flexgap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth md:p-4 p-0 scrollbar-hide min-h-screen">
         <AllProduct products={JSON.parse(JSON.stringify(searchProducts))}/>
        
       </main>

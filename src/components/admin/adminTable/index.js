@@ -13,9 +13,7 @@ import toast from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 
 export function AdminTable({ admins }) {
-  console.log(admins, "ooooooklll");
-  console.log(admins[1], "pppp");
-
+  
   const handleDelete = async (userId) => {
     try {
       const res = await fetch(`/api/admin/${userId}`, {
@@ -32,7 +30,6 @@ export function AdminTable({ admins }) {
         toast.error(data.error || "Failed to delete user");
       }
     } catch (err) {
-      console.error("Delete error:", err);
       toast.error("Something went wrong");
     }
   };

@@ -49,7 +49,7 @@ const Cart = () => {
         </div>    
 
           {
-            cartItems.length>0 && <Link className="bg-black text-white px-3 py-2 rounded-md" href={"/order"}>Checkout</Link>
+            cartItems.length>0 && <Link className="bg-black text-white px-3 py-2 rounded-md" href={"/order"}>Buy Now</Link>
           }
       </aside>
     </div>

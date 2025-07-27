@@ -1,5 +1,5 @@
+import { clerkClient } from "@clerk/express";
 
-import { clerkClient } from "@clerk/clerk-sdk-node";
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 

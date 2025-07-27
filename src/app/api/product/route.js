@@ -7,8 +7,8 @@ import { v4 as uuidv4 } from "uuid";
 import ConnectDB from "@/database";
 import { Product } from "@/model/product";
 import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/express";
 
-import { clerkClient } from "@clerk/clerk-sdk-node";
 cloudinary.config({
     cloud_name:process.env.CLOUD_NAME,
     api_key:process.env.CLOUD_API_KEY,

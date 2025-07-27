@@ -9,7 +9,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { addToCart } from "@/redux/reducer/cartReducer";
-import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { useDispatch } from "react-redux";
@@ -165,6 +164,7 @@ export default function ProductSlider({ Product, user }) {
               </button>
             ))}
           </div>
+          
         </div>
         <div className="pl-10 pt-15">
           <div className="space-y-4 ">
@@ -191,12 +191,12 @@ export default function ProductSlider({ Product, user }) {
               >
                 Add To Cart
               </Button>
-              <Button
+              {/* <Button
                 onClick={()=>{user?router.push("/order"):toast.error("please login")}}
                 className="ml-10 bg-black rounded-md text-white py-2 px-3"
               >
                 Buy Now
-              </Button>
+              </Button> */}
             </div>
             <h1 className="font-bold">Product description</h1>
           </div>

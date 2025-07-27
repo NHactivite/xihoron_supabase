@@ -28,14 +28,16 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
   };
 
   return (
-  <div className="group">
-      <div className="relative md:w-[200px] md:h-50 w-[110px] h-[110px]  overflow-hidden rounded-lg bg-red-200 group ">
-        <Image
+  <div className="ml-8 group">
+      <div className="relative md:w-[200px] md:h-50 w-[110px] h-[110px]  overflow-hidden rounded-lg group">
+        
+          <Image
           src={photos || "/placeholder.svg"}
           alt={name}
           fill
           className="object-cover rounded transition-transform duration-300 group-hover:scale-105"
         />
+       
 
         {/* Buy Now Button */}
         <Link
@@ -48,7 +50,7 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
         {/* Wishlist Button */}
         <span
           onClick={handleWishClick}
-          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+          className=" absolute md:top-3 md:right-3 right-0 top-0 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />

@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { getProductCount } from "@/action";
 import WigetItem from "@/components/admin/WigetItem";
 import { AdminTable } from "@/components/admin/adminTable";
 import { Loader } from "@/components/loading";
-import {  getProductCount } from "@/action";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -37,7 +36,7 @@ const Page = () => {
 
   return (
     <div>
-      <section className='grid grid-cols-2 gap-6'>
+      <section className='grid md:grid-cols-2 gap-6 grid-cols-1 md:mx-0 mx-5'>
         <WigetItem properties={"Product"} value={product} />
         <WigetItem properties={"Users"} value={users} />
       </section>

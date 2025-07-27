@@ -1,7 +1,5 @@
-import { Instagram, Facebook, Youtube } from "lucide-react"
+import { Facebook, Instagram, Youtube } from "lucide-react"
 import Link from "next/link"
-import whatsapp from "../../utils/home_section/whatsapp.gif"
-import Image from "next/image"
 export default function Footer() {
   return (
     <footer className="bg-black text-white">
@@ -37,17 +35,17 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Company</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="#" className="text-gray-300 hover:text-white transition-colors text-sm">
+                <Link href="/about" className="text-gray-300 hover:text-white transition-colors text-sm">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 hover:text-white transition-colors text-sm">
+                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors text-sm">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 hover:text-white transition-colors text-sm">
+                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors text-sm">
                   Privacy Policy
                 </Link>
               </li>
@@ -85,11 +83,6 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="fixed right-4 bottom-4 z-50">
-       
-          <Image src={whatsapp} alt="whatsapp" className="rounded-full"/>
-       
-      </div>
     </footer>
   )
 }
