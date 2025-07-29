@@ -14,8 +14,7 @@ export async function PATCH(request, { params }) {
     }
   
     const user = await clerkClient.users.getUser(userId);
-    console.log(user,"nnnn");
-    
+ 
     const role = user.publicMetadata?.role;
   
     if (role !== "admin") {
@@ -40,8 +39,7 @@ export async function PATCH(request, { params }) {
       body: JSON.stringify({
         first_name: firstName,
         last_name: lastName,
-        email_address: email,
-        phone_number: phone,
+        email_address: email
       }),
     });
 

@@ -8,8 +8,6 @@ const Account = async() => {
     firstName: user.firstName || '',
     lastName: user.lastName || '',
     email: user.emailAddresses[0]?.emailAddress || '',
-    phone: user.phoneNumbers[0]?.phoneNumber || '',
-    phoneId: user.phoneNumbers[0]?.id || '',
     joinDate: new Date(user.createdAt).toLocaleDateString(),
     img: user.imageUrl || '',
   }

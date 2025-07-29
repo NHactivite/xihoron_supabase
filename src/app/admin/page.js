@@ -10,7 +10,6 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [admin, setAdmins] = useState([]);
   const [users, setUsers] = useState(0);
-  const [orders, setOrders] = useState(0);
   const [product,setProduct]=useState(0)
   useEffect(() => {
     const getDashboardData = async () => {

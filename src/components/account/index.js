@@ -27,8 +27,7 @@ export default function AccountPage({ planUser }) {
   const [userInfo, setUserInfo] = useState({
     firstName: planUser.firstName,
     lastName: planUser.lastName,
-    email: planUser.email,
-    phone: planUser.phone,
+    email: planUser.email
   });
 
   const handleInputChange = (field, value) => {
@@ -50,7 +49,7 @@ export default function AccountPage({ planUser }) {
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
         email: userInfo.email,
-        phone: userInfo.phone,
+      
       }),
     });
 
@@ -99,12 +98,6 @@ export default function AccountPage({ planUser }) {
                   <p className="text-muted-foreground">{planUser.email}</p>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  {planUser.phone}
-                </div>
-              </CardContent>
             </Card>
           </div>
 
@@ -166,19 +159,7 @@ export default function AccountPage({ planUser }) {
                     />
                   </div>
                 </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      value={userInfo.phone}
-                      onChange={(e) =>
-                        handleInputChange("phone", e.target.value)
-                      }
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
+              
               </CardContent>
             </Card>
 
