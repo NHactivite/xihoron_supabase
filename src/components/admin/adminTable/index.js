@@ -79,7 +79,6 @@ export function AdminTable({ admins }) {
                   </Badge>
                 </TableCell>
 
-                <TableCell>{admin.phone_numbers[0].phone_number}</TableCell>
                 <TableCell>
                   <button onClick={() => handleDelete(admin.id)}>
                     <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />
