@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
 
@@ -7,7 +8,8 @@ const CartItems = ({cartItem,incrementHandler,decrementHandler,removeHandler}) =
  const {photos,productId,name,price,quantity}=cartItem
   return (
     <div className="flex items-center justify-between mt-4">
-       <img className="lg:w-40 rounded-md w-20" src={photos} alt={name} />
+       <Image className="lg:w-40 rounded-md w-20" src={photos} alt={name} width={80}
+                    height={80}/>
        <article >
         <Link className="mx-3"  href={`/product/${productId}`}>{name}</Link>
         <span>&#x20B9;{price}</span>

@@ -15,15 +15,15 @@ function Header({ user, role, isAdmin }) {
   const pathname = usePathname();
 
   // Use memo to avoid recalculating on every render
-  const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
 
 const menuItems = useMemo(() => {
+  const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
+  
   if (isAdminPage) {
     return [
       { label: "DashBoard", path: "/admin", show: true },
       { label: "Products", path: "/admin/allProduct", show: user },
       { label: "Orders", path: "/admin/orders", show: user },
-     
     ];
   }
 
@@ -38,7 +38,8 @@ const menuItems = useMemo(() => {
     { label: "Boquets", path: "/search", show: user },
     { label: "Orders", path: "/shipping", show: user },
   ];
-}, [pathname, user]);
+}, [pathname, user, role]);
+
 
 
   

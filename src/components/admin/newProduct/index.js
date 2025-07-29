@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const NewProduct = ({ mode, initialProduct }) => {
   const router=useRouter();
@@ -417,10 +418,12 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {photos.preview.map((img, i) => (
                     <div key={i} className="relative group">
-                      <img
+                      <Image
                         src={img || "/placeholder.svg"}
                         alt={`Product preview ${i + 1}`}
                         className="w-full h-32 object-cover rounded-lg border shadow-sm"
+                        width={80}
+                    height={80}
                       />
                       <button
                         type="button"

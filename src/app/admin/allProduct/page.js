@@ -1,16 +1,8 @@
-import { getCategory, getOccasion, getSearchProducts } from '@/action';
+import { getSearchProducts } from '@/action';
 import AllProduct from '@/components/admin/allProduct';
 import Pagination from '@/components/pagination';
-import { currentUser } from '@clerk/nextjs/server';
 
 const AdminProduct = async({ searchParams }) => {
-   const user = await currentUser();
-    
-  
-  
-    const categories = await getCategory()
-    const occasion=await getOccasion()
-    
     const currentFilters = {
     search: searchParams.search || "",
     category: searchParams.category || "",

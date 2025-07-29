@@ -19,6 +19,7 @@ import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { SquarePen } from "lucide-react";
+import Image from "next/image";
 export default function ProductSlider({ Product, user }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showMagnifier, setShowMagnifier] = useState(false);
@@ -29,7 +30,7 @@ export default function ProductSlider({ Product, user }) {
   // const [rating, setRating] = useState(0);
   const imageRef = useRef(null);
   const productId = Product._id;
-  const router=useRouter()
+  const router = useRouter();
   const {
     Ratings: RatingEdit,
     rating,
@@ -98,25 +99,25 @@ export default function ProductSlider({ Product, user }) {
       setComment("");
       setRating(0);
       setOpenDialog(false);
-      router.refresh()
+      router.refresh();
     } else {
       toast.error("Failed to submit review: " + res.message);
     }
   };
 
-
   return (
-    <div >
+    <div>
       <div className="grid md:grid-cols-[1.5fr_2fr] md:pl-36 mt-10">
         <div className="w-[350px] h-[400px] md:ml-0 ml-3">
           {/* Main Image Display */}
           <div className="relative overflow-hidden rounded-lg border bg-gray-50">
             <div className="aspect-square relative cursor-crosshair">
-              <img
+              <Image
                 ref={imageRef}
                 src={images[selectedImage] || "/placeholder.svg"}
                 alt={`Product image ${selectedImage + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
@@ -156,16 +157,17 @@ export default function ProductSlider({ Product, user }) {
                 }`}
               >
                 <div className="aspect-square md:w-20 w-15 relative">
-                  <img
+                  <Image
                     src={image || "/placeholder.svg"}
                     alt={`Product thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    width={80}
+                    height={80}
+                    className="object-cover"
                   />
                 </div>
               </button>
             ))}
           </div>
-          
         </div>
         <div className="pl-10 pt-15">
           <div className="space-y-4 ">
@@ -179,15 +181,17 @@ export default function ProductSlider({ Product, user }) {
             </em>
             <div>
               <Button
-                onClick={() =>user?
-                  addCartHandler({
-                    photos: Product.photos[0].url,
-                    price: Product.price,
-                    productId,
-                    quantity: 1,
-                    name: Product.name,
-                    stock: Product.stock,
-                  }):toast.error("please login")
+                onClick={() =>
+                  user
+                    ? addCartHandler({
+                        photos: Product.photos[0].url,
+                        price: Product.price,
+                        productId,
+                        quantity: 1,
+                        name: Product.name,
+                        stock: Product.stock,
+                      })
+                    : toast.error("please login")
                 }
               >
                 Add To Cart
@@ -215,11 +219,18 @@ export default function ProductSlider({ Product, user }) {
           </div>
         </div>
       </div>
-      <div onClick={() => user?setOpenDialog(true):toast.error("please login")} className="flex place-content-end mr-3"><SquarePen/></div>
-      <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)} >
+      <div
+        onClick={() =>
+          user ? setOpenDialog(true) : toast.error("please login")
+        }
+        className="flex place-content-end mr-3"
+      >
+        <SquarePen />
+      </div>
+      <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle >Add Review</DialogTitle>
+            <DialogTitle>Add Review</DialogTitle>
           </DialogHeader>
           <Input
             type="text"
