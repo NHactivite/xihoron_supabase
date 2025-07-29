@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@cashfreepayments/cashfree-js": "^1.0.5",
-    "@clerk/clerk-sdk-node": "^5.1.6",
     "@clerk/express": "^1.7.13",
     "@clerk/nextjs": "^6.23.0",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -29,8 +28,7 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
-    "dotenv": "^16.5.0",
-    "framer-motion": "^12.23.3",
+    "framer-motion": "^12.23.9",
     "lucide-react": "^0.516.0",
     "mongoose": "^8.16.0",
     "multer": "^2.0.1",

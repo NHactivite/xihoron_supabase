@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { SquarePen } from "lucide-react";
 export default function ProductSlider({ Product, user }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showMagnifier, setShowMagnifier] = useState(false);
@@ -105,8 +106,8 @@ export default function ProductSlider({ Product, user }) {
 
 
   return (
-    <div>
-      <div className="grid md:grid-cols-[1.5fr_2fr] md:pl-36">
+    <div >
+      <div className="grid md:grid-cols-[1.5fr_2fr] md:pl-36 mt-10">
         <div className="w-[350px] h-[400px] md:ml-0 ml-3">
           {/* Main Image Display */}
           <div className="relative overflow-hidden rounded-lg border bg-gray-50">
@@ -214,7 +215,7 @@ export default function ProductSlider({ Product, user }) {
           </div>
         </div>
       </div>
-      <Button onClick={() => user?setOpenDialog(true):toast.error("please login")} className="m-2 mt-10">Add Review</Button>
+      <div onClick={() => user?setOpenDialog(true):toast.error("please login")} className="flex place-content-end mr-3"><SquarePen/></div>
       <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)} >
         <DialogContent>
           <DialogHeader>

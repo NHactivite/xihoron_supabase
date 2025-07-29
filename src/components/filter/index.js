@@ -30,7 +30,7 @@ export default function SearchAndFilters({
   const [category, setCategory] = useState(currentFilters.category);
   const [priceRange, setPriceRange] = useState([
     currentFilters.minPrice || 0,
-    currentFilters.maxPrice || 500,
+    currentFilters.maxPrice || 5000,
   ]);
   const [occa, setOccasion] = useState(currentFilters.occasion);
 
@@ -65,13 +65,13 @@ export default function SearchAndFilters({
   const clearAllFilters = () => {
     setSearch("");
     setCategory("");
-    setPriceRange([0, 500]);
+    setPriceRange([0, 5000]);
     setOccasion("");
     router.push("/");
   };
 
   const hasActiveFilters =
-    search || category || priceRange[0] > 0 || priceRange[1] < 500 || occa;
+    search || category || priceRange[0] > 0 || priceRange[1] < 5000 || occa;
 
   // Update local state when URL changes
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function SearchAndFilters({
     setCategory(currentFilters.category);
     setPriceRange([
       currentFilters.minPrice || 0,
-      currentFilters.maxPrice || 500,
+      currentFilters.maxPrice || 5000,
     ]);
     setOccasion(currentFilters.occasion);
   }, [currentFilters]);
@@ -138,7 +138,7 @@ export default function SearchAndFilters({
                           ? priceRange[0].toString()
                           : undefined,
                       maxPrice:
-                        priceRange[1] < 500
+                        priceRange[1] < 5000
                           ? priceRange[1].toString()
                           : undefined,
                     });
@@ -173,7 +173,7 @@ export default function SearchAndFilters({
                           ? priceRange[0].toString()
                           : undefined,
                       maxPrice:
-                        priceRange[1] < 500
+                        priceRange[1] < 5000
                           ? priceRange[1].toString()
                           : undefined,
                     });
@@ -209,10 +209,10 @@ export default function SearchAndFilters({
                         minPrice:
                           value[0] > 0 ? value[0].toString() : undefined,
                         maxPrice:
-                          value[1] < 500 ? value[1].toString() : undefined,
+                          value[1] < 5000 ? value[1].toString() : undefined,
                       });
                     }}
-                    max={500}
+                    max={5000}
                     min={0}
                     step={10}
                     className="w-full"
@@ -269,12 +269,12 @@ export default function SearchAndFilters({
               </button>
             </div>
           )}
-          {(priceRange[0] > 0 || priceRange[1] < 500) && (
+          {(priceRange[0] > 0 || priceRange[1] < 5000) && (
             <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm flex items-center gap-1">
               Price: ${priceRange[0]} - ${priceRange[1]}
               <button
                 onClick={() => {
-                  setPriceRange([0, 500]);
+                  setPriceRange([0, 5000]);
                   handleFilterChange({
                     minPrice: undefined,
                     maxPrice: undefined,
