@@ -7,11 +7,12 @@ const isPublicRoute = createRouteMatcher([
     "/product(.*)",
     "/about",
     "/privacy",
-    "/contact" 
-//   "/manifest.json",
-//   "/sw.js",
-//   "/favicon.ico",
-//   "/icons/(.*)",
+    "/contact", 
+  "/manifest.json",
+  "/sw.js",
+  "/favicon.ico",
+  "/icons/(.*)",
+
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);

@@ -4,21 +4,21 @@ import storage from "redux-persist/lib/storage";
 import { cartReducer } from "./reducer/cartReducer";
 
 const persistConfig = {
-    key: "root",
-    storage,
-    whitelist: ["cartReducer"], // Only persist cartReducer, or add other reducers if needed
-  };
-  // Combine reducers
-const rootReducer = combineReducers({
-    [cartReducer.name]: cartReducer.reducer,
-  });
+  key: "root",
+  storage,
+  whitelist: ["cart"], // match the reducer key
+};
 
-  // Persist the root reducer
+const rootReducer = combineReducers({
+  cart: cartReducer.reducer,
+});
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store=configureStore({
-    reducer:persistedReducer,
-     middleware:( getDefaultMiddleware)=> getDefaultMiddleware({serializableCheck: false,})
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export const persistor = persistStore(store);
