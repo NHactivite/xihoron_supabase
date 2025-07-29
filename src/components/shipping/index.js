@@ -32,7 +32,8 @@ const cashfreeRef = useRef(null);
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          mode: "sandbox", // Adjust to "production" for live
+          // mode: "sandbox",  Adjust to "production" for live
+          mode: "production", // Adjust to "production" for live
         });
       } catch (error) {
         console.error("Failed to load payment gateway:", error);
@@ -70,13 +71,12 @@ const cashfreeRef = useRef(null);
       let data = await paymentVerify(orderId);
 
       if (data && data[0].payment_status === "SUCCESS") {
-        console.log(data,"daataaaaaaaaaaaa");
-        
+       
          await createOrder({Address,cartItems,total:data[0].payment_amount,subtotal,userId:user.userId,userName:`${user.firstName} ${user.lastName}`,orderId:data[0].order_id})
       }
       toast.success("Payment successful! Your membership has been updated.");
     } catch (error) {
-      console.log("Payment verification failed", error);
+      console.log("Payment verification failed");
     }
   };
     const handlePay = async (Address) => {

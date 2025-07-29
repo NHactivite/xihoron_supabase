@@ -17,8 +17,13 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
 }
 // Initialize Cashfree with your credentials
 
+// const cashfree = new Cashfree(
+//   CFEnvironment.SANDBOX,
+//   process.env.CLIENT_ID,
+//   process.env.CLIENT_SECRET
+// );
 const cashfree = new Cashfree(
-  CFEnvironment.SANDBOX,
+  CFEnvironment.PRODUCTION,
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
