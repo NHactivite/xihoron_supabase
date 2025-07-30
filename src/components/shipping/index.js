@@ -9,7 +9,7 @@ import { load } from "@cashfreepayments/cashfree-js";
 
 const Shipping = ({user}) => {
   const { cartItems, subtotal } = useSelector(
-    (state) => state.cartReducer
+    (state) => state.cart
   );
  
   const {

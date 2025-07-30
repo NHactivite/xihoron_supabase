@@ -9,7 +9,7 @@ const Cart = () => {
 
   const dispatch=useDispatch()
 
-  const {cartItems,subtotal,shippingCharges,total}=useSelector((state)=>state.cartReducer)
+  const {cartItems,subtotal,shippingCharges,total}=useSelector((state)=>state.cart)
  
   const incrementHandler=(cartItem)=>{
   
