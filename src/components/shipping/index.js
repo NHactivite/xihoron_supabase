@@ -6,11 +6,12 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { createOrder, createPaymentAction, paymentVerify } from "@/action";
 import { load } from "@cashfreepayments/cashfree-js";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const Shipping = ({user}) => {
   const { cartItems, subtotal } = useSelector(
-    (state) => state.cart
-  );
+    (state) => state.cart );
  
   const {
     register,
@@ -27,12 +28,12 @@ const Shipping = ({user}) => {
     },
   });
 const cashfreeRef = useRef(null);
-  
+   const router=useRouter()
   useEffect(() => {
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          // mode: "sandbox",  Adjust to "production" for live
+          // mode: "sandbox",  //Adjust to "production" for live
           mode: "production", // Adjust to "production" for live
         });
       } catch (error) {
@@ -42,11 +43,12 @@ const cashfreeRef = useRef(null);
     initializeSDK();
   }, []);
 
-   const getSessionId = async () => {
+   const getSessionId = async (Address) => {
     try {
       const res = await createPaymentAction({
         cartItems: cartItems,
-        user:user
+        user:user,
+        phnNo:Address.phnNo
       });
       // Check if the response has the necessary data
       if (res && res.payment_session_id) {
@@ -65,20 +67,33 @@ const cashfreeRef = useRef(null);
     }
   };
 
-  const verifyPayment = async ({ orderId, Address }) => {
-    try {
+const verifyPayment = async ({ orderId, Address }) => {
+  try {
+    const data = await paymentVerify(orderId);
     
-      let data = await paymentVerify(orderId);
+    if (data && data[0].payment_status === "SUCCESS") {
+      
+      await createOrder({
+        Address,
+        cartItems,
+        total: data[0].payment_amount,
+        subtotal,
+        userId: user.userId,
+        userName: `${user.firstName} ${user.lastName}`,
+        orderId: data[0].order_id,
+      });
 
-      if (data && data[0].payment_status === "SUCCESS") {
-       
-         await createOrder({Address,cartItems,total:data[0].payment_amount,subtotal,userId:user.userId,userName:`${user.firstName} ${user.lastName}`,orderId:data[0].order_id})
-      }
-      toast.success("Payment successful! Your membership has been updated.");
-    } catch (error) {
-      console.log("Payment verification failed");
+      toast.success("Payment successful!");
+      router.push("/shipping");
+    } else {
+        toast.error("payment failed")
     }
-  };
+  } catch (error) {
+    
+    toast.error("server error payment failed")
+  }
+};
+
     const handlePay = async (Address) => {
     try {
       // Check if the cashfreeRef is loaded and the checkout method is available
@@ -87,7 +102,7 @@ const cashfreeRef = useRef(null);
         typeof cashfreeRef.current.checkout === "function"
       ) {
         // Get the payment session ID (this should be returned from your backend or API)
-        const sessionId = await getSessionId(); // Replace with actual method to fetch the session ID
+        const sessionId = await getSessionId(Address); // Replace with actual method to fetch the session ID
 
         // If session ID is invalid or not found, return early
         if (!sessionId) return;

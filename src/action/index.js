@@ -30,8 +30,8 @@ const cashfree = new Cashfree(
 // crete profile action
 
 export const createPaymentAction = async (data) => {
-  const { user, cartItems } = data;
-
+  const { user, cartItems ,phnNo} = data;
+ 
   const products = cartItems.map((item) => ({
     id: item.productId,
     quantity: item.quantity,
@@ -54,20 +54,41 @@ export const createPaymentAction = async (data) => {
 
   finalAmount = finalAmount > shippingLimit ? finalAmount : finalAmount + shippingCharge;
 
-  const request = {
-    order_id: `order_${Date.now()}`,
-    order_amount: finalAmount,
-    order_currency: "INR",
-    customer_details: {
-      customer_id: user.userId,
-      customer_phone: user.phone,
-      customer_email: user.email,
-      customer_name: `${user.firstName} ${user.lastName}`,
-    },
-  };
+  // const request = {
+  //   order_id: `order_${Date.now()}`,
+  //   order_amount: finalAmount,
+  //   order_currency: "INR",
+  //   customer_details: {
+  //     customer_id: user.userId,
+  //     customer_phone: phnNo,
+  //     customer_email: user.email,
+  //     customer_name: `${user.firstName} ${user.lastName}`,
+  //   },
+  // };
+const request = {
+  order_id: `order_${Date.now()}`,
+  order_amount: finalAmount,
+  order_currency: "INR",
+  customer_details: {
+    customer_id: user.userId,
+    customer_phone: phnNo,
+    customer_email: user.email,
+    customer_name: `${user.firstName} ${user.lastName}`,
+  },
+  cart_details: {
+    cart_items: cartItems.map(item => ({
+      item_name: item.name,
+      sku: item.productId,
+      quantity: item.quantity,
+      amount: item.price,
+    })),
+  },
+};
+
 
   try {
     const response = await cashfree.PGCreateOrder(request);
+   
     return response.data;
   } catch (error) {
     console.error(
@@ -94,8 +115,8 @@ export const createOrder = async (data) => {
   try {
     await ConnectDB();
 
-    const { Address, cartItems, total, subtotal, userId, userName, orderId } =
-      data;
+    const { Address, cartItems, total, subtotal, userId, userName, orderId } =data;
+
 
     const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
 
@@ -123,8 +144,7 @@ export const createOrder = async (data) => {
       })),
     });
     for (const item of cartItems) {
-      console.log(item.productId, "active");
-
+   
       await Product.findByIdAndUpdate(
         item.productId,
         { $inc: { stock: -item.quantity } },
@@ -132,9 +152,8 @@ export const createOrder = async (data) => {
       );
     }
 
-    return { success: true, order: newOrder };
+    return { success: true};
   } catch (error) {
-    console.error("Error creating order:", error);
     return { success: false, error: error.message };
   }
 };

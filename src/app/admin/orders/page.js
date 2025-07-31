@@ -4,7 +4,6 @@ import React from 'react'
 
 const AdminOrders = async() => {
    const orders=await getAllOrders();
-   console.log(orders,"pooo");
    
   return (
     <OrderMangement orders={JSON.parse(JSON.stringify(orders.data))}/>
