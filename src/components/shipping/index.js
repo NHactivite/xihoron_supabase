@@ -27,14 +27,14 @@ const Shipping = ({user}) => {
       phnNo: "",
     },
   });
- const isAndroidWebView = /Android/i.test(navigator.userAgent) && window.PaymentJSInterface;
-const isIOSWebView = /iPhone|iPad|iPod/.test(navigator.userAgent) && window.webkit;
+//  const isAndroidWebView = /Android/i.test(navigator.userAgent) && window.PaymentJSInterface;
+// const isIOSWebView = /iPhone|iPad|iPod/.test(navigator.userAgent) && window.webkit;
 
-const platform = isAndroidWebView
-  ? "android"
-  : isIOSWebView
-  ? "ios"
-  : "web";
+// const platform = isAndroidWebView
+//   ? "android"
+//   : isIOSWebView
+//   ? "ios"
+//   : "web";
 
 const cashfreeRef = useRef(null);
    const router=useRouter()
@@ -120,7 +120,7 @@ const verifyPayment = async ({ orderId, Address }) => {
         const checkoutOptions = {
           paymentSessionId: sessionId.paymentSessionId,
           redirectTarget: "_modal", // Ensures the payment opens in a modal
-          platform
+          platform: "web"
         };
 
         // Initiate the payment flow
