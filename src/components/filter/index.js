@@ -67,11 +67,9 @@ export default function SearchAndFilters({
     setCategory("");
     setPriceRange([0, 5000]);
     setOccasion("");
-    router.push("/");
   };
 
-  const hasActiveFilters =
-    search || category || priceRange[0] > 0 || priceRange[1] < 5000 || occa;
+  const hasActiveFilters = search || category || priceRange[0] > 0 || priceRange[1] < 5000 || occa;
 
   // Update local state when URL changes
   useEffect(() => {
@@ -148,7 +146,6 @@ export default function SearchAndFilters({
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((cat) => (
                       <SelectItem key={cat} value={cat.toLowerCase()}>
                         {cat}
@@ -158,13 +155,13 @@ export default function SearchAndFilters({
                 </Select>
               </div>
               <div className="mb-3">
-                <Label htmlFor="category" className="mb-3">
+                <Label htmlFor="occasion" className="mb-3">
                   occasion
                 </Label>
                 <Select
                   value={occa}
                   onValueChange={(value) => {
-                    setCategory(value);
+                    setOccasion(value);
                     handleFilterChange({
                       search,
                       occa: value === "all" ? "" : value,
@@ -180,10 +177,9 @@ export default function SearchAndFilters({
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="All Categories" />
+                    <SelectValue placeholder="All Occasion" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
                     {occasion.map((cat) => (
                       <SelectItem key={cat} value={cat.toLowerCase()}>
                         {cat}
@@ -220,7 +216,8 @@ export default function SearchAndFilters({
                 </div>
               </div>
             </div>
-
+        
+          
             {/* Clear Filters */}
             {hasActiveFilters && (
               <div className="mt-6 pt-4 border-t">
@@ -286,13 +283,14 @@ export default function SearchAndFilters({
               </button>
             </div>
           )}
-          {occasion && (
+      
+          {occa && (
             <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center gap-1">
-              occasion:{occasion}
+              occasion:{occa}
               <button
                 onClick={() => {
                   setOccasion("");
-                  handleFilterChange({ rating: undefined });
+                  handleFilterChange({ occa: "" });
                 }}
                 className="ml-1 hover:bg-yellow-200 rounded-full p-0.5"
               >

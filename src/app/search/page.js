@@ -8,8 +8,6 @@ import React from "react";
 const Search = async ({ searchParams }) => {
  
   const user = await currentUser();
-  
-
 
   const categories = await getCategory()
   const occasion=await getOccasion()
@@ -21,6 +19,7 @@ const Search = async ({ searchParams }) => {
   maxPrice: searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined,
   sort: searchParams.sort || "", // if you are sorting
   page: searchParams.page ? Number(searchParams.page) : 1,
+  occasion:searchParams.occa||""
 };
 
 const searchProducts=await getSearchProducts(currentFilters)

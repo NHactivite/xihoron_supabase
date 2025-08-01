@@ -447,8 +447,8 @@ export const getSearchProducts = async (req) => {
   try {
     await ConnectDB();
 
-    const { search, sort, category, minPrice, maxPrice, page = 1 } = req;
-
+    const { search, sort, category, minPrice, maxPrice, page = 1 ,occasion} = req;
+  
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 10;
     const skip = (page - 1) * limit;
 
@@ -464,6 +464,9 @@ export const getSearchProducts = async (req) => {
 
     if (category) {
       baseQuery.category = category;
+    }
+    if (occasion) {
+      baseQuery.occasion = occasion;
     }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
