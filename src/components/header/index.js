@@ -33,7 +33,7 @@ const menuItems = useMemo(() => {
     { label: "Login", path: "/sign-in", show: !user },
     { label: "Register", path: "/sign-up", show: !user },
     { label: "cart", path: "/cart", show: user },
-    { label: "wishlist", path: "/wishlist", show: user },
+    { label: "wishlist", path: "/wish", show: user },
     { label: "Account", path: "/account", show: user },
     { label: "Boquets", path: "/search", show: user },
     { label: "Orders", path: "/shipping", show: user },
@@ -52,7 +52,6 @@ const menuItems = useMemo(() => {
             className="lg:hidden flex items-center gap-2  rounded-md bg-white/10 backdrop-blur-md border border-white/20 shadow-md hover:bg-white/20 transition"
           >
             <AlignJustify className="h-6 w-6" />
-            <span className="sr-only">Toggle Navigation Menu</span>
           </Button>
         </SheetTrigger>
 
@@ -87,6 +86,12 @@ const menuItems = useMemo(() => {
           </div>
         </SheetContent>
       </Sheet>
+       <Link
+        className="lg:hidden flex m-auto text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-violet-400 "
+        href={"/"}
+      >
+        Flower Store
+      </Link>
 
       <Link
         className="hidden  lg:flex mr-6 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-violet-400 "

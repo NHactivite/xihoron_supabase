@@ -19,7 +19,9 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
         ? await wishHandle(id, userId)
         : toast.error("login first");
 
-      if (result.success) setIsWished(true);
+      if (result.success) {
+        toast.success(result.message)
+      };
     } catch (err) {
       console.error("Error adding to wishlist:", err);
     } finally {
@@ -28,7 +30,7 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
   };
 
   return (
-  <div className="ml-8 group">
+  <div className="ml-2 group max-w-56">
       <div className="relative md:w-[200px] md:h-50 w-[110px] h-[110px]  overflow-hidden rounded-lg group">
         
           <Image
@@ -57,7 +59,7 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
           ) : (
             <CiHeart
               className={`w-6 h-6 ${
-                isWished ? "text-red-500" : "text-pink-600"
+                "text-pink-600"
               } transition-colors`}
             />
           )}
@@ -65,8 +67,10 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
       </div>
 
       {/* Product Info */}
-      <p className="mt-2 font-medium">{name}</p>
+    <div className="mr-2">
+        <p className="mt-2 font-medium">{name}</p>
       <span className="text-sm text-gray-600">&#x20B9; {price}</span>
+    </div>
     </div>
   );
 };

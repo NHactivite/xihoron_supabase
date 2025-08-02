@@ -353,6 +353,25 @@ export const getReview = async (productId) => {
   }
 };
 
+export const deleteReview=async(id)=>{
+  try {
+     await ConnectDB();
+ 
+    await Review.findByIdAndDelete(id)
+ 
+     return {
+      success: true,
+      message: "Review remove successfully",
+    };
+
+  } catch (error) {
+    return {
+      success: true,
+      message: "review not found",
+    };
+  }
+}
+
 export const getAllProduct = async () => {
   try {
     await ConnectDB();
@@ -402,18 +421,18 @@ export const wishHandle = async (productId, userId) => {
     await existingWish.deleteOne();
     return {
       success: true,
-      message: "Remove from wish List",
+      message: "Wish Remove",
     };
   }
 
   // If no existing wish, create a new one
-  const newWish = await Wish.create({
+   await Wish.create({
     wish: true,
     user: userId,
     Product: productId,
   });
 
-  return { success: true, message: "Review Added" };
+  return { success: true, message: "Wish Added" };
 };
 
 export const getWish = async (userId) => {
