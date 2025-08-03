@@ -1,11 +1,8 @@
-[
-  {
+[{
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
         "package_name": "org.discoverassam.www.twa",
-        "sha256_cert_fingerprints": ["D0:DE:38:C1:39:2C:AE:75:BE:60:94:73:75:99:FA:F2:46:26:72:AE:FC:B3:F0:60:7E:CE:E2:D6:F8:18:8F:4F"]
+        "sha256_cert_fingerprints": ["15:C0:9B:EE:16:A1:0A:19:BD:FC:9B:EB:16:31:CE:29:3B:D2:D3:AC:52:17:DE:6E:AD:8E:99:84:FD:7B:CD:CD"]
       }
-   
- }
-]
+    }]
