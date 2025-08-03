@@ -1,8 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "org.discoverassam.www.twa",
-        "sha256_cert_fingerprints": ["15:C0:9B:EE:16:A1:0A:19:BD:FC:9B:EB:16:31:CE:29:3B:D2:D3:AC:52:17:DE:6E:AD:8E:99:84:FD:7B:CD:CD"]
-      }
-    }]

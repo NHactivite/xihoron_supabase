@@ -21,6 +21,7 @@ export const metadata = {
   description: "A full-stack online store for handcrafted wool flower bouquets, featuring a seamless shopping experience with order tracking and customizable gift options",
   generator: "Next.js",
   manifest: "/manifest.json", // ✅ This is enoughy
+ keywords: ["nextjs", "next14", "pwa", "next-pwa"],
   icons: {
     apple: "/icons/icon-192x192.png", // ✅ Apple touch icon
   },

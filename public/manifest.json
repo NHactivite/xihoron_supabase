@@ -38,5 +38,6 @@
       "type": "image/png",
       "form_factor": "wide"
     }
-  ]
+  ],
+  "splash_pages": null
 }
