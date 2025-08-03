@@ -1,7 +1,8 @@
 {
     "name": "flower-shop app",
     "short_name": "flowerShop",
-    "start_url": "/",
+    "start_url": "/?source=pwa",
+    "scope": "/",
     "display": "standalone",
     "theme_color": "#000000",
     "background_color": "#ffffff",
