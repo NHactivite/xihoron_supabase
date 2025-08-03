@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
+import InstallButton from "../InstallButton";
 
 function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
@@ -99,6 +100,7 @@ const menuItems = useMemo(() => {
       >
         Flower Store
       </Link>
+      <InstallButton/>
       <nav className="ml-auto hidden lg:flex gap-6">
         {menuItems.map((item, idx) =>
           item.show ? (
