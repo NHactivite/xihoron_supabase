@@ -26,6 +26,7 @@ import withPWA from 'next-pwa';
 
 const nextConfig = {
   reactStrictMode: true,
+    trailingSlash: true,
   compiler: {
     removeConsole: process.env.NODE_ENV !== 'development',
   },

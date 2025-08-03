@@ -1,36 +1,36 @@
 {
-    "name": "flower-shop app",
-    "short_name": "flowerShop",
-    "start_url": "/?source=pwa",
-    "scope": "/",
-    "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#ffffff",
-    "description": "A full-stack online store for handcrafted wool flower bouquets, featuring a seamless shopping experience with order tracking and customizable gift options",
-    "icons": [
-        {
-            "src": "/icons/icon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/icons/icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "screenshots": [
-      {
-    "src": "/screenshots/screenshot1.png",
-    "sizes": "448x801",
-    "type": "image/png",
-    "form_factor": "narrow" 
+  "name": "flower-shop app",
+  "short_name": "flowerShop",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "description": "A full-stack online store for handcrafted wool flower bouquets, featuring a seamless shopping experience with order tracking and customizable gift options",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-    "src": "/screenshots/screenshot-desktop.png",
-    "sizes": "1883x908",
-    "type": "image/png",
-    "form_factor": "wide" 
-  }
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "448x801",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/screenshot-desktop.png",
+      "sizes": "1883x908",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
   ]
 }
