@@ -46,6 +46,5 @@ export default withPWA({
   disable: false,
   register: true,
   skipWaiting: true,
-  scope: '/',         // ✅ Make sure the PWA scope is correct (e.g., '/' or '/app/')
-  sw: 'service-worker.js', // optional if your service worker file is custom named
+  scope: '/',         // ✅ Make sure the PWA scope is correct (e.g., '/' or '/app/') // optional if your service worker file is custom named
 })(nextConfig);
