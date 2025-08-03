@@ -1,11 +1,17 @@
 {
   "name": "flower-shop app",
   "short_name": "flowerShop",
+  "id": "/?source=pwa",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "theme_color": "#000000",
   "background_color": "#ffffff",
+  "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": "auto"
+  },
   "description": "A full-stack online store for handcrafted wool flower bouquets, featuring a seamless shopping experience with order tracking and customizable gift options",
   "icons": [
     {
