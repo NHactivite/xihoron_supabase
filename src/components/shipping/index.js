@@ -99,7 +99,7 @@ const verifyPayment = async ({ orderId, Address }) => {
     }
   } catch (error) {
     
-    toast.error("server error payment failed")
+    toast.error("payment failed")
   }
 };
 
