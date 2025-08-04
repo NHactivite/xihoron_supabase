@@ -3,7 +3,7 @@
     {
       "source": "/.well-known/assetlinks.json",
       "destination": "/.well-known/assetlinks.json",
-      "statusCode": 200
+      "permanent": false
     },
     {
       "source": "/(.*)",
@@ -14,7 +14,7 @@
         }
       ],
       "destination": "https://www.discoverassam.org/:1",
-      "statusCode": 308
+      "permanent": true
     }
   ]
 }
