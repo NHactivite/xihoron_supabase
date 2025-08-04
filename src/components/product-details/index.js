@@ -33,8 +33,7 @@ export default function ProductSlider({ Product, user }) {
   const imageRef = useRef(null);
   const productId = Product._id;
     const {cartItems}=useSelector((state)=>state.cart)
-    console.log(cartItems,"lpp");
-    
+   
   const {
     Ratings: RatingEdit,
     rating,
@@ -177,7 +176,7 @@ export default function ProductSlider({ Product, user }) {
             <h1 className="text-2xl font-bold leading-tight">
               {Product.name || "Product Name"}
             </h1>
-            <p className="font-bold">Price $ {Product.price}</p>
+            <p className="font-bold">Price &#x20B9; {Product.price}</p>
             <em className="flex gap-1 items-center mt-0.5">
               <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
               reviews)
