@@ -1,26 +1,22 @@
 {
-  "redirects": [
+  "routes": [
     {
-      "source": "/.well-known/assetlinks.json",
-      "has": [
-        {
-          "type": "host",
-          "value": "discoverassam.org"
-        }
-      ],
-      "destination": "/.well-known/assetlinks.json",
-      "statusCode": 200
+      "src": "/.well-known/assetlinks.json",
+      "headers": {
+        "cache-control": "public, max-age=3600"
+      },
+      "continue": true
     },
     {
-      "source": "/(.*)",
+      "src": "/(.*)",
       "has": [
         {
           "type": "host",
           "value": "discoverassam.org"
         }
       ],
-      "destination": "https://www.discoverassam.org/:1",
-      "statusCode": 301
+      "status": 301,
+      "dest": "https://www.discoverassam.org/$1"
     }
   ]
 }
