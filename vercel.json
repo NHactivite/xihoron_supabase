@@ -2,10 +2,11 @@
   "routes": [
     {
       "src": "/.well-known/assetlinks.json",
+      "dest": "/public/.well-known/assetlinks.json",
       "headers": {
-        "cache-control": "public, max-age=3600"
-      },
-      "continue": true
+        "Cache-Control": "public, max-age=3600",
+        "Content-Type": "application/json"
+      }
     },
     {
       "src": "/(.*)",
