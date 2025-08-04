@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    {
+      "source": "/.well-known/assetlinks.json",
+      "destination": "/.well-known/assetlinks.json",
+      "statusCode": 200
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "discoverassam.org"
+        }
+      ],
+      "destination": "https://www.discoverassam.org/:1",
+      "statusCode": 308
+    }
+  ]
+}
