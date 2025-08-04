@@ -466,12 +466,12 @@ export const getSearchProducts = async (req) => {
   try {
     await ConnectDB();
 
-    const { search, sort, category, minPrice, maxPrice, page = 1 ,occasion} = req;
-  
+    const { search, sort, category, minPrice, maxPrice, page = 1, occasion } = req;
+
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 10;
     const skip = (page - 1) * limit;
 
-    let baseQuery = {};
+    const baseQuery = {};
 
     if (search) {
       baseQuery.$or = [
@@ -482,10 +482,11 @@ export const getSearchProducts = async (req) => {
     }
 
     if (category) {
-      baseQuery.category = category;
+      baseQuery.category = { $regex: `^${category}$`, $options: "i" }; // case-insensitive exact match
     }
+
     if (occasion) {
-      baseQuery.occasion = occasion;
+      baseQuery.occasion = { $regex: `^${occasion}$`, $options: "i" }; // same here
     }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
@@ -499,15 +500,15 @@ export const getSearchProducts = async (req) => {
         .sort(sort ? { price: sort === "asc" ? 1 : -1 } : {})
         .limit(limit)
         .skip(skip)
-        .lean(), // ✅ ADD THIS
-      Product.find(baseQuery).lean(), // ✅ ADD THIS TOO
+        .lean(),
+      Product.find(baseQuery).lean(),
     ]);
 
     const totalPage = Math.ceil(filterProduct.length / limit);
     const products = productFetched.map((product) => ({
       ...product,
-      _id: product._id.toString(), // ✅ serialize ObjectId
-      userId: product.userId?.toString?.(), // ✅ if this is also an ObjectId
+      _id: product._id.toString(),
+      userId: product.userId?.toString?.(),
     }));
 
     return {
@@ -526,20 +527,51 @@ export const getSearchProducts = async (req) => {
 export const getCategory = async () => {
   try {
     await ConnectDB();
-    const categories = await Product.distinct("category");
+
+    const rawCategories = await Product.distinct("category");
+
+    const seen = new Set();
+    const categories = [];
+
+    for (const cat of rawCategories) {
+      const lower = cat?.toLowerCase?.();
+      if (lower && !seen.has(lower)) {
+        seen.add(lower);
+        categories.push(cat); // preserve original casing
+      }
+    }
+
     return { success: true, categories };
   } catch (error) {
     return { success: false, message: error.message };
   }
 };
+
 export const getOccasion = async () => {
   try {
     await ConnectDB();
-    const occasions = await Product.distinct("occasion");
-    return { success: true, occasions };
+    const occasions = await Product.aggregate([
+      {
+        $group: {
+          _id: { $toLower: "$occasion" } // group by lowercased occasion
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          occasion: "$_id"
+        }
+      }
+    ]);
+
+    // Extract the values into a flat array
+    const occasionList = occasions.map(item => item.occasion);
+
+    return { success: true, occasions: occasionList };
   } catch (error) {
     return { success: false, message: error.message };
   }
 };
+
 
 // cashfreeee

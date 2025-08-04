@@ -10,6 +10,7 @@ const Search = async ({ searchParams }) => {
   const user = await currentUser();
 
   const categories = await getCategory()
+  
   const occasion=await getOccasion()
   
   const currentFilters = {

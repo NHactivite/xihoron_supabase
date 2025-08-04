@@ -67,6 +67,8 @@ export default function SearchAndFilters({
     setCategory("");
     setPriceRange([0, 5000]);
     setOccasion("");
+    router.push("/search");
+    
   };
 
   const hasActiveFilters = search || category || priceRange[0] > 0 || priceRange[1] < 5000 || occa;
@@ -192,7 +194,7 @@ export default function SearchAndFilters({
               {/* Price Range Filter */}
               <div>
                 <Label>
-                  Price Range: ${priceRange[0]} - ${priceRange[1]}
+                  Price Range: &#x20B9;{priceRange[0]} - &#x20B9;{priceRange[1]}
                 </Label>
                 <div className="px-2 mt-3">
                   <Slider
@@ -268,7 +270,7 @@ export default function SearchAndFilters({
           )}
           {(priceRange[0] > 0 || priceRange[1] < 5000) && (
             <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm flex items-center gap-1">
-              Price: ${priceRange[0]} - ${priceRange[1]}
+              Price: &#x20B9;{priceRange[0]} - &#x20B9;{priceRange[1]}
               <button
                 onClick={() => {
                   setPriceRange([0, 5000]);
