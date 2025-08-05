@@ -12,32 +12,41 @@ const LoadingAnimation = () => {
   };
 
   return (
-    <>
-      {/* Loading Screen */}
-      <AnimatePresence>
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-600"
-          variants={loadingVariants}
-          initial="initial"
-          exit="exit"
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-100 via-white to-teal-100 rounded-xl"
+        variants={loadingVariants}
+        initial="initial"
+        exit="exit"
+      >
+        {/* Flower-like Spinner */}
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-20 h-20 text-green-600"
+          viewBox="0 0 100 100"
+          fill="none"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
         >
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="text-white text-4xl font-bold"
-          >
-            Flower
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    </>
+          <circle cx="50" cy="50" r="5" fill="currentColor" />
+          {[...Array(8)].map((_, i) => {
+            const angle = (i * 360) / 8;
+            const x = 50 + 30 * Math.cos((angle * Math.PI) / 180);
+            const y = 50 + 30 * Math.sin((angle * Math.PI) / 180);
+            return (
+              <circle
+                key={i}
+                cx={x}
+                cy={y}
+                r="6"
+                fill="currentColor"
+                opacity={0.7}
+              />
+            );
+          })}
+        </motion.svg>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
