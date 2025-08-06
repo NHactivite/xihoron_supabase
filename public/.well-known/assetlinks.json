@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "org.discoverassam.www.twa",
-        "sha256_cert_fingerprints": ["80:84:91:63:CF:B8:2F:38:45:70:87:C0:9E:2F:FC:93:71:E1:4F:0C:0B:47:2B:C5:91:8D:CB:A0:C7:DC:B1:58"]
+        "sha256_cert_fingerprints": ["37:9D:EB:D5:D7:7E:72:4F:83:78:10:7A:93:D9:AE:CB:41:2C:D2:47:E4:B4:4F:B0:B8:F9:C1:45:63:06:41:E2"]
       }
     }]
