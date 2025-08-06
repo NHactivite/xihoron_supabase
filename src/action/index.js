@@ -11,12 +11,10 @@ import { auth } from "@clerk/nextjs/server";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextResponse } from "next/server";
 
-
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
 }
 // Initialize Cashfree with your credentials
-
 
 // const cashfree = new Cashfree(
 //   CFEnvironment.SANDBOX,
@@ -31,8 +29,8 @@ const cashfree = new Cashfree(
 // crete profile action
 
 export const createPaymentAction = async (data) => {
-  const { user, cartItems ,phnNo} = data;
- 
+  const { user, cartItems, phnNo } = data;
+
   const products = cartItems.map((item) => ({
     id: item.productId,
     quantity: item.quantity,
@@ -49,11 +47,11 @@ export const createPaymentAction = async (data) => {
   let finalAmount = amounts.reduce((acc, curr) => acc + curr, 0);
 
   // Parse shipping charges from env since they are strings by default
-  const shippingLimit =  Number( process.env.NEXT_PUBLIC_SHIPPING_CHARGE_LIMIT );
-  const shippingCharge =Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE);
+  const shippingLimit = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE_LIMIT);
+  const shippingCharge = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE);
 
-
-  finalAmount = finalAmount > shippingLimit ? finalAmount : finalAmount + shippingCharge;
+  finalAmount =
+    finalAmount > shippingLimit ? finalAmount : finalAmount + shippingCharge;
 
   // const request = {
   //   order_id: `order_${Date.now()}`,
@@ -66,30 +64,29 @@ export const createPaymentAction = async (data) => {
   //     customer_name: `${user.firstName} ${user.lastName}`,
   //   },
   // };
-const request = {
-  order_id: `order_${Date.now()}`,
-  order_amount: finalAmount,
-  order_currency: "INR",
-  customer_details: {
-    customer_id: user.userId,
-    customer_phone: phnNo,
-    customer_email: user.email,
-    customer_name: `${user.firstName} ${user.lastName}`,
-  },
-  cart_details: {
-    cart_items: cartItems.map(item => ({
-      item_name: item.name,
-      sku: item.productId,
-      quantity: item.quantity,
-      amount: item.price,
-    })),
-  },
-};
-
+  const request = {
+    order_id: `order_${Date.now()}`,
+    order_amount: finalAmount,
+    order_currency: "INR",
+    customer_details: {
+      customer_id: user.userId,
+      customer_phone: phnNo,
+      customer_email: user.email,
+      customer_name: `${user.firstName} ${user.lastName}`,
+    },
+    cart_details: {
+      cart_items: cartItems.map((item) => ({
+        item_name: item.name,
+        sku: item.productId,
+        quantity: item.quantity,
+        amount: item.price,
+      })),
+    },
+  };
 
   try {
     const response = await cashfree.PGCreateOrder(request);
-   
+
     return response.data;
   } catch (error) {
     console.error(
@@ -116,8 +113,8 @@ export const createOrder = async (data) => {
   try {
     await ConnectDB();
 
-    const { Address, cartItems, total, subtotal, userId, userName, orderId } =data;
-
+    const { Address, cartItems, total, subtotal, userId, userName, orderId } =
+      data;
 
     const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
 
@@ -145,7 +142,6 @@ export const createOrder = async (data) => {
       })),
     });
     for (const item of cartItems) {
-   
       await Product.findByIdAndUpdate(
         item.productId,
         { $inc: { stock: -item.quantity } },
@@ -153,7 +149,7 @@ export const createOrder = async (data) => {
       );
     }
 
-    return { success: true};
+    return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
   }
@@ -299,16 +295,15 @@ export const addReview = async (data) => {
     const { comment, rating, user, product } = data;
 
     const getProductById = await Product.findById(product);
-   
+
     if (!getProductById) return { success: false, message: "Product not find" };
 
     if (!comment || !rating || !user) {
       throw new Error("Please fill all the fields");
     } else {
       const alreadyReviewed = await Review.findOne({ user, product });
-     
+
       if (alreadyReviewed !== null) {
-       
         alreadyReviewed.comment = comment;
         alreadyReviewed.rating = rating;
         await alreadyReviewed.save();
@@ -353,24 +348,23 @@ export const getReview = async (productId) => {
   }
 };
 
-export const deleteReview=async(id)=>{
+export const deleteReview = async (id) => {
   try {
-     await ConnectDB();
- 
-    await Review.findByIdAndDelete(id)
- 
-     return {
+    await ConnectDB();
+
+    await Review.findByIdAndDelete(id);
+
+    return {
       success: true,
       message: "Review remove successfully",
     };
-
   } catch (error) {
     return {
       success: true,
       message: "review not found",
     };
   }
-}
+};
 
 export const getAllProduct = async () => {
   try {
@@ -399,7 +393,7 @@ export const getProductCount = async () => {
 export const getProductById = async (id) => {
   try {
     await ConnectDB();
-  
+
     const product = await Product.findById(id); // ✅ Use .lean() to return a plain JS object
 
     if (!product) {
@@ -414,7 +408,7 @@ export const getProductById = async (id) => {
 
 export const wishHandle = async (productId, userId) => {
   await ConnectDB();
-  
+
   const existingWish = await Wish.findOne({ Product: productId, user: userId });
 
   if (existingWish) {
@@ -426,7 +420,7 @@ export const wishHandle = async (productId, userId) => {
   }
 
   // If no existing wish, create a new one
-   await Wish.create({
+  await Wish.create({
     wish: true,
     user: userId,
     Product: productId,
@@ -466,18 +460,31 @@ export const getSearchProducts = async (req) => {
   try {
     await ConnectDB();
 
-    const { search, sort, category, minPrice, maxPrice, page = 1, occasion } = req;
+    const {
+      search,
+      sort,
+      category,
+      minPrice,
+      maxPrice,
+      page = 1,
+      occasion,
+    } = req;
 
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 10;
     const skip = (page - 1) * limit;
 
     const baseQuery = {};
 
+    const normalize = (str) => str?.toLowerCase()?.replace(/\s+/g, "");
+    const normalizedSearch = normalize(search);
+
+    // Then use new regex
     if (search) {
       baseQuery.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
-        { occasion: { $regex: search, $options: "i" } },
+        { name: { $regex: normalizedSearch, $options: "i" } },
+        { category: { $regex: normalizedSearch, $options: "i" } },
+        { occasion: { $regex: normalizedSearch, $options: "i" } },
+        { description: { $regex: normalizedSearch, $options: "i" } },
       ];
     }
 
@@ -553,25 +560,24 @@ export const getOccasion = async () => {
     const occasions = await Product.aggregate([
       {
         $group: {
-          _id: { $toLower: "$occasion" } // group by lowercased occasion
-        }
+          _id: { $toLower: "$occasion" }, // group by lowercased occasion
+        },
       },
       {
         $project: {
           _id: 0,
-          occasion: "$_id"
-        }
-      }
+          occasion: "$_id",
+        },
+      },
     ]);
 
     // Extract the values into a flat array
-    const occasionList = occasions.map(item => item.occasion);
+    const occasionList = occasions.map((item) => item.occasion);
 
     return { success: true, occasions: occasionList };
   } catch (error) {
     return { success: false, message: error.message };
   }
 };
-
 
 // cashfreeee

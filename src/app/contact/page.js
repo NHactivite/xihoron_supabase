@@ -30,10 +30,10 @@ export default function ContactUs() {
                 <div>
                   <p className="font-medium text-gray-900">Email</p>
                   <a
-                    href="mailto:contact@company.com"
+                    href="mailto:nikhilhazarika9@gmail.com"
                     className="text-blue-600 hover:text-blue-800 transition-colors"
                   >
-                    contact@company.com
+                    nikhilhazarika9@gmail.com
                   </a>
                 </div>
               </div>
@@ -44,12 +44,12 @@ export default function ContactUs() {
                 <div>
                   <p className="font-medium text-gray-900">Instagram</p>
                   <a
-                    href="https://instagram.com/yourcompany"
+                    href="https://www.instagram.com/n.i.k_.h.i.l?igsh=NmMzMTJqczVjbWtw"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-pink-600 hover:text-pink-800 transition-colors"
                   >
-                    @yourcompany
+                    Nikhil Hazarika
                   </a>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default function ContactUs() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Follow Us</h3>
           <div className="flex justify-center gap-4">
             <a
-              href="https://instagram.com/yourcompany"
+              href="https://www.instagram.com/n.i.k_.h.i.l?igsh=NmMzMTJqczVjbWtw"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200"

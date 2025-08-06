@@ -10,7 +10,7 @@ export default function Footer() {
             <h2 className="text-2xl font-bold mb-4">Flower Store</h2>
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">
               Explore beautiful flowers arrangements, personalized gifts, decadent cakes & floral hampers
-              on www.FlowerStore.com.
+              on <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
             </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-white hover:text-gray-300 transition-colors">
