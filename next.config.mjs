@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   trailingSlash: true,
   compiler: {
-    removeConsole: true,
+    removeConsole: false,
   },
   images: {
     remotePatterns: [

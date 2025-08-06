@@ -16,7 +16,10 @@ const OrderMangement = ({ orders }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="ml-3 font-bold text-2xl">Orders</CardTitle>
+        <div className="flex">
+          <CardTitle className="ml-3 font-bold text-2xl">Orders</CardTitle>
+        <CardTitle className="ml-3 font-bold text-2xl">{filteredOrders.length}</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <RadioGroup
@@ -43,7 +46,8 @@ const OrderMangement = ({ orders }) => {
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((item,idx) => (
-              <div key={idx} className="gap-4 p-4 border rounded-lg">
+              <div key={idx} className="gap-4 p-4 border rounded-lg relative">
+                <em className="absolute">{++idx}</em>
                 <div className="ml-5 mb-5 flex flex-wrap md:flex-row flex-col md:gap-0 gap-2">
                   <span className="font-medium mr-5">
                     Total:{" "}

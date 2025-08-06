@@ -30,7 +30,7 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
   };
 
   return (
-  <div className="ml-2 group max-w-56">
+  <div className="ml-3 group max-w-56">
       <div className="relative md:w-[200px] md:h-50 w-[110px] h-[110px]  overflow-hidden rounded-lg group">
         
           <Image

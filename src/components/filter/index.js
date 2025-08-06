@@ -15,6 +15,7 @@ import { Slider } from "@/components/ui/slider";
 import { ChevronDown, ChevronUp, Filter, Search, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaWindowClose } from "react-icons/fa";
 
 export default function SearchAndFilters({
   categories,
@@ -87,8 +88,8 @@ export default function SearchAndFilters({
   return (
     <div className=" relative">
       {/* Search Bar */}
-      <form onSubmit={handleSearchSubmit} className="flex gap-2">
-        <div className="relative flex-1">
+      <form onSubmit={handleSearchSubmit} className="flex gap-2 mx-2">
+        <div className="relative flex-1 ">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             type="text"
@@ -99,7 +100,7 @@ export default function SearchAndFilters({
           />
         </div>
         <Button type="submit">Search</Button>
-        <Filter className="w-4 h-4 md:hidden flex mt-2" onClick={() => setIsFiltersOpen(!isFiltersOpen)} />
+        <Filter className="w-4 h-4 md:hidden flex mt-2 " onClick={() => setIsFiltersOpen(!isFiltersOpen)} />
         <Button
           type="button"
           variant="outline"
@@ -122,10 +123,11 @@ export default function SearchAndFilters({
           <CardContent>
             <div>
               {/* Category Filter */}
-              <div className="mb-3">
+              <div className="mb-3 relative">
                 <Label htmlFor="category" className="mb-3">
                   Category
                 </Label>
+                <span className="absolute -top-2 right-0"onClick={() => setIsFiltersOpen(!isFiltersOpen)} ><FaWindowClose/></span>
                 <Select
                   value={category}
                   onValueChange={(value) => {
