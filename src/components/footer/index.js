@@ -13,7 +13,7 @@ export default function Footer() {
               on <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
             </p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-white hover:text-gray-300 transition-colors">
+              <Link href="https://www.instagram.com/n.i.k_.h.i.l?igsh=NmMzMTJqczVjbWtw" className="text-white hover:text-gray-300 transition-colors">
                 <Instagram className="w-6 h-6" />
               </Link>
               <Link href="#" className="text-white hover:text-gray-300 transition-colors">
