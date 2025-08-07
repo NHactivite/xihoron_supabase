@@ -27,14 +27,7 @@ const Shipping = ({user}) => {
       phnNo: "",
     },
   });
-//  const isAndroidWebView = /Android/i.test(navigator.userAgent) && window.PaymentJSInterface;
-// const isIOSWebView = /iPhone|iPad|iPod/.test(navigator.userAgent) && window.webkit;
 
-// const platform = isAndroidWebView
-//   ? "android"
-//   : isIOSWebView
-//   ? "ios"
-//   : "web";
 
 const cashfreeRef = useRef(null);
    const router=useRouter()

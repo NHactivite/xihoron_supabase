@@ -519,19 +519,28 @@ export const getSearchProducts = async (req) => {
     }));
 
     return {
-      success: true,
-    products: products.map(p => ({
+  success: true,
+  products: products.map(p => ({
     _id: p._id.toString(),
     name: p.name,
-    price:p.price,
-    stock:p.stock,
+    price: p.price,
+    stock: p.stock,
+    category: p.category,
+    description: p.description,
+    rating: p.rating,
+    numOfReviews: p.numOfReviews,
+    occasion: p.occasion,
+    details: p.details,
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
     photos: p.photos.map(photo => ({
       ...photo,
       _id: photo._id.toString()
     }))
   })),
-      totalPage,
-    };
+  totalPage,
+};
+
   } catch (error) {
     return {
       success: false,
