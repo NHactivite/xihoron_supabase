@@ -1,53 +1,83 @@
+"use client";
+
 import { getCategory, getOccasion, getSearchProducts } from "@/action";
 import SearchAndFilters from "@/components/filter";
 import Pagination from "@/components/pagination";
 import ProductCard from "@/components/product-card";
-import { currentUser } from "@clerk/nextjs/server";
-import React from "react";
+import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-const Search = async ({ searchParams }) => {
+const Search = () => {
+  const { user } = useUser();
+  const searchParams = useSearchParams();
+
+  const [categories, setCategories] = useState([]);
+  const [occasions, setOccasions] = useState([]);
+  const [products, setProducts] = useState([]); // ✅ add this
+  const [totalPage, setTotalPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const filters = {
+    search: searchParams.get("search") || "",
+    category: searchParams.get("category") || "",
+    minPrice: searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined,
+    maxPrice: searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined,
+    sort: searchParams.get("sort") || "",
+    page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
+    occasion: searchParams.get("occa") || "",
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const [catRes, occaRes, productRes] = await Promise.all([
+        getCategory(),
+        getOccasion(),
+        getSearchProducts(filters),
+      ]);
+
+      setCategories(catRes?.categories || []);
+      setOccasions(occaRes?.occasions || []);
+      setProducts(productRes?.products||[]) // ✅ This was missing
+      setTotalPage(productRes?.totalPage || 1);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [searchParams.toString()]);
  
-  const user = await currentUser();
 
-  const categories = await getCategory()
-  
-  const occasion=await getOccasion()
-  
-  const currentFilters = {
-  search: searchParams.search || "",
-  category: searchParams.category || "",
-  minPrice: searchParams.minPrice ? Number(searchParams.minPrice) : undefined,
-  maxPrice: searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined,
-  sort: searchParams.sort || "", // if you are sorting
-  page: searchParams.page ? Number(searchParams.page) : 1,
-  occasion:searchParams.occa||""
-};
-
-const searchProducts=await getSearchProducts(currentFilters)
-
-
+   
   return (
-    <div >
+    <div>
       <SearchAndFilters
-        categories={categories.categories}
-        currentFilters={currentFilters}
-        occasion={occasion.occasions}
+        categories={categories}
+        currentFilters={filters}
+        occasion={occasions}
       />
-      <main className="grid grid-cols-2 md:grid-cols-5  gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide mt-10">
-        {searchProducts.products?.map((i, idx) => (
-          <ProductCard
-            key={idx}
-            id={i._id}
-            name={i.name}
-            price={i.price}
-            stock={i.stock}
-            photos={i.photos[0].url}
-            userId={user?.id}
-          />
-        ))}
-       
+
+      <main className="grid grid-cols-2 md:grid-cols-5 gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide mt-10">
+        {loading ? (
+          Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="h-60 bg-gray-200 animate-pulse rounded-md" />
+          ))
+        ) : (
+          products.map((product, idx) => (
+            <ProductCard
+              key={idx}
+              id={product._id}
+              name={product.name}
+              price={product.price}
+              stock={product.stock}
+              photos={product.photos?.[0]?.url}
+              userId={user?.id}
+            />
+          ))
+        )}
       </main>
-      <Pagination totalPage={searchProducts.totalPage}/>
+
+      {!loading && <Pagination totalPage={totalPage} />}
     </div>
   );
 };

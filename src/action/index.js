@@ -520,7 +520,16 @@ export const getSearchProducts = async (req) => {
 
     return {
       success: true,
-      products,
+    products: products.map(p => ({
+    _id: p._id.toString(),
+    name: p.name,
+    price:p.price,
+    stock:p.stock,
+    photos: p.photos.map(photo => ({
+      ...photo,
+      _id: photo._id.toString()
+    }))
+  })),
       totalPage,
     };
   } catch (error) {

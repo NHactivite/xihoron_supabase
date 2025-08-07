@@ -18,7 +18,7 @@ const nextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable: false,
+  disable:false,
   register: true,
   skipWaiting: true,
   scope: '/',

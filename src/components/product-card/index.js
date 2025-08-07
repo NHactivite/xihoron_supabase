@@ -1,14 +1,14 @@
 "use client";
 
+import { wishHandle } from "@/action";
 import Image from "next/image";
 import Link from "next/link";
-import { CiHeart } from "react-icons/ci";
 import { useState } from "react";
-import { wishHandle } from "@/action";
 import toast from "react-hot-toast";
+import { CiHeart } from "react-icons/ci";
 
 const ProductCard = ({ id, price, photos, name, userId }) => {
-  const [isWished, setIsWished] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const handleWishClick = async () => {
