@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   trailingSlash: true,
   compiler: {
-    removeConsole: true,
+    removeConsole: false,
   },
   images: {
     remotePatterns: [
@@ -18,7 +18,7 @@ const nextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable:false,
+  disable:true,
   register: true,
   skipWaiting: true,
   scope: '/',
