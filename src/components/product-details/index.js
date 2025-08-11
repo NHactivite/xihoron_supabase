@@ -253,7 +253,7 @@ export default function ProductSlider({ Product, user }) {
 
       {/* Reviews */}
       {reviews.length > 0 && (
-        <main className="mb-10">
+        <main className="mb-10 mt-10">
           <ReviewCard
             productId={Product._id}
             reviews={reviews}
