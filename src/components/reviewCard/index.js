@@ -34,7 +34,7 @@ const ReviewCard = ({ productId }) => {
         <div key={review._id} className="md:min-w-96 min-w-52 relative bg-gray-100 rounded-md p-3" >
           <p className="text-xl">{review.comment}</p>
           <div className="mt-2"><Rating  value={review.rating}/></div>
-          {review.user===user.user.id?<button className="absolute -top-2 -right-2 bg-gray-900 p-2 rounded-full text-white text-sm" onClick={()=>reviewHandler(review._id)}><FaTrash/></button>:null}
+          {user?(review.user===user.user.id?<button className="absolute -top-2 -right-2 bg-gray-900 p-2 rounded-full text-white text-sm" onClick={()=>reviewHandler(review._id)}><FaTrash/></button>:null):null}
         </div>
         
       ))}
