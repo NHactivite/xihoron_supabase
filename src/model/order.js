@@ -77,6 +77,11 @@ import mongoose from "mongoose";
       timestamps: true,
     }
   );
+
+  // Indexes
+orderSchema.index({ orderId: 1 }, { unique: true });
+orderSchema.index({ userId: 1 });
+orderSchema.index({ status: 1 });
   
   
   export const Order = mongoose.models.Order|| mongoose.model("Order", orderSchema);

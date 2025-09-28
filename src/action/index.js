@@ -10,22 +10,23 @@ import { clerkClient } from "@clerk/express";
 import { auth } from "@clerk/nextjs/server";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextResponse } from "next/server";
+import toast from "react-hot-toast";
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
 }
 // Initialize Cashfree with your credentials
 
-// const cashfree = new Cashfree(
-//   CFEnvironment.SANDBOX,
-//   process.env.CLIENT_ID,
-//   process.env.CLIENT_SECRET
-// );
 const cashfree = new Cashfree(
-  CFEnvironment.PRODUCTION,
+  CFEnvironment.SANDBOX,
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
+// const cashfree = new Cashfree(
+//   CFEnvironment.PRODUCTION,
+//   process.env.CLIENT_ID,
+//   process.env.CLIENT_SECRET
+// );
 // crete profile action
 
 export const createPaymentAction = async (data) => {
@@ -86,7 +87,8 @@ export const createPaymentAction = async (data) => {
 
   try {
     const response = await cashfree.PGCreateOrder(request);
-
+    console.log(response.data,"payment");
+    
     return response.data;
   } catch (error) {
     console.error(
@@ -118,7 +120,7 @@ export const createOrder = async (data) => {
 
     const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
 
-    const newOrder = await Order.create({
+     await Order.create({
       shippingInfo: {
         address: Address.address,
         city: Address.city,
@@ -144,7 +146,7 @@ export const createOrder = async (data) => {
     for (const item of cartItems) {
       await Product.findByIdAndUpdate(
         item.productId,
-        { $inc: { stock: -item.quantity } },
+        { $inc: { stock: -item.quantity,sell:1 } },
         { new: true }
       );
     }
@@ -302,7 +304,8 @@ export const addReview = async (data) => {
       throw new Error("Please fill all the fields");
     } else {
       const alreadyReviewed = await Review.findOne({ user, product });
-
+       console.log(comment,"hii");
+      
       if (alreadyReviewed !== null) {
         alreadyReviewed.comment = comment;
         alreadyReviewed.rating = rating;
@@ -328,6 +331,8 @@ export const addReview = async (data) => {
       return { success: true, message: "Review Added" };
     }
   } catch (error) {
+    console.log(error,"errorrr");
+    
     return {
       success: false,
       message: "Server Error",
@@ -369,17 +374,47 @@ export const deleteReview = async (id) => {
 export const getAllProduct = async () => {
   try {
     await ConnectDB();
-    const products = await Product.find({});
+    const products = await Product.find({}).lean();
 
-    return NextResponse.json({ success: true, products });
+    return JSON.parse(JSON.stringify(products));
+  }catch (error) {
+    console.error("Failed to fetch latest products:", error);
+    throw new Error("Could not fetch the latest products.");
+  }
+  
+};
+
+export const getLatestProducts = async () => {
+  try {
+    await ConnectDB();
+    const latestProducts = await Product.find({})
+      .sort({ createdAt: -1 }) 
+      .limit(10)
+      .lean()             
+    
+    return JSON.parse(JSON.stringify(latestProducts));
+
   } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Server Error", error: error.message },
-      { status: 500 }
-    );
+    throw new Error("Could not fetch the latest products.");
   }
 };
 
+export const getTopSellingProducts = async () => {
+  try {
+    await ConnectDB();
+
+    const filter = { sell: { $gt: 0 } };
+
+    const topSellingProducts = await Product.find(filter)
+      .sort({ sell: -1 }) 
+      .lean();
+
+    return JSON.parse(JSON.stringify(topSellingProducts));
+
+  } catch (error){
+    throw new Error("Could not fetch top selling products.");
+  }
+}
 export const getProductCount = async () => {
   try {
     await ConnectDB();
@@ -467,7 +502,6 @@ export const getSearchProducts = async (req) => {
       minPrice,
       maxPrice,
       page = 1,
-      occasion,
     } = req;
 
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 10;
@@ -483,7 +517,6 @@ export const getSearchProducts = async (req) => {
       baseQuery.$or = [
         { name: { $regex: normalizedSearch, $options: "i" } },
         { category: { $regex: normalizedSearch, $options: "i" } },
-        { occasion: { $regex: normalizedSearch, $options: "i" } },
         { description: { $regex: normalizedSearch, $options: "i" } },
       ];
     }
@@ -492,9 +525,6 @@ export const getSearchProducts = async (req) => {
       baseQuery.category = { $regex: `^${category}$`, $options: "i" }; // case-insensitive exact match
     }
 
-    if (occasion) {
-      baseQuery.occasion = { $regex: `^${occasion}$`, $options: "i" }; // same here
-    }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
       baseQuery.price = {};

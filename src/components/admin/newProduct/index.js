@@ -11,24 +11,21 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const NewProduct = ({ mode, initialProduct }) => {
-  const router=useRouter();
+  console.log(initialProduct,"pickle");
+  
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(initialProduct.name || "");
   const [deletephoto, setDeletePhoto] = useState([]);
   const [price, setPrice] = useState(initialProduct.price || "");
   const [stock, setStock] = useState(initialProduct.stock || "");
   const [category, setCategory] = useState(initialProduct.category || "");
-  const [description, setDescription] = useState(initialProduct.description || "");
+  const [description, setDescription] = useState(
+    initialProduct.description || ""
+  );
   const [occasion, setOccasion] = useState(initialProduct.occasion || "");
-  const [details, setDetails] = useState(() => {
-    if (initialProduct.details) {
-      return Object.entries(initialProduct.details).map(([key, value]) => ({
-        key,
-        value,
-      }));
-    }
-    return [{ key: "", value: "" }];
-  });
+ 
+  const [details, setDetails] = useState(initialProduct.details || []);
 
   const [photos, setPhotos] = useState({
     file: [],
@@ -41,25 +38,23 @@ const NewProduct = ({ mode, initialProduct }) => {
     const files = Array.from(e.target.files);
 
     const filePreviews = files.map((file) => URL.createObjectURL(file));
-         
+
     setPhotos({
       file: files,
       preview: filePreviews,
       error: "",
     });
-
-    
   };
 
   const removeImage = (index) => {
-  const removedPhoto = photos.preview[index];
+    const removedPhoto = photos.preview[index];
 
-// Append to the array instead of replacing
-setDeletePhoto((prev) => [...prev, removedPhoto]);
+    // Append to the array instead of replacing
+    setDeletePhoto((prev) => [...prev, removedPhoto]);
 
     const newFiles = photos.file.filter((_, i) => i !== index);
     const newPreviews = photos.preview.filter((_, i) => i !== index);
-   
+
     setPhotos({
       file: newFiles,
       preview: newPreviews,
@@ -68,19 +63,19 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
   };
 
   const addDetailField = () => {
-    setDetails([...details, { key: "", value: "" }]);
+    setDetails([...details, ""]);
   };
 
   const removeDetailField = (index) => {
     const newDetails = details.filter((_, i) => i !== index);
-    setDetails(newDetails.length > 0 ? newDetails : [{ key: "", value: "" }]);
+    setDetails(newDetails.length > 0 ? newDetails : [""]);
   };
 
-  const updateDetailField = (index, field, value) => {
-    const newDetails = [...details];
-    newDetails[index][field] = value;
-    setDetails(newDetails);
-  };
+  const updateDetailField = (index, newValue) => {
+  const newDetails = [...details];
+  newDetails[index] = newValue;
+  setDetails(newDetails);
+};
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -96,14 +91,8 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
       formData.set("category", category);
       formData.set("occasion", occasion);
 
-      // Convert details array to object and stringify
-      const detailsObject = {};
-      details.forEach((detail) => {
-        if (detail.key.trim() && detail.value.trim()) {
-          detailsObject[detail.key.trim()] = detail.value.trim();
-        }
-      });
-      formData.set("details", JSON.stringify(detailsObject));
+     formData.set("details", JSON.stringify(details));
+
 
       photos.file.forEach((file) => {
         formData.append("photos", file);
@@ -113,9 +102,10 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
         method: "POST",
         body: formData,
       });
+      console.log([...formData.entries()],"picklesss");
 
       const data = await res.json();
-      
+
       if (data.success) {
         toast.success("Product created!");
         setName("");
@@ -124,10 +114,10 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
         setCategory("");
         setDescription("");
         setOccasion("");
-        setDetails([{ key: "", value: "" }]);
+        setDetails([]);
         setPhotos({ file: [], preview: [], error: "" });
-        
-      router.refresh()
+
+        router.refresh();
       } else {
         toast.error(data.message || "Something went wrong");
       }
@@ -139,101 +129,90 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
   };
 
   const updateHandler = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const formData = new FormData();
-    let hasChanges = false;
+    try {
+      const formData = new FormData();
+      let hasChanges = false;
 
-    // Compare and append only if changed
-    if (name !== initialProduct.name) {
-      formData.set("name", name);
-      hasChanges = true;
-    }
-
-    if (description !== initialProduct.description) {
-      formData.set("description", description);
-      hasChanges = true;
-    }
-
-    if (price !== initialProduct.price) {
-      formData.set("price", price.toString());
-      hasChanges = true;
-    }
-
-    if (stock !== initialProduct.stock) {
-      formData.set("stock", stock.toString());
-      hasChanges = true;
-    }
-
-    if (category !== initialProduct.category) {
-      formData.set("category", category);
-      hasChanges = true;
-    }
-
-    if (occasion !== initialProduct.occasion) {
-      formData.set("occasion", occasion);
-      hasChanges = true;
-    }
-
-    // Handle details object comparison
-    const detailsObject = {};
-    details.forEach((detail) => {
-      if (detail.key.trim() && detail.value.trim()) {
-        detailsObject[detail.key.trim()] = detail.value.trim();
+      // Compare and append only if changed
+      if (name !== initialProduct.name) {
+        formData.set("name", name);
+        hasChanges = true;
       }
-    });
 
-    const initialDetails = initialProduct.details || {};
-    if (JSON.stringify(detailsObject) !== JSON.stringify(initialDetails)) {
-      formData.set("details", JSON.stringify(detailsObject));
-      hasChanges = true;
-    }
+      if (description !== initialProduct.description) {
+        formData.set("description", description);
+        hasChanges = true;
+      }
 
-    // Handle deleted photos (if any)
-    if (deletephoto && deletephoto.length > 0) {
-      formData.set("removedPhotos", JSON.stringify(deletephoto));
-      hasChanges = true;
-    }
+      if (price !== initialProduct.price) {
+        formData.set("price", price.toString());
+        hasChanges = true;
+      }
 
-    // Handle newly added photos
-    if (photos.file && photos.file.length > 0) {
-      photos.file.forEach((file) => {
-        formData.append("photos", file);
+      if (stock !== initialProduct.stock) {
+        formData.set("stock", stock.toString());
+        hasChanges = true;
+      }
+
+      if (category !== initialProduct.category) {
+        formData.set("category", category);
+        hasChanges = true;
+      }
+
+      if (occasion !== initialProduct.occasion) {
+        formData.set("occasion", occasion);
+        hasChanges = true;
+      }
+      if (details !== initialProduct.details) {
+       formData.set("details", JSON.stringify(details));
+        hasChanges = true;
+      }
+
+      // Handle deleted photos (if any)
+      if (deletephoto && deletephoto.length > 0) {
+        formData.set("removedPhotos", JSON.stringify(deletephoto));
+        hasChanges = true;
+      }
+
+      // Handle newly added photos
+      if (photos.file && photos.file.length > 0) {
+        photos.file.forEach((file) => {
+          formData.append("photos", file);
+        });
+        hasChanges = true;
+      }
+
+      if (!hasChanges) {
+        toast("No changes detected.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Make API request
+      const res = await fetch(`/api/product/?id=${initialProduct._id}`, {
+        method: "PUT",
+        body: formData,
       });
-      hasChanges = true;
-    }
 
-    if (!hasChanges) {
-      toast("No changes detected.");
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success("Product updated successfully!");
+
+        router.refresh();
+      } else {
+        toast.error(data.message || "Failed to update product");
+      }
+    } catch (error) {
+      console.error("Product update failed:", error);
+      toast.error("Something went wrong.");
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    // Make API request
-    const res = await fetch(`/api/product/?id=${initialProduct._id}`, {
-      method: "PUT",
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      toast.success("Product updated successfully!");
-
-      router.refresh()
-    } else {
-      toast.error(data.message || "Failed to update product");
-    }
-  } catch (error) {
-    console.error("Product update failed:", error);
-    toast.error("Something went wrong.");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="max-w-2xl mx-auto min-h-screen">
@@ -244,7 +223,10 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={mode==="edit"?updateHandler:submitHandler} className="space-y-6">
+          <form
+            onSubmit={mode === "edit" ? updateHandler : submitHandler}
+            className="space-y-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-sm font-medium">
@@ -354,21 +336,12 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
                 {details.map((detail, index) => (
                   <div key={index} className="flex gap-2 items-center">
                     <Input
-                      placeholder="Detail name (e.g., Material)"
-                      value={detail.key}
-                      onChange={(e) =>
-                        updateDetailField(index, "key", e.target.value)
-                      }
-                      className="flex-1"
-                    />
-                    <Input
                       placeholder="Detail value (e.g., Cotton)"
-                      value={detail.value}
-                      onChange={(e) =>
-                        updateDetailField(index, "value", e.target.value)
-                      }
+                      value={detail}
+                      onChange={(e) => updateDetailField(index, e.target.value)}
                       className="flex-1"
                     />
+
                     {details.length > 1 && (
                       <Button
                         type="button"
@@ -389,7 +362,7 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
               <Label className="text-sm font-medium">Product Photos</Label>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-gray-400 transition-colors">
                 <input
-                  name="photos" 
+                  name="photos"
                   accept="image/*"
                   type="file"
                   multiple
@@ -423,7 +396,7 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
                         alt={`Product preview ${i + 1}`}
                         className="w-full h-32 object-cover rounded-lg border shadow-sm"
                         width={80}
-                    height={80}
+                        height={80}
                       />
                       <button
                         type="button"
@@ -439,35 +412,37 @@ setDeletePhoto((prev) => [...prev, removedPhoto]);
             </div>
 
             <div className="pt-6">
-              {mode!=="edit"?<Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 text-base font-medium"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Product...
-                  </>
-                ) : (
-                  "Create Product"
-                )}
-              </Button>
-              :<Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 text-base font-medium"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Update Product...
-                  </>
-                ) : (
-                  "update Product"
-                )}
-              </Button>
-              }
+              {mode !== "edit" ? (
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-12 text-base font-medium"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating Product...
+                    </>
+                  ) : (
+                    "Create Product"
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-12 text-base font-medium"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Update Product...
+                    </>
+                  ) : (
+                    "update Product"
+                  )}
+                </Button>
+              )}
             </div>
           </form>
         </CardContent>

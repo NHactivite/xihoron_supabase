@@ -35,8 +35,8 @@ const cashfreeRef = useRef(null);
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          // mode: "sandbox",  //Adjust to "production" for live
-          mode: "production", // Adjust to "production" for live
+          mode: "sandbox",  //Adjust to "production" for live
+          // mode: "production", // Adjust to "production" for live
         });
       } catch (error) {
         console.error("Failed to load payment gateway:", error);

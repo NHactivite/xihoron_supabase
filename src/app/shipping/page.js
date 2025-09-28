@@ -6,8 +6,9 @@ import React from 'react'
 const Shipped = async() => {
     const user=await currentUser();
     const orderData=await getSingleOrder(user.id);
+    const newOrder=JSON.parse(JSON.stringify(orderData))
   return (
-    <div>{orderData?<Orders order={orderData.data}/>:<h1>No order</h1>}</div>
+    <div>{orderData?<Orders order={newOrder.data}/>:<h1>No order</h1>}</div>
   )
 }
 

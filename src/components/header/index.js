@@ -30,20 +30,18 @@ const menuItems = useMemo(() => {
 
   return [
     { label: "Home", path: "/", show: true },
+    { label: "Pickles", path: "/search", show: user },
     { label: "admin", path: "/admin", show: role },
     { label: "Login", path: "/sign-in", show: !user },
     { label: "Register", path: "/sign-up", show: !user },
     { label: "cart", path: "/cart", show: user },
     { label: "wishlist", path: "/wish", show: user },
-    { label: "Account", path: "/account", show: user },
-    { label: "Boquets", path: "/search", show: user },
     { label: "Orders", path: "/shipping", show: user },
+    { label: "Account", path: "/account", show: user },
+    
   ];
 }, [pathname, user, role]);
 
-
-
-  
   return (
     <header className="flex h-16 w-full shrink-0 items-center sticky top-0 bg-white z-50 p-4  mb-3 shadow">
       <Sheet open={open} onOpenChange={setOpen}>
@@ -62,7 +60,7 @@ const menuItems = useMemo(() => {
         >
           <Link href="/" className="flex items-center mb-6">
             <SheetTitle className="text-2xl font-bold text-white ">
-              Flower Store
+              Pickle Store
             </SheetTitle>
           </Link>
           <div className="grid gap-4">
@@ -88,17 +86,17 @@ const menuItems = useMemo(() => {
         </SheetContent>
       </Sheet>
        <Link
-        className="lg:hidden flex m-auto text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-violet-400 "
+        className="lg:hidden flex m-auto text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-red-500 "
         href={"/"}
       >
-        Flower Store
+        Pickle Store
       </Link>
 
       <Link
-        className="hidden  lg:flex mr-6 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-violet-400 "
+        className="hidden  lg:flex mr-6 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-red-500 "
         href={"/"}
       >
-        Flower Store
+        Pickle Store
       </Link>
       <InstallButton/>
       <nav className="ml-auto hidden lg:flex gap-6">

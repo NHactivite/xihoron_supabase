@@ -1,4 +1,4 @@
- import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
   {
@@ -24,7 +24,6 @@ const ProductSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      
     },
     description: {
       type: String,
@@ -43,12 +42,18 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     details: {
-      type: Map,
-      of: mongoose.Schema.Types.Mixed, 
-      default: {},
+      type: [String], // plain array of strings
+      default: [],
+    },
+    sell:{
+      type:Number,
+      default:0
     }
   },
   { timestamps: true }
 );
+// ✅ Essential Indexes only
+ProductSchema.index({ category: 1 }); // filter by category
+ProductSchema.index({ price: 1 });
 
 export const Product =mongoose.models.Product || mongoose.model("Product", ProductSchema);

@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Rating from "../rating";
 import ReviewCard from "../reviewCard";
 import Link from "next/link";
+import WeightSelector from "../weightCheckbox";
 
 export default function ProductSlider({ Product, user }) {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -32,8 +33,8 @@ export default function ProductSlider({ Product, user }) {
 
   const imageRef = useRef(null);
   const productId = Product._id;
-    const {cartItems}=useSelector((state)=>state.cart)
-   
+  const { cartItems } = useSelector((state) => state.cart);
+
   const {
     Ratings: RatingEdit,
     rating,
@@ -93,6 +94,11 @@ export default function ProductSlider({ Product, user }) {
       return;
     }
 
+    if(comment.length>300){
+      toast.error("please add a short review");
+      return
+    }
+
     const reviewData = {
       comment: comment.trim(),
       rating: Number(rating),
@@ -113,9 +119,9 @@ export default function ProductSlider({ Product, user }) {
   };
 
   return (
-    <div>
+    <div >
       <div className="grid md:grid-cols-[1.5fr_2fr] md:pl-36 mt-10">
-        <div className="w-[350px] h-[400px] md:ml-0 ml-5">
+        <div className="w-[350px] h-[400px] px-2">
           <div className="relative overflow-hidden rounded-lg border bg-gray-50">
             <div className="aspect-square relative cursor-crosshair">
               <Image
@@ -171,53 +177,65 @@ export default function ProductSlider({ Product, user }) {
             ))}
           </div>
         </div>
-        <div className="pl-10 pt-15">
-          <div className="space-y-4">
-            <h1 className="text-2xl font-bold leading-tight">
-              {Product.name || "Product Name"}
-            </h1>
-            <p className="font-bold">Price &#x20B9; {Product.price}</p>
-            <em className="flex gap-1 items-center mt-0.5">
-              <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
-              reviews)
-            </em>
-            <div>
-              <Button
-                onClick={() =>
-                  user
-                    ? addCartHandler({
-                        photos: Product.photos[0].url,
-                        price: Product.price,
-                        productId,
-                        quantity: 1,
-                        name: Product.name,
-                        stock: Product.stock,
-                      })
-                    : toast.error("Please login")
-                }
-              >
-                Add To Cart
-              </Button>
-              {
-                cartItems.map((i)=>(
-                  i.productId===Product._id?<Link className="bg-gray-900 text-white rounded-md p-2 ml-4" href={"/cart"} key={i.productId}>Buy now</Link>:null
-                  
-                ))
-              }
+        <div className="lg:pl-10 pt-5 px-5">
+            <div className="lg:mt-0 mt-5 flex  flex-col lg:gap-1 gap-2 lg:items-start items-center">
+              <h1 className="text-2xl font-bold leading-tight">
+                {Product.name || "Product Name"}
+              </h1>
+              <p className="font-bold">Price &#x20B9; {Product.price}</p>
+              {/* <em className="flex gap-1 items-center mt-0.5">
+                <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
+                reviews)
+              </em> */}
+              <div>
+                <Button
+                  onClick={() =>
+                    user
+                      ? addCartHandler({
+                          photos: Product.photos[0].url,
+                          price: Product.price,
+                          productId,
+                          quantity: 1,
+                          name: Product.name,
+                          stock: Product.stock,
+                        })
+                      : toast.error("Please login")
+                  }
+                  className="lg:my-3 my-0"
+                >
+                  Add To Cart
+                </Button>
+                {cartItems.map((i) =>
+                  i.productId === Product._id ? (
+                    <Link
+                      className="bg-gray-900 text-white rounded-md p-2 ml-4"
+                      href={"/cart"}
+                      key={i.productId}
+                    >
+                      Buy now
+                    </Link>
+                  ) : null
+                )}
+              </div>
+              <em className="flex gap-1 items-center mt-0.5">
+                <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
+                reviews)
+              </em>
+               <span className="font-bold">size:300g</span>
+               
             </div>
-            <h1 className="font-bold">Product description</h1>
-          </div>
+          
+
+          <h1 className="font-bold lg:mt-2 mt-10">Product description</h1>
           <div>
-            <p>{Product.description}</p>
-            <strong>Product Details:</strong>
-            {Object.entries(Product.details).map(([key, value]) => (
-              <li key={key}>
-                <strong>{key}:</strong>{" "}
-                {typeof value === "object"
-                  ? JSON.stringify(value)
-                  : String(value)}
+            <p className="max-w-prose text-sm text-justify leading-relaxed">{Product.description}</p>
+            <strong >Product Details:</strong>
+            {Product.details.map((i,idx)=>(
+              <li className="max-w-prose text-sm text-justify leading-relaxed" key={idx}>
+                {i}
               </li>
-            ))}
+            ))
+            }
           </div>
         </div>
       </div>
@@ -253,7 +271,7 @@ export default function ProductSlider({ Product, user }) {
 
       {/* Reviews */}
       {reviews.length > 0 && (
-        <main className="mb-10 mt-10">
+        <main className="mb-10 mt-1">
           <ReviewCard
             productId={Product._id}
             reviews={reviews}

@@ -1,10 +1,17 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "../ui/label";
 
 const Orders = ({ order }) => {
- 
+  console.log(order,"ooo");
+     const [statusFilter, setStatusFilter] = useState("Processing"); // default
+   
+    const filteredOrders = order.filter((order) => order.status === statusFilter);
+   
   return (
         <Card >
   <CardHeader>
@@ -12,11 +19,37 @@ const Orders = ({ order }) => {
   </CardHeader>
 
   <CardContent>
-    <div className="space-y-4">
-      {order.map((item) => (
+      <RadioGroup
+          value={statusFilter}
+          onValueChange={(value) => setStatusFilter(value)}
+          className="flex mb-5 justify-end space-x-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Processing" id="processing" />
+            <Label htmlFor="processing">Processing</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Shipped" id="shipped" />
+            <Label htmlFor="shipped">Shipped</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="Delivered" id="delivered" />
+            <Label htmlFor="delivered">Delivered</Label>
+          </div>
+        </RadioGroup>
+
+        {filteredOrders.length === 0 ? (
+          <p className="text-center text-muted-foreground">No orders found for "{statusFilter}"</p>
+        ) : (
+            
+           <div className="space-y-4">
+      {order.map((item,idx) => (
+        
         <div key={item.id} className=" p-4 border rounded-lg">
           {/* Order Summary */}
+          
           <div className="mb-5 flex flex-wrap  text-sm ">
+            <p className="absolute right-80 font-bold ">{++idx}</p>
             <span className="font-medium mr-5">
               Total: <span className="text-muted-foreground">{item.total}</span>
             </span>
@@ -29,6 +62,9 @@ const Orders = ({ order }) => {
             <span className="font-medium mr-5">
               Delivery Charges: <span className="text-muted-foreground">{item.shippingCharges}</span>
             </span>
+            
+              <span>order: {new Date(item.createdAt).toLocaleDateString()}</span>
+            
           </div>
 
           {/* Order Items and Address */}
@@ -82,6 +118,7 @@ const Orders = ({ order }) => {
         </div>
       ))}
     </div>
+          )}
   </CardContent>
 </Card>
      

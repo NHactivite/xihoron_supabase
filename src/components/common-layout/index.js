@@ -10,10 +10,7 @@ export async function CommonLayout({ children }) {
   
   return (
     <div
-      className="mx-auto max-w-full  bg-gradient-to-br from-blue-100 via-white to-blue-100
-
-"
-    >
+      className="mx-auto max-w-full "  >
       {/* header section */}
 
       <Header user={JSON.parse(JSON.stringify(user))} role={role} />

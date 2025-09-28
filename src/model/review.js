@@ -20,5 +20,10 @@ const Reviewschema=new mongoose.Schema({
 },{
     timestamps:true
 })
+Reviewschema.index({ product: 1 }); // fast lookups for all reviews of a product
+Reviewschema.index({ user: 1, product: 1 }, { unique: true }); 
+// ensures 1 user can leave only 1 review per product
 
 export const Review=mongoose.models.Review || mongoose.model("Review",Reviewschema)
+
+

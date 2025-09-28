@@ -29,12 +29,12 @@ const ReviewCard = ({ productId }) => {
   }
   
   return (
-    <div className='flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pt-4 scrollbar-hide md:min-h-36 ml-3'>
+    <div className='flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pt-4 scrollbar-hide md:min-h-36 ml-3 '>
       {reviews.map((review) => (
-        <div key={review._id} className="md:min-w-96 min-w-52 relative bg-gray-100 rounded-md p-3" >
-          <p className="text-xl">{review.comment}</p>
-          <div className="mt-2"><Rating  value={review.rating}/></div>
-          {user.isSignedIn?(review.user===user.user.id?<button className="absolute -top-2 -right-2 bg-gray-900 p-2 rounded-full text-white text-sm" onClick={()=>reviewHandler(review._id)}><FaTrash/></button>:null):null}
+        <div key={review._id} className="md:min-w-96 min-w-52 relative bg-gray-100 rounded-md p-3 max-w-xl" >
+          <p className="text-xs">{review.comment}</p>
+          <div className="mt-2 "><Rating  value={review.rating}/></div>
+          {user.isSignedIn?(review.user===user.user.id?<button className="absolute -top-2 -right-2 bg-gray-900 p-1.5 rounded-full text-white text-xs" onClick={()=>reviewHandler(review._id)}><FaTrash/></button>:null):null}
         </div>
         
       ))}

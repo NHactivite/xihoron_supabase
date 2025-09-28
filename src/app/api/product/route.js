@@ -8,6 +8,7 @@ import ConnectDB from "@/database";
 import { Product } from "@/model/product";
 import { auth } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/express";
+import { json } from "stream/consumers";
 
 cloudinary.config({
     cloud_name:process.env.CLOUD_NAME,
@@ -54,8 +55,7 @@ export async function POST(req) {
   const occasion = formData.get("occasion");
   const files = formData.getAll("photos");
   const details=formData.get("details")
-   console.log("oojjjjjjo",details);
-   
+
   if (!name || !description || !price || !stock || !category || !occasion ||!details) {
     return NextResponse.json({ success: false, message: "All fields required" }, { status: 400 });
   }
@@ -72,7 +72,7 @@ export async function POST(req) {
     await writeFile(tempPath, buffer);
 
     const result = await cloudinary.v2.uploader.upload(tempPath, {
-      folder: "bouquets",
+      folder: "Pickle",
     });
 
     uploadedPhotos.push({
@@ -80,14 +80,6 @@ export async function POST(req) {
       url: result.secure_url,
     });
   }
-  const parse = JSON.parse(details);
-  const parsedDetails={...parse}
-console.log("Final Insert Payload:", {
-  name,
-  details: parsedDetails,
-  type: typeof parsedDetails,
-});
-
   const product = await Product.create({
     name,
     description,
@@ -95,7 +87,7 @@ console.log("Final Insert Payload:", {
     stock,
     category,
     occasion,
-    details:parsedDetails,
+    details: JSON.parse(details),
     photos: uploadedPhotos,
   });
 
@@ -192,7 +184,7 @@ export async function PUT(req) {
         await writeFile(tempPath, buffer);
 
         const result = await cloudinary.v2.uploader.upload(tempPath, {
-          folder: "bouquets",
+          folder: "Pickle",
         });
 
         product.photos.push({
