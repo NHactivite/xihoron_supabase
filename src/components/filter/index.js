@@ -20,7 +20,7 @@ import { FaWindowClose } from "react-icons/fa";
 export default function SearchAndFilters({
   categories,
   currentFilters,
-  occasion,
+  sizes,
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,7 +33,7 @@ export default function SearchAndFilters({
     currentFilters.minPrice || 0,
     currentFilters.maxPrice || 5000,
   ]);
-  const [occa, setOccasion] = useState(currentFilters.occasion);
+  const [size, setSize] = useState(currentFilters.size);
 
   const createURL = (updates) => {
     const params = new URLSearchParams(searchParams);
@@ -67,12 +67,12 @@ export default function SearchAndFilters({
     setSearch("");
     setCategory("");
     setPriceRange([0, 5000]);
-    setOccasion("");
+    setSize("");
     router.push("/search");
     
   };
 
-  const hasActiveFilters = search || category || priceRange[0] > 0 || priceRange[1] < 5000 || occa;
+  const hasActiveFilters = search || category || priceRange[0] > 0 || priceRange[1] < 5000 || size;
 
   // Update local state when URL changes
   useEffect(() => {
@@ -82,8 +82,9 @@ export default function SearchAndFilters({
       currentFilters.minPrice || 0,
       currentFilters.maxPrice || 5000,
     ]);
-    setOccasion(currentFilters.occasion);
+    setSize(currentFilters.size);
   }, [currentFilters]);
+console.log(sizes,"sizeee");
 
   return (
     <div className=" relative">
@@ -159,16 +160,16 @@ export default function SearchAndFilters({
                 </Select>
               </div>
               <div className="mb-3">
-                <Label htmlFor="occasion" className="mb-3">
-                  occasion
+                <Label htmlFor="size" className="mb-3">
+                 Size
                 </Label>
                 <Select
-                  value={occa}
+                  value={size}
                   onValueChange={(value) => {
-                    setOccasion(value);
+                    setSize(value);
                     handleFilterChange({
                       search,
-                      occa: value === "all" ? "" : value,
+                      size: value === "all" ? "" : value,
                       minPrice:
                         priceRange[0] > 0
                           ? priceRange[0].toString()
@@ -181,10 +182,10 @@ export default function SearchAndFilters({
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="All Occasion" />
+                    <SelectValue placeholder="All Sizes" />
                   </SelectTrigger>
                   <SelectContent>
-                    {occasion.map((cat) => (
+                    {sizes.map((cat) => (
                       <SelectItem key={cat} value={cat.toLowerCase()}>
                         {cat}
                       </SelectItem>
@@ -288,13 +289,13 @@ export default function SearchAndFilters({
             </div>
           )}
       
-          {occa && (
+          {size && (
             <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center gap-1">
-              occasion:{occa}
+              size:{size}
               <button
                 onClick={() => {
-                  setOccasion("");
-                  handleFilterChange({ occa: "" });
+                  setSize("");
+                  handleFilterChange({ size: "" });
                 }}
                 className="ml-1 hover:bg-yellow-200 rounded-full p-0.5"
               >

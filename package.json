@@ -23,6 +23,8 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.5",
     "@reduxjs/toolkit": "^2.8.2",
+    "@upstash/ratelimit": "^2.0.6",
+    "@upstash/redis": "^1.35.4",
     "6pp": "^1.3.10",
     "cashfree-pg": "^5.0.8",
     "class-variance-authority": "^0.7.1",

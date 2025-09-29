@@ -7,7 +7,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "../ui/label";
 
 const Orders = ({ order }) => {
-  console.log(order,"ooo");
      const [statusFilter, setStatusFilter] = useState("Processing"); // default
    
     const filteredOrders = order.filter((order) => order.status === statusFilter);
@@ -43,27 +42,31 @@ const Orders = ({ order }) => {
         ) : (
             
            <div className="space-y-4">
-      {order.map((item,idx) => (
+      {filteredOrders.map((item,idx) => (
         
-        <div key={item.id} className=" p-4 border rounded-lg">
+        <div key={idx} className=" p-4 border rounded-lg">
           {/* Order Summary */}
           
-          <div className="mb-5 flex flex-wrap  text-sm ">
-            <p className="absolute right-80 font-bold ">{++idx}</p>
-            <span className="font-medium mr-5">
+          <div className="mb-5 flex flex-col flex-wrap  text-sm gap-1">
+            <p className="absolute lg:left-15 right-80 font-bold ">{++idx}</p>
+            <div>
+              <span className="font-medium mr-5">
               Total: <span className="text-muted-foreground">{item.total}</span>
             </span>
             <span className="font-medium mr-5">
               Total Product: <span className="text-muted-foreground">{item.orderItems.length}</span>
             </span>
+            </div>
             <span className="font-medium mr-5">
               Status: <span className="text-green-500">{item.status}</span>
             </span>
-            <span className="font-medium mr-5">
+            <div>
+              <span className="font-medium mr-5">
               Delivery Charges: <span className="text-muted-foreground">{item.shippingCharges}</span>
             </span>
             
-              <span>order: {new Date(item.createdAt).toLocaleDateString()}</span>
+          <span> {item.status=="Processing"?`order: ${new Date(item.createdAt).toLocaleDateString()}`:`${item.status}: ${new Date(item.updatedAt).toLocaleDateString()}`}</span>
+            </div>
             
           </div>
 

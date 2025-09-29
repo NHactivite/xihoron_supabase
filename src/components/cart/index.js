@@ -5,7 +5,7 @@ import { addToCart, calculatePrice, removeCartItem } from "@/redux/reducer/cartR
 import Link from "next/link";
 import { useEffect } from "react";
 
-const Cart = () => {
+const  Cart = () => {
 
   const dispatch=useDispatch()
 
@@ -32,11 +32,11 @@ const Cart = () => {
 
   return (
     <div className="h-lvh ">
-      <main className="min-h-3/4">
+      <main className="min-h-[30rem]">
         {
          cartItems.length >0 ? ( cartItems.map((i,idx)=>(
           <CartItems key={idx} cartItem={i} incrementHandler={incrementHandler} decrementHandler={decrementHandler} removeHandler={removeHandler}/>
-        ))) :(<h1>No Items Add</h1>)
+        ))) :(<div className=" flex  justify-center"><h1>No Items Add</h1></div>)
         }
       </main>
       <aside className=" flex flex-col justify-center items-center lg:gap-3 gap-4" >

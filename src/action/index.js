@@ -51,22 +51,11 @@ export const createPaymentAction = async (data) => {
   const shippingLimit = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE_LIMIT);
   const shippingCharge = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE);
 
-  finalAmount =
-    finalAmount > shippingLimit ? finalAmount : finalAmount + shippingCharge;
+  finalAmount =finalAmount > shippingLimit ? finalAmount : finalAmount + shippingCharge;
 
-  // const request = {
-  //   order_id: `order_${Date.now()}`,
-  //   order_amount: finalAmount,
-  //   order_currency: "INR",
-  //   customer_details: {
-  //     customer_id: user.userId,
-  //     customer_phone: phnNo,
-  //     customer_email: user.email,
-  //     customer_name: `${user.firstName} ${user.lastName}`,
-  //   },
-  // };
-  const request = {
-    order_id: `order_${Date.now()}`,
+const order_id=Date.now()
+const request = {
+    order_id: `order_${order_id}`,
     order_amount: finalAmount,
     order_currency: "INR",
     customer_details: {
@@ -74,6 +63,9 @@ export const createPaymentAction = async (data) => {
       customer_phone: phnNo,
       customer_email: user.email,
       customer_name: `${user.firstName} ${user.lastName}`,
+    },
+    order_meta:{
+   return_url:`http://localhost:3000/order/payment-verification?order_id=order_${order_id}`
     },
     cart_details: {
       cart_items: cartItems.map((item) => ({
@@ -84,11 +76,9 @@ export const createPaymentAction = async (data) => {
       })),
     },
   };
-
   try {
     const response = await cashfree.PGCreateOrder(request);
-    console.log(response.data,"payment");
-    
+
     return response.data;
   } catch (error) {
     console.error(
@@ -99,10 +89,29 @@ export const createPaymentAction = async (data) => {
   }
 };
 
-export const paymentVerify = async (order_id) => {
+
+export const paymentVerify = async ({order_id,Address,cartItems,subtotal,user}) => {
   try {
     const response = await cashfree.PGOrderFetchPayments(order_id);
-    return response.data; // Ensure data is returned
+      if (response.data && response.data[0].payment_status === "SUCCESS") {
+         const res= await createOrder({
+            Address,
+            cartItems,
+            total: response.data[0].payment_amount,
+            subtotal,
+            userId: user.userId,
+            userName: `${user.firstName} ${user.lastName}`,
+            orderId: response.data[0].order_id,
+          })
+         
+          if(res.success){
+            return{success:true,msg:"Payment successful!"}
+          }else{
+             return{success:false,msg:"Payment failed"}
+          }
+         
+        }
+    // Ensure data is returned
   } catch (error) {
     console.error("Error fetching payment:", error);
     throw error; // Re-throw the error to handle it upstream
@@ -502,6 +511,7 @@ export const getSearchProducts = async (req) => {
       minPrice,
       maxPrice,
       page = 1,
+      size
     } = req;
 
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 10;
@@ -518,6 +528,7 @@ export const getSearchProducts = async (req) => {
         { name: { $regex: normalizedSearch, $options: "i" } },
         { category: { $regex: normalizedSearch, $options: "i" } },
         { description: { $regex: normalizedSearch, $options: "i" } },
+        {size:{ $regex: normalizedSearch, $options: "i" }}
       ];
     }
 
@@ -525,6 +536,9 @@ export const getSearchProducts = async (req) => {
       baseQuery.category = { $regex: `^${category}$`, $options: "i" }; // case-insensitive exact match
     }
 
+   if(size){
+    baseQuery.size=size
+   }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
       baseQuery.price = {};
@@ -559,7 +573,7 @@ export const getSearchProducts = async (req) => {
     description: p.description,
     rating: p.rating,
     numOfReviews: p.numOfReviews,
-    occasion: p.occasion,
+    size: p.size,
     details: p.details,
     createdAt: p.createdAt,
     updatedAt: p.updatedAt,
@@ -602,27 +616,27 @@ export const getCategory = async () => {
   }
 };
 
-export const getOccasion = async () => {
+export const getSize = async () => {
   try {
     await ConnectDB();
-    const occasions = await Product.aggregate([
+    const sizes = await Product.aggregate([
       {
         $group: {
-          _id: { $toLower: "$occasion" }, // group by lowercased occasion
+          _id: { $toLower: "$size" }, // group by lowercased occasion
         },
       },
       {
         $project: {
           _id: 0,
-          occasion: "$_id",
+          size: "$_id",
         },
       },
     ]);
 
     // Extract the values into a flat array
-    const occasionList = occasions.map((item) => item.occasion);
+    const sizeList = sizes.map((item) => item.size);
 
-    return { success: true, occasions: occasionList };
+    return { success: true, sizes:sizeList};
   } catch (error) {
     return { success: false, message: error.message };
   }

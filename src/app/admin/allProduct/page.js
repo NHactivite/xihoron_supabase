@@ -14,7 +14,7 @@ const AdminProduct = async({ searchParams }) => {
   
   const data=await getSearchProducts(currentFilters);
   const searchProducts=data.products;
-  
+   
   return (
      <div >
      

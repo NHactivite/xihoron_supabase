@@ -23,7 +23,7 @@ const NewProduct = ({ mode, initialProduct }) => {
   const [description, setDescription] = useState(
     initialProduct.description || ""
   );
-  const [occasion, setOccasion] = useState(initialProduct.occasion || "");
+  const [size, setSize] = useState(initialProduct.size || "");
  
   const [details, setDetails] = useState(initialProduct.details || []);
 
@@ -89,7 +89,7 @@ const NewProduct = ({ mode, initialProduct }) => {
       formData.set("price", price.toString());
       formData.set("stock", stock.toString());
       formData.set("category", category);
-      formData.set("occasion", occasion);
+      formData.set("size", size);
 
      formData.set("details", JSON.stringify(details));
 
@@ -113,7 +113,7 @@ const NewProduct = ({ mode, initialProduct }) => {
         setStock("");
         setCategory("");
         setDescription("");
-        setOccasion("");
+        setSize("");
         setDetails([]);
         setPhotos({ file: [], preview: [], error: "" });
 
@@ -162,8 +162,8 @@ const NewProduct = ({ mode, initialProduct }) => {
         hasChanges = true;
       }
 
-      if (occasion !== initialProduct.occasion) {
-        formData.set("occasion", occasion);
+      if (size !== initialProduct.size) {
+        formData.set("size", size);
         hasChanges = true;
       }
       if (details !== initialProduct.details) {
@@ -306,14 +306,14 @@ const NewProduct = ({ mode, initialProduct }) => {
 
               <div className="space-y-2">
                 <Label htmlFor="occasion" className="text-sm font-medium">
-                  Occasion
+                  Size
                 </Label>
                 <Input
                   id="occasion"
                   type="text"
                   placeholder="Enter occasion"
-                  value={occasion}
-                  onChange={(e) => setOccasion(e.target.value)}
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
                   className="w-full"
                 />
               </div>

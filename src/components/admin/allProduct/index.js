@@ -14,6 +14,8 @@ import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 
 const AllProduct = ({products}) => {
+  console.log(products,"kooo");
+   
  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
  const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
 const [productToEdit, setProductToEdit] = useState(null);
@@ -58,7 +60,7 @@ const router=useRouter()
                   <TableHead>Price</TableHead>
                   <TableHead>Stock</TableHead>
                   <TableHead>Rating</TableHead>
-                  <TableHead>Occasion</TableHead>
+                  <TableHead>Size</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -97,7 +99,7 @@ const router=useRouter()
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">{product.occasion}</Badge>
+                      <Badge variant="outline">{product.size}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">

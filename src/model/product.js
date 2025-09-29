@@ -37,7 +37,7 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    occasion: {
+    size: {
       type: String,
       required: true,
     },
@@ -56,4 +56,7 @@ const ProductSchema = new mongoose.Schema(
 ProductSchema.index({ category: 1 }); // filter by category
 ProductSchema.index({ price: 1 });
 
+// if (mongoose.models.Product) {
+//   delete mongoose.models.Product;
+// }
 export const Product =mongoose.models.Product || mongoose.model("Product", ProductSchema);

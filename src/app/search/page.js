@@ -1,6 +1,6 @@
 "use client";
 
-import { getCategory, getOccasion, getSearchProducts } from "@/action";
+import { getCategory, getOccasion, getSearchProducts, getSize } from "@/action";
 import SearchAndFilters from "@/components/filter";
 import Pagination from "@/components/pagination";
 import ProductCard from "@/components/product-card";
@@ -13,7 +13,7 @@ const Search = () => {
   const searchParams = useSearchParams();
 
   const [categories, setCategories] = useState([]);
-  const [occasions, setOccasions] = useState([]);
+  const [sizes, setSizes] = useState([]);
   const [products, setProducts] = useState([]); // ✅ add this
   const [totalPage, setTotalPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -25,20 +25,20 @@ const Search = () => {
     maxPrice: searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined,
     sort: searchParams.get("sort") || "",
     page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
-    occasion: searchParams.get("occa") || "",
+    size : searchParams.get("size") || "",
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const [catRes, occaRes, productRes] = await Promise.all([
+      const [catRes, sizeRes, productRes] = await Promise.all([
         getCategory(),
-        getOccasion(),
+        getSize(),
         getSearchProducts(filters),
       ]);
 
       setCategories(catRes?.categories || []);
-      setOccasions(occaRes?.occasions || []);
+      setSizes(sizeRes?.sizes || []);
       setProducts(productRes?.products||[]) // ✅ This was missing
       setTotalPage(productRes?.totalPage || 1);
       setLoading(false);
@@ -54,7 +54,7 @@ const Search = () => {
       <SearchAndFilters
         categories={categories}
         currentFilters={filters}
-        occasion={occasions}
+        sizes={sizes}
       />
 
       <main className="grid grid-cols-2 md:grid-cols-5 gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 scrollbar-hide mt-10">

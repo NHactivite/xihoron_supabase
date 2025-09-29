@@ -52,11 +52,11 @@ export async function POST(req) {
   const price = formData.get("price");
   const stock = formData.get("stock");
   const category = formData.get("category");
-  const occasion = formData.get("occasion");
+  const size = formData.get("size");
   const files = formData.getAll("photos");
   const details=formData.get("details")
 
-  if (!name || !description || !price || !stock || !category || !occasion ||!details) {
+  if (!name || !description || !price || !stock || !category || !size ||!details) {
     return NextResponse.json({ success: false, message: "All fields required" }, { status: 400 });
   }
 
@@ -86,7 +86,7 @@ export async function POST(req) {
     price,
     stock,
     category,
-    occasion,
+    size,
     details: JSON.parse(details),
     photos: uploadedPhotos,
   });
@@ -140,7 +140,7 @@ export async function PUT(req) {
     const price = formData.get("price");
     const stock = formData.get("stock");
     const category = formData.get("category");
-    const occasion = formData.get("occasion");
+    const size = formData.get("size");
     const details = formData.get("details");
     const files = formData.getAll("photos");
     const removedPhotos = JSON.parse(formData.get("removedPhotos") || "[]"); // array of public_id
@@ -156,7 +156,7 @@ export async function PUT(req) {
     if (price) product.price = price;
     if (stock) product.stock = stock;
     if (category) product.category = category;
-    if (occasion) product.occasion = occasion;
+    if (size) product.size = size;
     if (details) product.details = JSON.parse(details);
 
     // Remove any selected old photos from Cloudinary
