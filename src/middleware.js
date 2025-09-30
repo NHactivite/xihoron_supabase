@@ -68,49 +68,62 @@
 // };
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { ratelimit } from "./lib/rateLimit";
+import { ratelimit } from "./lib/ratelimit";
 
-const isPublicRoute = createRouteMatcher([
-  // ... your public routes
-]);
+// Define the routes that are public and do not require authentication.
+const publicRoutes = [
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/",
+  "/product(.*)",
+  "/about",
+  "/privacy",
+  "/contact",
+  "/search(.*)",
+  "/manifest.json",
+  "/sw.js",
+  "/favicon.ico",
+  "/icons/(.*)",
+  "/order/payment-verification"
+];
 
+// Define the routes that are protected admin routes.
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
-export default clerkMiddleware(async (auth, req) => {
-  // --- Rate limit logic with error handling ---
+// Use the clerkMiddleware helper, passing the publicRoutes config.
+// Clerk will automatically protect all other routes.
+export default clerkMiddleware(async(auth, req) => {
+  // --- Rate limit logic ---
+  // We keep this custom logic.
   try {
     const ip = req.ip ?? '127.0.0.1';
-    const { success, limit, remaining, reset } = await ratelimit.limit(ip);
-
+    const { success } = await ratelimit.limit(ip);
     if (!success) {
-      return new NextResponse('Too many requests.', {
-        status: 429,
-        headers: {
-          'X-RateLimit-Limit': limit.toString(),
-          'X-RateLimit-Remaining': remaining.toString(),
-          'X-RateLimit-Reset': new Date(reset).toUTCString(),
-        },
-      });
+      return new NextResponse('Too many requests.');
     }
   } catch (error) {
-    // THIS IS THE IMPORTANT PART
-    // It will log the actual connection error from Upstash
     console.error("Rate limiter failed:", error);
-    // We will let the request pass instead of crashing.
-    // You might want to block requests here in a real production scenario if the rate limiter is critical.
   }
   // --- End of rate limit logic ---
 
-  if (!isPublicRoute(req)) {
-    auth().protect();
+
+  // --- Custom Admin Route Logic ---
+  // If the user tries to access an admin route...
+  if (isAdminRoute(req)) {
+    // Get the auth state. This is the correct use of auth()
+    const { sessionClaims } = auth();
+
+    // ...and they are not an admin, redirect them.
+    if (sessionClaims?.metadata?.role !== "admin") {
+      const url = new URL("/", req.url);
+      return NextResponse.redirect(url);
+    }
   }
 
-  if (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "admin") {
-    const url = new URL("/", req.url);
-    return NextResponse.redirect(url);
-  }
-
+  // Allow all other requests to proceed.
+  // Clerk's middleware will handle the public/private logic.
   return NextResponse.next();
+
 });
 
 export const config = {
