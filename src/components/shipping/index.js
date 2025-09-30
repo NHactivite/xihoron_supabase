@@ -1,13 +1,12 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import {  createPaymentAction } from "@/action";
+import { createPaymentAction } from "@/action";
 import { load } from "@cashfreepayments/cashfree-js";
+import { useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Shipping = ({user}) => {
   const { cartItems, subtotal } = useSelector(
@@ -30,7 +29,7 @@ const Shipping = ({user}) => {
 
 
 const cashfreeRef = useRef(null);
-   const router=useRouter()
+   
   useEffect(() => {
     const initializeSDK = async () => {
       try {
