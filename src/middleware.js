@@ -66,74 +66,56 @@
 //     "/(api|trpc)(.*)",
 //   ],
 // };
-
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-// import { ratelimit } from "./lib/rateLimit"; // Corrected the import path assuming it's ratelimit.ts not rateLimit.ts
+import { ratelimit } from "./lib/rateLimit";
 
 const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/",
-  "/product(.*)",
-  "/about",
-  "/privacy",
-  "/contact",
-  "/search(.*)",
-  "/manifest.json",
-  "/sw.js",
-  "/favicon.ico",
-  "/icons/(.*)",
-  "/order/payment-verification"
+  // ... your public routes
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // --- Rate limit logic ---
-  // In Vercel Edge Functions, `req.ip` is the recommended way to get the client's IP.
-  // const ip = req.ip ?? '127.0.0.1';
+  // --- Rate limit logic with error handling ---
+  try {
+    const ip = req.ip ?? '127.0.0.1';
+    const { success, limit, remaining, reset } = await ratelimit.limit(ip);
 
-  // // Rate limit the user based on their IP address.
-  // const { success, limit, remaining, reset } = await ratelimit.limit(ip);
-
-  // // If the user has exceeded the limit, return a 429 Too Many Requests response.
-  // if (!success) {
-  //   return new NextResponse('Too many requests. Please try again later.', {
-  //     status: 429,
-  //     headers: {
-  //       'X-RateLimit-Limit': limit.toString(),
-  //       'X-RateLimit-Remaining': remaining.toString(),
-  //       'X-RateLimit-Reset': new Date(reset).toUTCString(),
-  //     },
-  //   });
-  // }
+    if (!success) {
+      return new NextResponse('Too many requests.', {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': new Date(reset).toUTCString(),
+        },
+      });
+    }
+  } catch (error) {
+    // THIS IS THE IMPORTANT PART
+    // It will log the actual connection error from Upstash
+    console.error("Rate limiter failed:", error);
+    // We will let the request pass instead of crashing.
+    // You might want to block requests here in a real production scenario if the rate limiter is critical.
+  }
   // --- End of rate limit logic ---
 
   if (!isPublicRoute(req)) {
-    // Note: auth().protect() is the modern way, but auth.protect() is also valid in older versions.
-    // This should work as is.
     auth().protect();
   }
 
-  // Protect all routes starting with `/admin`
-  if (
-    isAdminRoute(req) &&
-    (await auth()).sessionClaims?.metadata?.role !== "admin"
-  ) {
+  if (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "admin") {
     const url = new URL("/", req.url);
     return NextResponse.redirect(url);
   }
 
-  // Allow the request to proceed if no other condition is met
   return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
     "/(api|trpc)(.*)",
   ],
 };
