@@ -69,7 +69,7 @@
 
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { ratelimit } from "./lib/rateLimit"; // Corrected the import path assuming it's ratelimit.ts not rateLimit.ts
+// import { ratelimit } from "./lib/rateLimit"; // Corrected the import path assuming it's ratelimit.ts not rateLimit.ts
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -92,22 +92,22 @@ const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   // --- Rate limit logic ---
   // In Vercel Edge Functions, `req.ip` is the recommended way to get the client's IP.
-  const ip = req.ip ?? '127.0.0.1';
+  // const ip = req.ip ?? '127.0.0.1';
 
-  // Rate limit the user based on their IP address.
-  const { success, limit, remaining, reset } = await ratelimit.limit(ip);
+  // // Rate limit the user based on their IP address.
+  // const { success, limit, remaining, reset } = await ratelimit.limit(ip);
 
-  // If the user has exceeded the limit, return a 429 Too Many Requests response.
-  if (!success) {
-    return new NextResponse('Too many requests. Please try again later.', {
-      status: 429,
-      headers: {
-        'X-RateLimit-Limit': limit.toString(),
-        'X-RateLimit-Remaining': remaining.toString(),
-        'X-RateLimit-Reset': new Date(reset).toUTCString(),
-      },
-    });
-  }
+  // // If the user has exceeded the limit, return a 429 Too Many Requests response.
+  // if (!success) {
+  //   return new NextResponse('Too many requests. Please try again later.', {
+  //     status: 429,
+  //     headers: {
+  //       'X-RateLimit-Limit': limit.toString(),
+  //       'X-RateLimit-Remaining': remaining.toString(),
+  //       'X-RateLimit-Reset': new Date(reset).toUTCString(),
+  //     },
+  //   });
+  // }
   // --- End of rate limit logic ---
 
   if (!isPublicRoute(req)) {
