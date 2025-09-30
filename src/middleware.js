@@ -27,7 +27,7 @@ export default clerkMiddleware(async (auth, req) => {
   // Get the IP address of the requester.
   // The `x-forwarded-for` header is important for getting the true client IP
   // when deployed behind a proxy or load balancer.
- const ip = req.headers.get("x-forwarded-for") ?? request.ip ?? '127.0.0.1';
+ const ip = req.headers.get("x-forwarded-for") ?? req.ip ?? '127.0.0.1';
 
 // Rate limit the user based on their IP address.
   const { success, limit, remaining, reset } = await ratelimit.limit(ip);
