@@ -68,7 +68,7 @@
 // };
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { ratelimit } from "./lib/ratelimit";
+import { ratelimit } from "./lib/rateLimit";
 
 // Define the routes that are public and do not require authentication.
 const publicRoutes = [
