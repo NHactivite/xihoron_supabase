@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import UpdateStatus from "../utils/updateStatus";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Link from "next/link";
 
 const OrderMangement = ({ orders }) => {
   const [statusFilter, setStatusFilter] = useState("Processing"); // default
@@ -80,6 +81,7 @@ const OrderMangement = ({ orders }) => {
                   {item.orderItems.map((i, idx) => (
                     <div key={idx} className="col-span-2">
                       <div className="mt-2 flex items-center gap-2">
+                       <Link href={`/product/${i.productId}`}>
                         <Image
                           className="rounded-md"
                           src={i.photos}
@@ -88,6 +90,7 @@ const OrderMangement = ({ orders }) => {
                           height={50}
                           priority
                         />
+                       </Link>
                         <p className="text-sm text-muted-foreground md:block md:ml-0 md:gap-0 flex flex-col ml-10 gap-2">
                           <span className="font-medium mr-5">
                             Name: <span className="text-muted-foreground">{i.name}</span>
@@ -97,6 +100,9 @@ const OrderMangement = ({ orders }) => {
                           </span>
                           <span className="font-medium mr-5">
                             Quantity: <span className="text-muted-foreground">{i.quantity}</span>
+                          </span>
+                          <span className="font-medium mr-5">
+                            Product_ID: <span className="text-muted-foreground">{i.productId}</span>
                           </span>
                         </p>
                       </div>

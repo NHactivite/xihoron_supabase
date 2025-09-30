@@ -198,6 +198,7 @@ export default function ProductSlider({ Product, user }) {
                           quantity: 1,
                           name: Product.name,
                           stock: Product.stock,
+                          size:Product.size,
                         })
                       : toast.error("Please login")
                   }

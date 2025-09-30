@@ -64,6 +64,7 @@ import mongoose from "mongoose";
           photos:String,
           price:Number,
           quantity:Number,
+          size:String,
           productId:{
             type:mongoose.Types.ObjectId,
             ref:"Product"
@@ -83,6 +84,9 @@ orderSchema.index({ orderId: 1 }, { unique: true });
 orderSchema.index({ userId: 1 });
 orderSchema.index({ status: 1 });
   
+if (mongoose.models.Order) {
+  delete mongoose.models.Order;
+}
   
-  export const Order = mongoose.models.Order|| mongoose.model("Order", orderSchema);
+export const Order = mongoose.models.Order|| mongoose.model("Order", orderSchema);
 

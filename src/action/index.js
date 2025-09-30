@@ -9,24 +9,22 @@ import { Order } from "@/model/order";
 import { clerkClient } from "@clerk/express";
 import { auth } from "@clerk/nextjs/server";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
-import { NextResponse } from "next/server";
-import toast from "react-hot-toast";
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
 }
 // Initialize Cashfree with your credentials
 
-const cashfree = new Cashfree(
-  CFEnvironment.SANDBOX,
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET
-);
 // const cashfree = new Cashfree(
-//   CFEnvironment.PRODUCTION,
+//   CFEnvironment.SANDBOX,
 //   process.env.CLIENT_ID,
 //   process.env.CLIENT_SECRET
 // );
+const cashfree = new Cashfree(
+  CFEnvironment.PRODUCTION,
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET
+);
 // crete profile action
 
 export const createPaymentAction = async (data) => {
@@ -128,7 +126,8 @@ export const createOrder = async (data) => {
       data;
 
     const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
-
+     console.log(cartItems,"oooo");
+     
      await Order.create({
       shippingInfo: {
         address: Address.address,
@@ -149,7 +148,8 @@ export const createOrder = async (data) => {
         photos: item.photos, // If this is an array, use item.photos[0] or update schema
         price: item.price,
         quantity: item.quantity,
-        productId: item._id,
+        size:item.size,
+        productId: item.productId,
       })),
     });
     for (const item of cartItems) {

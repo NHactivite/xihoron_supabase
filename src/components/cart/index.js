@@ -10,6 +10,8 @@ const  Cart = () => {
   const dispatch=useDispatch()
 
   const {cartItems,subtotal,shippingCharges,total}=useSelector((state)=>state.cart)
+  console.log(cartItems,"items");
+  
  
   const incrementHandler=(cartItem)=>{
   
