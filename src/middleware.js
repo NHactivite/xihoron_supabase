@@ -99,7 +99,7 @@ export default clerkMiddleware(async(auth, req) => {
     const ip = req.ip ?? '127.0.0.1';
     const { success } = await ratelimit.limit(ip);
     if (!success) {
-      return new NextResponse('Too many requests.');
+      return new NextResponse('Too many requests');
     }
   } catch (error) {
     console.error("Rate limiter failed:", error);
