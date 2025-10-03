@@ -22,7 +22,8 @@ const isPublicRoute = createRouteMatcher([
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-
+  try {
+    
   //   rate limit logiccccccc------------------
   // Get the IP address of the requester.
   // The `x-forwarded-for` header is important for getting the true client IP
@@ -55,8 +56,16 @@ export default clerkMiddleware(async (auth, req) => {
   ) {
     const url = new URL("/", req.url);
     return NextResponse.redirect(url);
+  
+}
+  } catch (error) {
+    console.error("MIDDLEWARE ERROR:", error);
+
+    // Return a generic error response to the user
+    return new NextResponse("An internal server error occurred.", { status: 500,msg:error });
   }
-});
+}
+);
 
 export const config = {
   matcher: [
