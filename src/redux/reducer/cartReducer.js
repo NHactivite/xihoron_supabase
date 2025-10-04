@@ -1,4 +1,4 @@
-import { getCharges } from "@/action";
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -46,16 +46,15 @@ export const cartReducer = createSlice({
       );
 
       state.subtotal = subtotal;
-      console.log("chargingggg",action)
-      
+      const Limit=action.payload.data.limit
+      const charge=action.payload.data.charge
+
       state.shippingCharges =
-        state.subtotal < action.payload.data.limit && state.subtotal > 0
-          ? action.payload.data.charge
+        state.subtotal < Limit && state.subtotal > 0
+          ? charge
           : 0;
-      // // state.tax=Math.round(state.subtotal * 0.05);
-      // state.tax=Math.round(state.subtotal * 0);
+    
       state.total = state.subtotal + state.shippingCharges;
-      // state.total=price>=100?price:state.subtotal+state.shippingCharges;
     },
 
     discountApplied: (state, action) => {

@@ -1,7 +1,7 @@
 "use client"
 import CartItems from "../cartItems";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, calculatePrice, removeCartItem, setChargesAndLimit } from "@/redux/reducer/cartReducer";
+import { addToCart, calculatePrice, removeCartItem } from "@/redux/reducer/cartReducer";
 import Link from "next/link";
 import { useEffect } from "react";
 
