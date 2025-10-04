@@ -4,7 +4,7 @@ import { Charge } from '@/model/charge'
 import React from 'react'
 
 const CartPage = async() => {
-//     const chargesData=await getCharges()
+    const chargesData=await getCharges()
 // const createCharge = async () => {
 //   const newCharge = await Charge.create({});
 //   console.log("Charge created:", newCharge);

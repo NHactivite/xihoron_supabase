@@ -14,7 +14,7 @@ const LoadingAnimation = () => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-100 via-white to-teal-100 rounded-xl"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-red-500 via-orange-600 to-orange-200"
         variants={loadingVariants}
         initial="initial"
         exit="exit"
@@ -22,7 +22,7 @@ const LoadingAnimation = () => {
         {/* Flower-like Spinner */}
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-20 h-20 text-green-600"
+          className="w-20 h-20 text-red-600"
           viewBox="0 0 100 100"
           fill="none"
           animate={{ rotate: 360 }}
