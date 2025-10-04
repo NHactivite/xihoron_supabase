@@ -9,15 +9,17 @@ import { Edit, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import NewProduct from '../newProduct'
-import { deleteProduct } from '@/action'
+import { deleteProduct, updateCharges } from '@/action'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
 
 const AllProduct = ({products}) => {
-  console.log(products,"kooo");
-   
- const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
- const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+const [limit,setLimit]=useState("")
+const [charge,setCharge]=useState("")
+const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+const [isChargeDialog, setIsChargeDialog] = useState(false);
+const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
 const [productToEdit, setProductToEdit] = useState(null);
 const router=useRouter()
   const openEditDialog = () => {
@@ -27,12 +29,20 @@ const router=useRouter()
     setIsNewDialogOpen(true);
   };
 
+  const openChargeDialog= () => {
+    setIsChargeDialog(true);
+  };
+
  const handleDeleteProduct=async(id)=>{
    const res=await deleteProduct(id)
    res.success?toast.success(res.message):toast.success(res.message)
    router.replace("/admin/allProduct")
  }
 
+ const changeHandler=async(e)=>{
+    e.preventDefault()
+    await updateCharges({limit,charge})
+ }
     
  return (
     <div className="container mx-auto p-6">
@@ -41,9 +51,12 @@ const router=useRouter()
           <h1 className="text-3xl font-bold">Product Management</h1>
           <p className="text-muted-foreground">Manage your flower bouquet inventory</p>
         </div>
-        <div>
+       <div className='gap-2 flex lg:flex-row flex-col'> <div>
           <Button onClick={() => {openNewDialog()} }>Add Product </Button>
         </div>
+        <div>
+          <Button onClick={() => {openChargeDialog()} }>Add Shipping</Button>
+        </div></div>
       </div>
 
       <Card>
@@ -129,6 +142,7 @@ const router=useRouter()
           )}
         </DialogContent>
       </Dialog>
+
      
      <Dialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen}>
         <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
@@ -140,6 +154,38 @@ const router=useRouter()
           
         </DialogContent>
       </Dialog>
+
+
+     <Dialog open={isChargeDialog} onOpenChange={setIsChargeDialog}>
+  <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh]">
+    <DialogHeader>
+      <DialogTitle>Add Charges</DialogTitle>
+    </DialogHeader>
+    <form className="space-y-4" onSubmit={changeHandler}>
+      <Input
+        id="limit"
+        type="number"
+        min="0"
+        step="0.01"
+        value={limit === 0 ? "" : limit}
+        onChange={(e) => setLimit(Number(e.target.value))}
+        placeholder="Enter Price limit"
+      />
+      <Input
+        id="charge"
+        type="number"
+        min="0"
+        step="0.01"
+        value={charge === 0 ? "" : charge}
+        onChange={(e) => setCharge(Number(e.target.value))}
+        placeholder="Enter Shipping Charge"
+      />
+
+      <Button type="submit">Set</Button>
+    </form>
+  </DialogContent>
+</Dialog>
+
     </div>
   )
 }

@@ -305,11 +305,11 @@ const NewProduct = ({ mode, initialProduct }) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="occasion" className="text-sm font-medium">
+                <Label htmlFor="size" className="text-sm font-medium">
                   Size
                 </Label>
                 <Input
-                  id="occasion"
+                  id="size"
                   type="text"
                   placeholder="Enter occasion"
                   value={size}

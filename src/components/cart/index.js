@@ -1,17 +1,16 @@
 "use client"
 import CartItems from "../cartItems";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, calculatePrice, removeCartItem } from "@/redux/reducer/cartReducer";
+import { addToCart, calculatePrice, removeCartItem, setChargesAndLimit } from "@/redux/reducer/cartReducer";
 import Link from "next/link";
 import { useEffect } from "react";
 
-const  Cart = () => {
+const  Cart = ({charges}) => {
 
   const dispatch=useDispatch()
 
   const {cartItems,subtotal,shippingCharges,total}=useSelector((state)=>state.cart)
-  console.log(cartItems,"items");
-  
+
  
   const incrementHandler=(cartItem)=>{
   
@@ -28,7 +27,7 @@ const  Cart = () => {
 
   useEffect(()=>{
       window.scrollTo(0, 0);
-      dispatch(calculatePrice())
+      dispatch(calculatePrice(charges))
   },[cartItems, dispatch])
 
 

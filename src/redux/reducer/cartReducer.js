@@ -1,11 +1,12 @@
+import { getCharges } from "@/action";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
   cartItems: [],
   subtotal: 0,
-  shippingCharges: 0,
   total: 0,
+  shippingCharges:0,
   shippingInfo: {
     address: "",
     pinCode: "",
@@ -37,19 +38,19 @@ export const cartReducer = createSlice({
         ));
       state.loading = false;
     },
-
-    calculatePrice: (state) => {
+   
+    calculatePrice: (state,action) => {
       const subtotal = state.cartItems.reduce(
         (total, item) => total + item.price * item.quantity,
         0
       );
-      state.subtotal = subtotal;
-      const shippingLimit = Number( process.env.NEXT_PUBLIC_SHIPPING_CHARGE_LIMIT );
-      const shippingCharge = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE);
 
+      state.subtotal = subtotal;
+      console.log("chargingggg",action)
+      
       state.shippingCharges =
-        state.subtotal < shippingLimit && state.subtotal > 0
-          ? shippingCharge
+        state.subtotal < action.payload.data.limit && state.subtotal > 0
+          ? action.payload.data.charge
           : 0;
       // // state.tax=Math.round(state.subtotal * 0.05);
       // state.tax=Math.round(state.subtotal * 0);

@@ -9,6 +9,7 @@ import { Order } from "@/model/order";
 import { clerkClient } from "@clerk/express";
 import { auth } from "@clerk/nextjs/server";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
+import { Charge } from "@/model/charge";
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
@@ -642,5 +643,31 @@ export const getSize = async () => {
     return { success: false, message: error.message };
   }
 };
+export const getCharges = async () => {
+  try {
+    await ConnectDB();
+    const charges = await Charge.findOne({}).lean();
+    const {limit,charge}=charges
+    return { success: true, data:{limit,charge} };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+export const updateCharges = async ({ limit, charge }) => {
+  try {
+    await ConnectDB();
+
+   const res = await Charge.findByIdAndUpdate(
+      "singleton",
+      { limit, charge },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    return { success: true, data: res };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+
+
 
 // cashfreeee

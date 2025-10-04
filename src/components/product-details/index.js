@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Rating from "../rating";
 import ReviewCard from "../reviewCard";
 import Link from "next/link";
-import WeightSelector from "../weightCheckbox";
 
 export default function ProductSlider({ Product, user }) {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -199,6 +198,7 @@ export default function ProductSlider({ Product, user }) {
                           name: Product.name,
                           stock: Product.stock,
                           size:Product.size,
+                          shippingCharges:Product.shippingCharge
                         })
                       : toast.error("Please login")
                   }
@@ -222,7 +222,7 @@ export default function ProductSlider({ Product, user }) {
                 <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
                 reviews)
               </em>
-               <span className="font-bold">size:300g</span>
+               <span className="font-bold">`size:${Product.size}`</span>
                
             </div>
           
