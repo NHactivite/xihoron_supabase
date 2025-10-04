@@ -44,65 +44,6 @@ const cashfreeRef = useRef(null);
     initializeSDK();
   }, []);
 
-  //  const getSessionId = async (Address) => {
-  //   try {
-  //     const res = await createPaymentAction({
-  //       cartItems: cartItems,
-  //       user:user,
-  //       phnNo:Address.phnNo,
-  //       Address:Address
-  //     });
-     
-  //   if (res && res.payment_session_id) {
-  //     const checkoutOptions = {
-  //         paymentSessionId: res.payment_session_id,
-  //         redirectTarget: "_modal", // Ensures the payment opens in a modal
-  //         platform: "web"
-  //       };
-
-  //     cashfreeRef.current
-  //         .checkout(checkoutOptions)
-  //         .then(async() => {
-  //           const data = await paymentVerify({order_id:res.order_id,Address:Address,cartItems:cartItems,subtotal:subtotal,user:user})
-  //           toast.success(data.msg)
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error during checkout:", error);
-  //         });
-
-  //     } else {
-  //       console.error("Missing required session data in response:", res);
-  //       throw new Error("Failed to retrieve valid session data.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in getSessionId:", error);
-  //     throw error;
-  //   }
-  // };
-
-
-//   old hanle pay---------------------------------------
-  //   const handlePay = async (Address) => {
-  //   try {
-  //     // Check if the cashfreeRef is loaded and the checkout method is available
-  //     if (
-  //       cashfreeRef.current &&
-  //       typeof cashfreeRef.current.checkout === "function"
-  //     ) {
-  //       // Get the payment session ID (this should be returned from your backend or API)
-  //       await getSessionId(Address); // Replace with actual method to fetch the session ID
-
-  //     } else {
-  //       console.error("checkout function is not available in the Cashfree SDK");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in handlePay:", error);
-  //   }
-  // };
-//  new handle pay-----------------------------------------
-// In your Shipping.js component
-
-// This is the function that will be called on form submit
 
 const handlePay = async (Address) => {
   try {
@@ -125,7 +66,7 @@ const handlePay = async (Address) => {
       phnNo: Address.phnNo,
       Address,
     });
-
+  
     // Step 3: Initiate the checkout.
     if (res && res.payment_session_id) {
       const checkoutOptions = {

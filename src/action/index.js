@@ -63,7 +63,7 @@ const request = {
       customer_name: `${user.firstName} ${user.lastName}`,
     },
     order_meta:{
-   return_url:`http://localhost:3000/order/payment-verification?order_id=order_${order_id}`
+   return_url:`https://www.discoverassam.org/order/payment-verification?order_id=order_${order_id}`
     },
     cart_details: {
       cart_items: cartItems.map((item) => ({
@@ -91,6 +91,7 @@ const request = {
 export const paymentVerify = async ({order_id,Address,cartItems,subtotal,user}) => {
   try {
     const response = await cashfree.PGOrderFetchPayments(order_id);
+   
       if (response.data && response.data[0].payment_status === "SUCCESS") {
          const res= await createOrder({
             Address,
