@@ -46,6 +46,7 @@ export const cartReducer = createSlice({
       );
 
       state.subtotal = subtotal;
+      
       const Limit=action.payload.data.limit
       const charge=action.payload.data.charge
 

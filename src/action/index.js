@@ -124,12 +124,10 @@ export const createOrder = async (data) => {
   try {
     await ConnectDB();
 
-    const { Address, cartItems, total, subtotal, userId, userName, orderId } =
-      data;
+    const { Address, cartItems, total, subtotal, userId, userName, orderId } =data;
 
     const shippingCharges = Number(process.env.SHIPPING_CHARGE) || 0;
-     console.log(cartItems,"oooo");
-     
+    
      await Order.create({
       shippingInfo: {
         address: Address.address,
@@ -662,7 +660,7 @@ export const updateCharges = async ({ limit, charge }) => {
       { limit, charge },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    return { success: true, data: res };
+    return { success: true };
   } catch (error) {
     return { success: false, message: error.message };
   }

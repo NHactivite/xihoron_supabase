@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata = {
-  title: "flower-shop app",
-  description: "A full-stack online store for handcrafted wool flower bouquets, featuring a seamless shopping experience with order tracking and customizable gift options",
+  title: "Pickle-shop app",
+  description: "A full-stack online store for authentic, homemade pickles, featuring a seamless shopping experience with order tracking",
   generator: "Next.js",
   manifest: "/manifest.json", // ✅ This is enoughy
  keywords: ["nextjs", "next14", "pwa", "next-pwa"],

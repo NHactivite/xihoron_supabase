@@ -7,10 +7,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold mb-4">Flower Store</h2>
+            <h2 className="text-2xl font-bold mb-4">Pickle Store</h2>
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-              Explore beautiful flowers arrangements, personalized gifts, decadent cakes & floral hampers
-              on <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
+                Explore our collection of authentic homemade pickles, from spicy Bhut Jolokia to tangy Bamboo Shoot, and curated gift sets on <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
             </p>
             <div className="flex space-x-4">
               <Link href="https://www.instagram.com/n.i.k_.h.i.l?igsh=NmMzMTJqczVjbWtw" className="text-white hover:text-gray-300 transition-colors">
@@ -76,7 +75,7 @@ export default function Footer() {
       <div className="border-t border-gray-800">
         <div className="container mx-auto px-4 py-4">
           <p className="text-gray-400 text-xs text-center leading-relaxed">
-            ©2025 www.bloomsflora.com. All rights reserved. Use of this website constitutes acceptance of our Terms of
+            ©2025 www.discoverassam.org. All rights reserved. Use of this website constitutes acceptance of our Terms of
             Service and Policy and Cookie Statement. The material on this site may not be reproduced, distributed,
             transmitted, cached, or otherwise used.
           </p>

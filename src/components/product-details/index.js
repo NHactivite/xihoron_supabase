@@ -222,7 +222,7 @@ export default function ProductSlider({ Product, user }) {
                 <Rating value={Product?.rating || 0} />({Product?.numOfReviews}{" "}
                 reviews)
               </em>
-               <span className="font-bold">`size:${Product.size}`</span>
+               <span className="font-bold">Size: {Product.size}</span>
                
             </div>
           

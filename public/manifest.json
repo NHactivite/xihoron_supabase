@@ -1,6 +1,6 @@
 {
-  "name": "flower-shop app",
-  "short_name": "flowerShop",
+  "name": "Pickle-Shop app",
+  "short_name": "PickleShop",
   "id": "/?source=pwa",
   "start_url": "/",
   "scope": "/",

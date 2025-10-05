@@ -14,7 +14,7 @@ const LoadingAnimation = () => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-red-500 via-orange-600 to-orange-200"
+        className="fixed inset-0 z-50 flex items-center justify-center "
         variants={loadingVariants}
         initial="initial"
         exit="exit"

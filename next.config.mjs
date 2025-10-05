@@ -3,9 +3,9 @@ import withPWA from 'next-pwa';
 
 const nextConfig = {
   reactStrictMode: true,
-  trailingSlash: true,
+  trailingSlash: false,
   compiler: {
-    removeConsole:true,
+    removeConsole:false,
   },
   images: {
     remotePatterns: [
@@ -18,7 +18,7 @@ const nextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable:false,
+  disable:true,
   register: true,
   skipWaiting: true,
   scope: '/',

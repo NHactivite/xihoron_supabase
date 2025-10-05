@@ -41,7 +41,9 @@ const router=useRouter()
 
  const changeHandler=async(e)=>{
     e.preventDefault()
-    await updateCharges({limit,charge})
+   const res= await updateCharges({limit,charge})
+   res.success?toast.success("Charges Set Correctly"):toast.error(res.message)
+   setIsChargeDialog(false)
  }
     
  return (
