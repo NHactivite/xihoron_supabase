@@ -68,8 +68,8 @@ const ProductCard = ({ id, price, photos, name, userId }) => {
 
       {/* Product Info */}
     <div className="mr-2">
-        <p className="mt-2 font-medium text-white">{name}</p>
-      <span className="text-sm text-white">&#x20B9; {price}</span>
+        <p className="mt-2 font-medium text-gray-950">{name}</p>
+      <span className="text-sm text-gray-950">&#x20B9; {price}</span>
     </div>
     </div>
   );

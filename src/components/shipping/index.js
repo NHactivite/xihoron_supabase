@@ -9,9 +9,9 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 const Shipping = ({user}) => {
-  const { cartItems, subtotal } = useSelector(
+  const { cartItems, subtotal,shippingCharges } = useSelector(
     (state) => state.cart );
- 
+  
   const {
     register,
     handleSubmit,
@@ -34,8 +34,8 @@ const cashfreeRef = useRef(null);
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          // mode: "sandbox",  //Adjust to "production" for live
-          mode: "production", // Adjust to "production" for live
+          mode: "sandbox",  //Adjust to "production" for live
+          // mode: "production", // Adjust to "production" for live
         });
       } catch (error) {
         console.error("Failed to load payment gateway:", error);
@@ -62,6 +62,7 @@ const handlePay = async (Address) => {
     // Step 2: Create the payment session on the backend.
     const res = await createPaymentAction({
       cartItems,
+      shippingCharges,
       user,
       phnNo: Address.phnNo,
       Address,
@@ -71,8 +72,8 @@ const handlePay = async (Address) => {
     if (res && res.payment_session_id) {
       const checkoutOptions = {
         paymentSessionId: res.payment_session_id,
-        // Use '_self' to allow the page to redirect cleanly.
-        redirectTarget: "_self",
+        redirectTarget: "_modal", // Ensures the payment opens in a modal
+        platform: "web"
       };
       
       // Let Cashfree take over. No .then() block is needed here.

@@ -10,27 +10,28 @@ import { clerkClient } from "@clerk/express";
 import { auth } from "@clerk/nextjs/server";
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { Charge } from "@/model/charge";
+import { useSelector } from "react-redux";
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
 }
 // Initialize Cashfree with your credentials
 
-// const cashfree = new Cashfree(
-//   CFEnvironment.SANDBOX,
-//   process.env.CLIENT_ID,
-//   process.env.CLIENT_SECRET
-// );
 const cashfree = new Cashfree(
-  CFEnvironment.PRODUCTION,
+  CFEnvironment.SANDBOX,
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
+// const cashfree = new Cashfree(
+//   CFEnvironment.PRODUCTION,
+//   process.env.CLIENT_ID,
+//   process.env.CLIENT_SECRET
+// );
 // crete profile action
 
 export const createPaymentAction = async (data) => {
-  const { user, cartItems, phnNo } = data;
-
+  const { user, cartItems, phnNo,shippingCharges } = data;
+ 
   const products = cartItems.map((item) => ({
     id: item.productId,
     quantity: item.quantity,
@@ -46,11 +47,8 @@ export const createPaymentAction = async (data) => {
 
   let finalAmount = amounts.reduce((acc, curr) => acc + curr, 0);
 
-  // Parse shipping charges from env since they are strings by default
-  const shippingLimit = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE_LIMIT);
-  const shippingCharge = Number(process.env.NEXT_PUBLIC_SHIPPING_CHARGE);
-
-  finalAmount =finalAmount > shippingLimit ? finalAmount : finalAmount + shippingCharge;
+ 
+  finalAmount += shippingCharges;
 
 const order_id=Date.now()
 const request = {
@@ -64,7 +62,8 @@ const request = {
       customer_name: `${user.firstName} ${user.lastName}`,
     },
     order_meta:{
-   return_url:`https://www.discoverassam.org/order/payment-verification?order_id=order_${order_id}`
+ 
+   return_url:`http://localhost:3000/order/payment-verification?order_id=order_${order_id}`
     },
     cart_details: {
       cart_items: cartItems.map((item) => ({

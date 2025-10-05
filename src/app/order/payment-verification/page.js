@@ -48,7 +48,6 @@ const PaymentVerificationContent = () => {
           throw new Error(data?.msg || "Payment verification failed.");
         }
       } catch (error) {
-        toast.error(error.message);
         setStatus("failed");
         setTimeout(() => router.push("/cart"), 3000);
       }
