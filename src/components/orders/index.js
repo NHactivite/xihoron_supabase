@@ -45,13 +45,12 @@ const Orders = ({ order }) => {
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((item, idx) => (
+              
               <div key={idx} className=" p-4 border rounded-lg">
                 {/* Order Summary */}
 
                 <div className="mb-5 flex flex-col flex-wrap  text-sm gap-1">
-                  <p className="absolute lg:left-15 right-80 font-bold ">
-                    {++idx}
-                  </p>
+                  
                   <div>
                     <span className="font-medium mr-5">
                       Total:{" "}

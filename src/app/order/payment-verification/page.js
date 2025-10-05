@@ -8,9 +8,15 @@ import { paymentVerify } from "@/action"; // Import your existing action
 import toast from "react-hot-toast";
 
 const VerificationStatus = ({ status }) => {
-  if (status === 'success') return <div>Order Confirmed! Redirecting you to your orders...</div>;
-  if (status === 'failed') return <div>Payment Failed. Redirecting you to your cart...</div>;
-  return <div>Verifying your payment, please do not close this window...</div>;
+  if (status === 'success') return( <div className="flex justify-center items-center">
+    <h1> Order Confirmed! Redirecting you to your orders...</h1>
+  </div>);
+  if (status === 'failed') return (<div className="flex justify-center items-center"><h1>Payment Failed. Redirecting you to your cart...</h1></div>);
+  return(
+     <div className="flex justify-center items-center">
+      <h1>Verifying your payment, please do not close this window...</h1>
+     </div>
+  );
 };
 
 const PaymentVerificationContent = () => {
@@ -38,13 +44,12 @@ const PaymentVerificationContent = () => {
     const finalizeOrder = async () => {
       try {
         const data = await paymentVerify({ order_id, ...tempOrderData });
-         console.log(data,"payment verfying");
-         
+        
         if (data && data.success) {
           // toast.success(data.msg);
           setStatus("success");
           localStorage.removeItem("tempOrderData"); // Important: Clean up the temporary data
-          setTimeout(() => router.push("/order"), 3000);
+          setTimeout(() => router.push("/shipping"), 3000);
         } else {
           throw new Error(data?.msg || "Payment verification failed.");
         }
