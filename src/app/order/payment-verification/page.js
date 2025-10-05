@@ -38,7 +38,8 @@ const PaymentVerificationContent = () => {
     const finalizeOrder = async () => {
       try {
         const data = await paymentVerify({ order_id, ...tempOrderData });
-        
+         console.log(data,"payment verfying");
+         
         if (data && data.success) {
           // toast.success(data.msg);
           setStatus("success");

@@ -72,8 +72,9 @@ const handlePay = async (Address) => {
     if (res && res.payment_session_id) {
       const checkoutOptions = {
         paymentSessionId: res.payment_session_id,
-        redirectTarget: "_modal", // Ensures the payment opens in a modal
-        platform: "web"
+         redirectTarget: "_self",
+        // redirectTarget: "_modal", // Ensures the payment opens in a modal
+        // platform: "web"
       };
       
       // Let Cashfree take over. No .then() block is needed here.
