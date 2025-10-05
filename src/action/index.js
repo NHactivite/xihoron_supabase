@@ -17,16 +17,16 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
 }
 // Initialize Cashfree with your credentials
 
-const cashfree = new Cashfree(
-  CFEnvironment.SANDBOX,
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET
-);
 // const cashfree = new Cashfree(
-//   CFEnvironment.PRODUCTION,
+//   CFEnvironment.SANDBOX,
 //   process.env.CLIENT_ID,
 //   process.env.CLIENT_SECRET
 // );
+const cashfree = new Cashfree(
+  CFEnvironment.PRODUCTION,
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET
+);
 // crete profile action
 
 export const createPaymentAction = async (data) => {

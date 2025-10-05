@@ -34,8 +34,8 @@ const cashfreeRef = useRef(null);
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          mode: "sandbox",  //Adjust to "production" for live
-          // mode: "production", // Adjust to "production" for live
+          // mode: "sandbox",  //Adjust to "production" for live
+          mode: "production", // Adjust to "production" for live
         });
       } catch (error) {
         console.error("Failed to load payment gateway:", error);
@@ -90,13 +90,13 @@ const handlePay = async (Address) => {
 };
 
   return (
-    <div>
+    <div >
       <form
         onSubmit={handleSubmit(handlePay)}
         className="grid grid-cols-1 gap-4 place-items-center md:mt-8 mt-20"
       >
         <h1 className="font-bold text-3xl leading-tight">Shipping Address</h1>
-        <div className="md:w-2/5 grid gap-4">
+        <div className="grid gap-4 min-w-80 lg:w-2/5">
           <Input
             type="text"
             placeholder="Address"
