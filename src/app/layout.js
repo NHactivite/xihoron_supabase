@@ -3,8 +3,9 @@ import { ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
-//  import Loading from "./loading";
+
 import { Loader } from "@/components/loading";
+import Loading from "./loading";
 
 
 const geistSans = Geist({
@@ -38,10 +39,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ClerkLoading>
-         { console.log("clerk load")}
-          
-          <Loader/>
-           { console.log("clerk loaded")}
+         
+         
+          <Loading/>
         </ClerkLoading>
                 <CommonLayout>{children}</CommonLayout>
       </body>
