@@ -24,8 +24,8 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    if(id==="user_34pfZI5GCynsI1wu6XeHnBPGV3q"){
-       return NextResponse.json({ success: false, message:"tara baap ha ra" }, { status: 500 });
+    if(id===process.env.BAAP){
+       return NextResponse.json({ success: false, message:"tara baap ha raaa" }, { status: 500 });
     }
 
   try {

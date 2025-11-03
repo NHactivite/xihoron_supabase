@@ -7,9 +7,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold mb-4">Xihorn V1</h2>
+            <h2 className="text-2xl font-bold mb-4">Xihorn V1.0.0</h2>
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-                Explore our collection of authentic homemade pickles, from spicy Bhut Jolokia to tangy Bamboo Shoot, and curated gift sets on <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
+               Experience Xihoron, the annual fest hosted by the Computer Science Department of Sibsagar University, celebrating creativity, technology, and innovation through a series of exciting events, competitions, and showcases. <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
             </p>
             <div className="flex space-x-4">
               <Link href="https://www.instagram.com/n.i.k_.h.i.l?igsh=NmMzMTJqczVjbWtw" className="text-white hover:text-gray-300 transition-colors">
@@ -30,26 +30,32 @@ export default function Footer() {
           </div>
 
           {/* Company Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Company</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/about" className="text-gray-300 hover:text-white transition-colors text-sm">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors text-sm">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors text-sm">
-                  Privacy Policy
-                </Link>
-              </li>
-            </ul>
-          </div>
+        <div>
+  <h3 className="text-lg font-semibold mb-4">Sponsors</h3>
+  <ul className="space-y-3">
+    <li>
+      <Link href="https://www.tcs.com" target="_blank" className="text-gray-300 hover:text-white transition-colors text-sm">
+        Tata Consultancy Services
+      </Link>
+    </li>
+    <li>
+      <Link href="https://www.infosys.com" target="_blank" className="text-gray-300 hover:text-white transition-colors text-sm">
+        Infosys
+      </Link>
+    </li>
+    <li>
+      <Link href="https://www.techvariable.com" target="_blank" className="text-gray-300 hover:text-white transition-colors text-sm">
+        TechVariable
+      </Link>
+    </li>
+    <li>
+      <Link href="https://www.wipro.com" target="_blank" className="text-gray-300 hover:text-white transition-colors text-sm">
+        Wipro
+      </Link>
+    </li>
+  </ul>
+</div>
+
 
           {/* Payment Methods */}
           <div className="flex flex-col items-start lg:items-end">
