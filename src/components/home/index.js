@@ -1,21 +1,22 @@
-
 "use client";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, Suspense } from "react";
 import Details from "../DetailsAbout";
 import EventCard from "../EventCard";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
+import Loading from "@/app/loading"; // same loading spinner
+import { Loader } from "../loading";
 
-const Home = ({  Event, Organizer }) => {
+const Home = ({ Event, Organizer }) => {
   const competitionRef = useRef(null);
-
   const scrollToCompetitions = () => {
     competitionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="bg-gradient-to-r from-[#0b1e3b] via-[#2b0b49] to-[#442b5c]">
+      {/* ---- Hero Section (always visible immediately) ---- */}
       <section>
         <motion.div
           className="min-h-screen flex-col bg-gradient-to-br from-[#0b1e3b] via-[#2b0b49] to-[#ff6a3d] flex items-center pt-32 sm:pt-44"
@@ -53,13 +54,17 @@ const Home = ({  Event, Organizer }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.9, duration: 0.8 }}
           >
-            <Button onClick={scrollToCompetitions} className="mt-5 lg:text-2xl text-xl lg:p-8 p-6">
+            <Button
+              onClick={scrollToCompetitions}
+              className="mt-5 lg:text-2xl text-xl lg:p-8 p-6"
+            >
               Explore Events
             </Button>
           </motion.div>
         </motion.div>
       </section>
 
+      {/* ---- Details Section (static) ---- */}
       <section className="lg:gap-16 gap-10 my-8 mx-6 sm:mx-12 lg:mx-28 rounded-xl bg-gradient-to-r from-[#0b1e3b] via-[#2b0b49] to-[#442b5c]">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -71,89 +76,97 @@ const Home = ({  Event, Organizer }) => {
         </motion.div>
       </section>
 
-      <section ref={competitionRef} id="competitions">
-        <motion.div
-          className="lg:text-3xl text-2xl flex justify-center items-center my-16 mx-5 text-white"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <h1>Competitions & Workshops</h1>
-        </motion.div>
+      {/* ---- Competitions Section (async) ---- */}
+      <Suspense fallback={    <Loader/>}>
+        <section ref={competitionRef} id="competitions">
+          <motion.div
+            className="lg:text-3xl text-2xl flex justify-center items-center my-16 mx-5 text-white"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h1>Competitions & Workshops</h1>
+          </motion.div>
 
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6"
-          initial="hidden"
-          whileInView="visible"
-          transition={{ staggerChildren: 0.15 }}
-          viewport={{ once: true }}
-        >
-          {Array.isArray(Event?.Event) && Event?.Event.map((i, idx) => (
-            <motion.div
-              key={idx}
-              variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <EventCard
-                poster={i.poster[0].url}
-                title={i.title}
-                description={i.description}
-                id={i._id}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6"
+            initial="hidden"
+            whileInView="visible"
+            transition={{ staggerChildren: 0.15 }}
+            viewport={{ once: true }}
+          >
+            {Array.isArray(Event?.Event) &&
+              Event.Event.map((i, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={{
+                    hidden: { opacity: 0, y: 50 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <EventCard
+                    poster={i.poster[0].url}
+                    title={i.title}
+                    description={i.description}
+                    id={i._id}
+                  />
+                </motion.div>
+              ))}
+          </motion.div>
+        </section>
+      </Suspense>
 
-      <section className="pb-10">
-        <motion.div
-          className="text-2xl sm:text-4xl flex justify-center items-center my-16 mx-5 text-white"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <h1>Organizing Committee</h1>
-        </motion.div>
+      {/* ---- Organizer Section (async) ---- */}
+      <Suspense fallback={<Loader />}>
+        <section className="pb-10">
+          <motion.div
+            className="text-2xl sm:text-4xl flex justify-center items-center my-16 mx-5 text-white"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h1>Organizing Committee</h1>
+          </motion.div>
 
-        <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 px-6"
-          initial="hidden"
-          whileInView="visible"
-          transition={{ staggerChildren: 0.15 }}
-          viewport={{ once: true }}
-        >
-          {Array.isArray(Organizer?.Organizer) && Organizer?.Organizer.map((i, idx) => (
-            <motion.div
-              key={idx}
-              className="bg-amber-50 flex flex-col items-center p-4 rounded-xl shadow"
-              variants={{
-                hidden: { opacity: 0, scale: 0.9 },
-                visible: { opacity: 1, scale: 1 },
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <Image
-                src={i.photo.url}
-                alt={i.role}
-                width={120}
-                height={100}
-                className="rounded-full object-cover border-4 border-amber-200"
-              />
-              <div className="text-center mt-3">
-                <h1 className="text-xl font-semibold text-gray-800">
-                  {i.name}
-                </h1>
-                <span className="text-sm text-gray-600">{i.role}</span>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+          <motion.div
+            className="grid grid-cols-2 lg:grid-cols-4 gap-6 px-6"
+            initial="hidden"
+            whileInView="visible"
+            transition={{ staggerChildren: 0.15 }}
+            viewport={{ once: true }}
+          >
+            {Array.isArray(Organizer?.Organizer) &&
+              Organizer.Organizer.map((i, idx) => (
+                <motion.div
+                  key={idx}
+                  className="bg-amber-50 flex flex-col items-center p-4 rounded-xl shadow"
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.9 },
+                    visible: { opacity: 1, scale: 1 },
+                  }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Image
+                    src={i.photo.url}
+                    alt={i.role}
+                    width={120}
+                    height={100}
+                    className="rounded-full object-cover border-4 border-amber-200"
+                  />
+                  <div className="text-center mt-3">
+                    <h1 className="text-xl font-semibold text-gray-800">
+                      {i.name}
+                    </h1>
+                    <span className="text-sm text-gray-600">{i.role}</span>
+                  </div>
+                </motion.div>
+              ))}
+          </motion.div>
+        </section>
+      </Suspense>
     </div>
   );
 };

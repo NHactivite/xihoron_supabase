@@ -39,11 +39,7 @@ export default function RootLayout({ children }) {
         <ClerkLoading>
           <Loading/>
         </ClerkLoading>
-         <Suspense fallback={<Loading/>}>
                 <CommonLayout>{children}</CommonLayout>
-              </Suspense>
-        
-        
       </body>
     </html>
    </ClerkProvider>
