@@ -5,7 +5,7 @@ import Details from "../DetailsAbout";
 import EventCard from "../EventCard";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import Loading from "@/app/loading"; // same loading spinner
+// import Loading from "@/app/loading"; // same loading spinner
 import { Loader } from "../loading";
 
 const Home = ({ Event, Organizer }) => {
