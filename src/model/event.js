@@ -72,8 +72,8 @@ const eventSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-if (mongoose.models.Event) {
-  delete mongoose.models.Event;
-}
+// if (mongoose.models.Event) {
+//   delete mongoose.models.Event;
+// }
 
 export const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);

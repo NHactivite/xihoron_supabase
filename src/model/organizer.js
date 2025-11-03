@@ -19,11 +19,8 @@ const OganizerSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-// ✅ Essential Indexes only
-// ProductSchema.index({ category: 1 }); // filter by category
-// ProductSchema.index({ price: 1 });
 
-if (mongoose.models.Oganizer) {
-  delete mongoose.models.Oganizer;
-}
+// if (mongoose.models.Oganizer) {
+//   delete mongoose.models.Oganizer;
+// }
 export const Oganizer =mongoose.models.Oganizer || mongoose.model("Oganizer", OganizerSchema);

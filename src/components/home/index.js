@@ -89,7 +89,7 @@ const Home = ({  Event, Organizer }) => {
           transition={{ staggerChildren: 0.15 }}
           viewport={{ once: true }}
         >
-          {Event.Event.map((i, idx) => (
+          {Array.isArray(Event?.Event) && Event?.Event.map((i, idx) => (
             <motion.div
               key={idx}
               variants={{
@@ -127,7 +127,7 @@ const Home = ({  Event, Organizer }) => {
           transition={{ staggerChildren: 0.15 }}
           viewport={{ once: true }}
         >
-          {Organizer.Organizer.map((i, idx) => (
+          {Array.isArray(Organizer?.Organizer) && Organizer?.Organizer.map((i, idx) => (
             <motion.div
               key={idx}
               className="bg-amber-50 flex flex-col items-center p-4 rounded-xl shadow"

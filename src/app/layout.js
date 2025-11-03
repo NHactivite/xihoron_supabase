@@ -22,7 +22,7 @@ export const metadata = {
   manifest: "/manifest.json", 
  keywords: ["nextjs", "next14", "pwa", "next-pwa"],
   icons: {
-    apple: "/icons/icon-192x192.png", 
+    apple: "/icons/192.png", 
   },
 };
 export const viewport = {
