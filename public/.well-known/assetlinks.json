@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "app.vercel.xihoron.twa",
-        "sha256_cert_fingerprints": ["89:1A:AE:28:35:47:34:CC:1F:90:C9:9A:D4:31:9F:DF:E9:0C:0F:00:4C:74:75:B1:CE:E3:53:7A:CF:89:77:1D"]
+        "sha256_cert_fingerprints": ["83:47:A8:0A:01:B7:1D:03:C8:BC:3C:A7:26:48:22:3B:EE:96:E2:C4:1B:1F:57:F7:42:18:AD:2A:B8:3D:9E:B5"]
       }
     }]
