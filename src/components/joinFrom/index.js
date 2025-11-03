@@ -22,13 +22,13 @@ const Join = ({ Event, user }) => {
   });
 
   const cashfreeRef = useRef(null);
-  const payMode=process.env.RUN_MODE == "devlopment"?"sandbox":"production"
+  // const payMode=process.env.RUN_MODE == "devlopment"?"sandbox":"production"
 
   useEffect(() => {
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          mode: payMode, // change to "production" for live
+          mode:"sandbox", // change to "production" for live
         });
       } catch (error) {
         console.error("Failed to load payment gateway:", error);
