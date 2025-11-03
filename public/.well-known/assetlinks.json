@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "org.discoverassam.www.twa",
-        "sha256_cert_fingerprints": ["58:84:28:59:D7:22:91:87:57:E8:87:13:EB:77:4C:12:36:22:C9:F4:72:DC:1F:ED:0D:9D:4B:98:8B:08:53:A1"]
+        "package_name": "app.vercel.xihoron.twa",
+        "sha256_cert_fingerprints": ["89:1A:AE:28:35:47:34:CC:1F:90:C9:9A:D4:31:9F:DF:E9:0C:0F:00:4C:74:75:B1:CE:E3:53:7A:CF:89:77:1D"]
       }
     }]
