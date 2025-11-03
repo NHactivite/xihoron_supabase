@@ -12,7 +12,7 @@ const EventCard = ({ title, description, id, poster }) => {
         backgroundImage: `url(${poster})`,
       }}
     >
-      <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
+      <div className="absolute inset-0 bg-black/50 lg:opacity-0 opacity-100 lg:hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
         <h1 className="text-lg font-semibold">{title}</h1>
         <CardContent className="max-h-36 overflow-hidden text-sm text-gray-200 text-center mt-2">
           <p>{description}</p>
