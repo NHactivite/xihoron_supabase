@@ -3,8 +3,8 @@ import withPWA from 'next-pwa';
 
 let mydisable;
 let myremoveConsole;
-process.env.RUN_MODE=="deployment"?mydisable=true:mydisable=false
-process.env.RUN_MODE=="deployment"?myremoveConsole=false:myremoveConsole=true
+process.env.RUN_MODE=="devlopment"?mydisable=true:mydisable=false
+process.env.RUN_MODE=="devlopment"?myremoveConsole=false:myremoveConsole=true
 
 const nextConfig = {
   reactStrictMode: true,

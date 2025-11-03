@@ -24,7 +24,7 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
 
 let cashfree;
 
-process.env.RUN_MODE == "deployment"
+process.env.RUN_MODE == "devlopment"
   ? (cashfree = new Cashfree(
       CFEnvironment.SANDBOX,
       process.env.CLIENT_ID,

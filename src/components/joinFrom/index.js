@@ -22,7 +22,7 @@ const Join = ({ Event, user }) => {
   });
 
   const cashfreeRef = useRef(null);
-  const payMode=process.env.RUN_MODE == "deployment"?"production":"sandbox"
+  const payMode=process.env.RUN_MODE == "devlopment"?"sandbox":"production"
 
   useEffect(() => {
     const initializeSDK = async () => {
