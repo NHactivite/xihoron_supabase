@@ -22,25 +22,25 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
 }
 // Initialize Cashfree with your credentials
 
-let cashfree;
+// let cashfree;
 
-process.env.RUN_MODE == "devlopment"
-  ? (cashfree = new Cashfree(
-      CFEnvironment.SANDBOX,
-      process.env.CLIENT_ID,
-      process.env.CLIENT_SECRET
-    ))
-  : (cashfree = new Cashfree(
-      CFEnvironment.PRODUCTION,
-      process.env.CLIENT_ID,
-      process.env.CLIENT_SECRET
-    ));
+// process.env.RUN_MODE == "devlopment"
+//   ? (cashfree = new Cashfree(
+//       CFEnvironment.SANDBOX,
+//       process.env.CLIENT_ID,
+//       process.env.CLIENT_SECRET
+//     ))
+//   : (cashfree = new Cashfree(
+//       CFEnvironment.PRODUCTION,
+//       process.env.CLIENT_ID,
+//       process.env.CLIENT_SECRET
+//     ));
 
-// const cashfree = new Cashfree(
-//   CFEnvironment.PRODUCTION,
-//   process.env.CLIENT_ID,
-//   process.env.CLIENT_SECRET
-// );
+const cashfree = new Cashfree(
+  CFEnvironment.SANDBOX,
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET
+);
 // crete profile action
 
 export const createPaymentAction = async (data) => {
@@ -69,7 +69,7 @@ export const createPaymentAction = async (data) => {
       customer_name: `${user.firstName} ${user.lastName}`,
     },
     order_meta: {
-      return_url: `http://localhost:3000/payment-verification?order_id=order_${order_id}`,
+      return_url: `https://xihoron.vercel.app/payment-verification?order_id=order_${order_id}`,
     },
     Event_details: {
         event_name: event.Event.name,
