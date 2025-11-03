@@ -1,12 +1,9 @@
 "use client"
 const WigetItem = ({ properties, value }) => {
   return (
-    <div className="bg-gray-200 min-h-36 rounded-md p-6 grid ">
+    <div className="bg-gray-200 flex justify-center px-4 gap-6 items-center rounded-md  max-w-40 min-h-10 ">
       <p >{properties}</p>
       <strong className="text-green-400">{value}</strong>
-      {/* {
-                  percent>0?<span className="green"><HiTrendingUp/> +{percent}%{" "}</span>:<span className="red"><HiTrendingDown/> {percent}%{" "}</span>
-                } */}
     
     </div>
   );

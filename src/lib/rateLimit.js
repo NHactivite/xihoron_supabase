@@ -22,5 +22,5 @@ export const ratelimit = new Ratelimit({
    * A unique prefix for the keys used in Redis.
    * This is crucial if you share a Redis instance with other applications.
    */
-  prefix: "my-universal-app",
+  prefix: "my-xihoron-app",
 });

@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
-import InstallButton from "../InstallButton";
 
 function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
@@ -23,27 +22,22 @@ const menuItems = useMemo(() => {
   if (isAdminPage) {
     return [
       { label: "DashBoard", path: "/admin", show: true },
-      { label: "Products", path: "/admin/allProduct", show: user },
-      { label: "Orders", path: "/admin/orders", show: user },
+      { label: "Events", path: "/admin/allEvents", show: user },
     ];
   }
 
   return [
     { label: "Home", path: "/", show: true },
-    { label: "Pickles", path: "/search", show: user },
     { label: "admin", path: "/admin", show: role },
     { label: "Login", path: "/sign-in", show: !user },
     { label: "Register", path: "/sign-up", show: !user },
-    { label: "cart", path: "/cart", show: user },
-    { label: "wishlist", path: "/wish", show: user },
-    { label: "Orders", path: "/shipping", show: user },
-    { label: "Account", path: "/account", show: user },
+    { label: "ticket", path: "/ticket", show: user },
     
   ];
 }, [pathname, user, role]);
 
   return (
-    <header className="flex h-16 w-full shrink-0 items-center sticky top-0 bg-white z-50 p-4  mb-3 shadow">
+    <header className="flex h-16 w-full shrink-0 items-center sticky top-0 bg-gray-200 z-50 p-4  shadow">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button
@@ -60,7 +54,7 @@ const menuItems = useMemo(() => {
         >
           <Link href="/" className="flex items-center mb-6">
             <SheetTitle className="text-2xl font-bold text-white ">
-              Pickle Store
+              XIHORON V.1.0
             </SheetTitle>
           </Link>
           <div className="grid gap-4">
@@ -89,16 +83,15 @@ const menuItems = useMemo(() => {
         className="lg:hidden flex m-auto text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-red-500 "
         href={"/"}
       >
-        Pickle Store
+       XIHORON V.1.0
       </Link>
 
       <Link
         className="hidden  lg:flex mr-6 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-red-500 "
         href={"/"}
       >
-        Pickle Store
+        XIHORON V.1.0
       </Link>
-      <InstallButton/>
       <nav className="ml-auto hidden lg:flex gap-6">
         {menuItems.map((item, idx) =>
           item.show ? (

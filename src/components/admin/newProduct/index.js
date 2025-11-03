@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,71 +11,139 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const NewProduct = ({ mode, initialProduct }) => {
-  console.log(initialProduct,"pickle");
-  
+const NewEvent = ({ mode, initialEvent }) => {
+  console.log(initialEvent, "kooo");
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState(initialProduct.name || "");
-  const [deletephoto, setDeletePhoto] = useState([]);
-  const [price, setPrice] = useState(initialProduct.price || "");
-  const [stock, setStock] = useState(initialProduct.stock || "");
-  const [category, setCategory] = useState(initialProduct.category || "");
+    const [deletephoto, setDeletePhoto] = useState([]);
+
+  // Basic info
+  const [title, setTitle] = useState(initialEvent?.title || "");
   const [description, setDescription] = useState(
-    initialProduct.description || ""
+    initialEvent?.description || ""
   );
-  const [size, setSize] = useState(initialProduct.size || "");
- 
-  const [details, setDetails] = useState(initialProduct.details || []);
 
-  const [photos, setPhotos] = useState({
-    file: [],
-    preview: initialProduct.photos
-      ? initialProduct.photos.map((p) => p.url)
-      : [],
-    error: "",
+  // Event date/time
+  const [eventDateTime, setEventDateTime] = useState({
+    date: initialEvent?.eventDateTime?.date || "",
+    startTime: initialEvent?.eventDateTime?.startTime || "",
+    endTime: initialEvent?.eventDateTime?.endTime || "",
+    timeZone: initialEvent?.eventDateTime?.timeZone || "IST",
+    registrationLastdate:
+      initialEvent?.eventDateTime?.registrationLastdate || "",
+    registrationTime: initialEvent?.eventDateTime?.registrationTime || "",
   });
-  const changeHandler = (e) => {
-    const files = Array.from(e.target.files);
+  const [prizes, setPrizes] = useState(
+    initialEvent?.prize?.length
+      ? initialEvent.prize.map((p) => ({
+          money: p.money || "",
+          prize: p.prize || "",
+          place: p.place || "",
+        }))
+      : [
+          {
+            money: "",
+            prize: "",
+            place: "",
+          },
+        ]
+  );
 
-    const filePreviews = files.map((file) => URL.createObjectURL(file));
+  const normalizePrizeArray = (arr = []) =>
+    arr.map((p) => ({
+      money: p.money || "",
+      prize: p.prize || "",
+      place: p.place || "",
+    }));
 
-    setPhotos({
-      file: files,
-      preview: filePreviews,
-      error: "",
-    });
+const prizesChanged =
+    JSON.stringify(normalizePrizeArray(prizes)) !==
+    JSON.stringify(normalizePrizeArray(initialEvent.prize || []));
+
+  const [details, setDetails] = useState(() => {
+    if (initialEvent?.details) {
+      return Object.entries(initialEvent?.details).map(([key, value]) => ({
+        key,
+        value,
+      }));
+    }
+    return [{ key: "", value: "" }];
+  });
+
+  const addDetailField = () => {
+    setDetails([...details, { key: "", value: "" }]);
   };
 
-  const removeImage = (index) => {
-    const removedPhoto = photos.preview[index];
+  const removeDetailField = (index) => {
+    const newDetails = details.filter((_, i) => i !== index);
+    setDetails(newDetails.length > 0 ? newDetails : [{ key: "", value: "" }]);
+  };
+ const [poster, setPoster] = useState({
+    file: [],
+    preview: initialEvent.poster ? initialEvent.poster.map((p) => p.url) : [],
+    error: "",
+  });
+ const removeImage = (index) => {
+    const removedPhoto = poster.preview[index];
 
     // Append to the array instead of replacing
     setDeletePhoto((prev) => [...prev, removedPhoto]);
 
-    const newFiles = photos.file.filter((_, i) => i !== index);
-    const newPreviews = photos.preview.filter((_, i) => i !== index);
+    const newFiles = poster.file.filter((_, i) => i !== index);
+    const newPreviews = poster.preview.filter((_, i) => i !== index);
 
-    setPhotos({
+    setPoster({
       file: newFiles,
       preview: newPreviews,
       error: "",
     });
   };
 
-  const addDetailField = () => {
-    setDetails([...details, ""]);
+
+  const updateDetailField = (index, field, value) => {
+    const newDetails = [...details];
+    newDetails[index][field] = value;
+    setDetails(newDetails);
   };
 
-  const removeDetailField = (index) => {
-    const newDetails = details.filter((_, i) => i !== index);
-    setDetails(newDetails.length > 0 ? newDetails : [""]);
-  };
+  const detailsObject = {};
+  details.forEach((detail) => {
+    if (detail.key.trim() && detail.value.trim()) {
+      detailsObject[detail.key.trim()] = detail.value.trim();
+    }
+  });
 
-  const updateDetailField = (index, newValue) => {
-  const newDetails = [...details];
-  newDetails[index] = newValue;
-  setDetails(newDetails);
+  // Team size
+  const [teamSize, setTeamSize] = useState({
+    min: initialEvent?.teamSize?.min || 2,
+    max: initialEvent?.teamSize?.max || 4,
+    teamLeadRequired: initialEvent?.teamSize?.teamLeadRequired ?? true,
+  });
+
+  // Participation Fee
+  const [participationFee, setParticipationFee] = useState({
+    perTeam: initialEvent?.participationFee?.perTeam || "",
+    currency: initialEvent?.participationFee?.currency || "INR",
+    includes: initialEvent?.participationFee?.includes || [],
+  });
+
+  // Optional event poster
+ 
+
+  const handlePosterChange = (e) => {
+  const files = Array.from(e.target.files);
+
+  if (files.length > 0) {
+    setPoster((prev) => ({
+      file: [...(prev.file || []), ...files],
+      preview: [
+        ...(Array.isArray(prev.preview) ? prev.preview : []),
+        ...files.map((file) => URL.createObjectURL(file)),
+      ],
+      error: "",
+    }));
+  }
 };
 
   const submitHandler = async (e) => {
@@ -84,45 +153,49 @@ const NewProduct = ({ mode, initialProduct }) => {
     try {
       const formData = new FormData();
 
-      formData.set("name", name);
+      formData.set("title", title);
       formData.set("description", description);
-      formData.set("price", price.toString());
-      formData.set("stock", stock.toString());
-      formData.set("category", category);
-      formData.set("size", size);
+      formData.set("eventDateTime", JSON.stringify(eventDateTime));
+      formData.set("teamSize", JSON.stringify(teamSize));
+      formData.set("participationFee", JSON.stringify(participationFee));
+      formData.set("prize", JSON.stringify(prizes));
 
-     formData.set("details", JSON.stringify(details));
+     if (poster.file && poster.file.length > 0) {
+  poster.file.forEach((file) => formData.append("poster", file));
+}
+      const initialDetails = initialEvent?.details || {};
 
+      if (JSON.stringify(detailsObject) !== JSON.stringify(initialDetails)) {
+        formData.set("details", JSON.stringify(detailsObject));
+      }
 
-      photos.file.forEach((file) => {
-        formData.append("photos", file);
-      });
+      //  console.log([...formData.entries()],"picklesss");
 
-      const res = await fetch("/api/product", {
+      const res = await fetch("/api/event", {
         method: "POST",
         body: formData,
       });
-      console.log([...formData.entries()],"picklesss");
 
       const data = await res.json();
 
       if (data.success) {
-        toast.success("Product created!");
-        setName("");
-        setPrice("");
-        setStock("");
-        setCategory("");
+        toast.success("Event created!");
+        setTitle("");
+        setEventDateTime({});
+        setPrizes([]);
         setDescription("");
-        setSize("");
         setDetails([]);
-        setPhotos({ file: [], preview: [], error: "" });
+        setTeamSize({});
+        setParticipationFee({});
+        setPoster({ file: [], preview: [], error: "" });
 
         router.refresh();
       } else {
         toast.error(data.message || "Something went wrong");
       }
-    } catch (err) {
-      console.error("Error submitting:", err);
+    } catch (error) {
+      console.error("Error submitting:", error);
+      toast.error("Error creating event");
     } finally {
       setIsLoading(false);
     }
@@ -136,54 +209,80 @@ const NewProduct = ({ mode, initialProduct }) => {
       const formData = new FormData();
       let hasChanges = false;
 
-      // Compare and append only if changed
-      if (name !== initialProduct.name) {
-        formData.set("name", name);
+      // Compare and append changed fields
+      if (title !== initialEvent.title) {
+        formData.set("title", title);
+        console.log("title");
+
         hasChanges = true;
       }
 
-      if (description !== initialProduct.description) {
+      if (description !== initialEvent.description) {
         formData.set("description", description);
+        console.log("des");
+
         hasChanges = true;
       }
 
-      if (price !== initialProduct.price) {
-        formData.set("price", price.toString());
+      if (
+        JSON.stringify(eventDateTime) !==
+        JSON.stringify(initialEvent.eventDateTime)
+      ) {
+        formData.set("eventDateTime", JSON.stringify(eventDateTime));
+        console.log("enttime");
+
         hasChanges = true;
       }
 
-      if (stock !== initialProduct.stock) {
-        formData.set("stock", stock.toString());
+      if (JSON.stringify(teamSize) !== JSON.stringify(initialEvent.teamSize)) {
+        formData.set("teamSize", JSON.stringify(teamSize));
+        console.log("team");
+
         hasChanges = true;
       }
 
-      if (category !== initialProduct.category) {
-        formData.set("category", category);
+      if (
+        JSON.stringify(participationFee) !==
+        JSON.stringify(initialEvent.participationFee)
+      ) {
+        formData.set("participationFee", JSON.stringify(participationFee));
+        console.log("part");
+
         hasChanges = true;
       }
 
-      if (size !== initialProduct.size) {
-        formData.set("size", size);
-        hasChanges = true;
-      }
-      if (details !== initialProduct.details) {
-       formData.set("details", JSON.stringify(details));
+      if (prizesChanged) {
+        formData.set("prize", JSON.stringify(prizes));
+        console.log("prize");
+
         hasChanges = true;
       }
 
-      // Handle deleted photos (if any)
-      if (deletephoto && deletephoto.length > 0) {
+      // Poster
+      if (poster.file && poster.file.length > 0) {
+        poster.file.forEach((file) => {
+          formData.append("poster", file);
+        });
+        console.log("phot");
+
+        hasChanges = true;
+      }
+
+      // Details object
+      const initialDetails = initialEvent?.details || {};
+      if (JSON.stringify(detailsObject) !== JSON.stringify(initialDetails)) {
+        formData.set("details", JSON.stringify(detailsObject));
+        console.log("details");
+
+        hasChanges = true;
+      }
+
+       if (deletephoto && deletephoto.length > 0) {
         formData.set("removedPhotos", JSON.stringify(deletephoto));
         hasChanges = true;
       }
 
-      // Handle newly added photos
-      if (photos.file && photos.file.length > 0) {
-        photos.file.forEach((file) => {
-          formData.append("photos", file);
-        });
-        hasChanges = true;
-      }
+      console.log(hasChanges, "joo");
 
       if (!hasChanges) {
         toast("No changes detected.");
@@ -191,8 +290,7 @@ const NewProduct = ({ mode, initialProduct }) => {
         return;
       }
 
-      // Make API request
-      const res = await fetch(`/api/product/?id=${initialProduct._id}`, {
+      const res = await fetch(`/api/event?id=${initialEvent._id}`, {
         method: "PUT",
         body: formData,
       });
@@ -200,128 +298,121 @@ const NewProduct = ({ mode, initialProduct }) => {
       const data = await res.json();
 
       if (data.success) {
-        toast.success("Product updated successfully!");
-
+        toast.success("Event updated successfully!");
         router.refresh();
       } else {
-        toast.error(data.message || "Failed to update product");
+        toast.error(data.message || "Failed to update event");
       }
     } catch (error) {
-      console.error("Product update failed:", error);
-      toast.error("Something went wrong.");
+      console.error("Error updating event:", error);
+      toast.error("Error updating event");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto min-h-screen">
+    <div className="max-w-5xl  min-h-screen">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            Add New Product
-          </CardTitle>
-        </CardHeader>
         <CardContent>
           <form
             onSubmit={mode === "edit" ? updateHandler : submitHandler}
             className="space-y-6"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium">
-                  Product Name
-                </Label>
-                <Input
-                  id="name"
-                  required
-                  type="text"
-                  placeholder="Enter product name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category" className="text-sm font-medium">
-                  Category
-                </Label>
-                <Input
-                  id="category"
-                  required
-                  type="text"
-                  placeholder="Enter category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-            </div>
-
+            {/* Title & Description */}
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-sm font-medium">
-                Description
-              </Label>
+              <Label>Event Title</Label>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                placeholder="Enter event title"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
               <Textarea
-                id="description"
-                placeholder="Enter product description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full min-h-[100px] resize-none"
+                placeholder="Enter event description"
+                className="resize-none"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="price" className="text-sm font-medium">
-                  Price ($)
-                </Label>
+            {/* Event Date & Time */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="mb-1">Date</Label>
                 <Input
-                  id="price"
-                  type="number"
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  value={price === 0 ? "" : price}
-                  onChange={(e) => setPrice(Number(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="stock" className="text-sm font-medium">
-                  Stock Quantity
-                </Label>
-                <Input
-                  id="stock"
-                  type="number"
-                  placeholder="0"
-                  min="0"
-                  value={stock === 0 ? "" : stock}
-                  onChange={(e) => setStock(Number(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="size" className="text-sm font-medium">
-                  Size
-                </Label>
-                <Input
-                  id="size"
                   type="text"
-                  placeholder="Enter occasion"
-                  value={size}
-                  onChange={(e) => setSize(e.target.value)}
-                  className="w-full"
+                  placeholder="e.g., December 15, 2024"
+                  value={eventDateTime.date}
+                  onChange={(e) =>
+                    setEventDateTime({ ...eventDateTime, date: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <Label className="mb-1">Registration Time</Label>
+                <Input
+                  type="text"
+                  placeholder="8:30 AM"
+                  value={eventDateTime.registrationTime}
+                  onChange={(e) =>
+                    setEventDateTime({
+                      ...eventDateTime,
+                      registrationTime: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label className="mb-1">Registration Last Date</Label>
+                <Input
+                  type="text"
+                  placeholder="e.g., December 25, 2024"
+                  value={eventDateTime.registrationLastdate}
+                  onChange={(e) =>
+                    setEventDateTime({
+                      ...eventDateTime,
+                      registrationLastdate: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label className="mb-1">Start Time</Label>
+                <Input
+                  type="text"
+                  placeholder="9:00 AM"
+                  value={eventDateTime.startTime}
+                  onChange={(e) =>
+                    setEventDateTime({
+                      ...eventDateTime,
+                      startTime: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label className="mb-1">End Time</Label>
+                <Input
+                  type="text"
+                  placeholder="6:00 PM"
+                  value={eventDateTime.endTime}
+                  onChange={(e) =>
+                    setEventDateTime({
+                      ...eventDateTime,
+                      endTime: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">Product Details</Label>
+                <Label className="text-sm font-medium">Event Rules</Label>
                 <Button
                   type="button"
                   variant="outline"
@@ -329,19 +420,28 @@ const NewProduct = ({ mode, initialProduct }) => {
                   onClick={addDetailField}
                   className="text-xs bg-transparent"
                 >
-                  Add Detail
+                  Add Rules
                 </Button>
               </div>
               <div className="space-y-3">
                 {details.map((detail, index) => (
                   <div key={index} className="flex gap-2 items-center">
                     <Input
-                      placeholder="Detail value (e.g., Cotton)"
-                      value={detail}
-                      onChange={(e) => updateDetailField(index, e.target.value)}
+                      placeholder="Detail name (e.g., Material)"
+                      value={detail.key}
+                      onChange={(e) =>
+                        updateDetailField(index, "key", e.target.value)
+                      }
                       className="flex-1"
                     />
-
+                    <Input
+                      placeholder="Detail value (e.g., Cotton)"
+                      value={detail.value}
+                      onChange={(e) =>
+                        updateDetailField(index, "value", e.target.value)
+                      }
+                      className="flex-1"
+                    />
                     {details.length > 1 && (
                       <Button
                         type="button"
@@ -358,38 +458,171 @@ const NewProduct = ({ mode, initialProduct }) => {
               </div>
             </div>
 
+            {/* Team Size */}
+            {/* Prize Fields */}
             <div className="space-y-4">
-              <Label className="text-sm font-medium">Product Photos</Label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-gray-400 transition-colors">
-                <input
-                  name="photos"
-                  accept="image/*"
-                  type="file"
-                  multiple
-                  onChange={changeHandler}
-                  className="hidden"
-                  id="photo-upload"
-                />
-                <label htmlFor="photo-upload" className="cursor-pointer">
-                  <Upload className="mx-auto h-8 w-8 text-gray-400 mb-4" />
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium text-blue-600 hover:text-blue-500">
-                      Click to upload
-                    </span>{" "}
-                  </p>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF</p>
-                </label>
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Prizes</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setPrizes([...prizes, { money: "", prize: "", place: "" }])
+                  }
+                  className="text-xs bg-transparent"
+                >
+                  Add Prize
+                </Button>
               </div>
 
-              {photos.error && (
-                <p className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-                  {photos.error}
-                </p>
-              )}
+              <div className="space-y-3">
+                {prizes.map((p, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center"
+                  >
+                    <Input
+                      type="text"
+                      placeholder="Place (e.g., 1st)"
+                      value={p.place}
+                      onChange={(e) => {
+                        const updated = [...prizes];
+                        updated[index].place = e.target.value;
+                        setPrizes(updated);
+                      }}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Prize (e.g., Trophy)"
+                      value={p.prize}
+                      onChange={(e) => {
+                        const updated = [...prizes];
+                        updated[index].prize = e.target.value;
+                        setPrizes(updated);
+                      }}
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Money (e.g., 5000)"
+                      value={p.money===0?"":p.money}
+                      onChange={(e) => {
+                        const updated = [...prizes];
+                        updated[index].money = Number(e.target.value);
+                        setPrizes(updated);
+                      }}
+                    />
+                    {prizes.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const updated = prizes.filter((_, i) => i !== index);
+                          setPrizes(
+                            updated.length > 0
+                              ? updated
+                              : [{ money: "", prize: "", place: "" }]
+                          );
+                        }}
+                        className="px-2"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              {photos.preview.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label className="mb-1">Min Members</Label>
+                <Input
+                  type="number"
+                  value={teamSize.min===0?"":teamSize.min}
+                  onChange={(e) =>
+                    setTeamSize({ ...teamSize, min: Number(e.target.value) })
+                  }
+                />
+              </div>
+              <div>
+                <Label className="mb-1">Max Members</Label>
+                <Input
+                  type="number"
+                  value={teamSize.max ===0?"":teamSize.max }
+                  onChange={(e) =>
+                    setTeamSize({ ...teamSize, max: Number(e.target.value) })
+                  }
+                />
+              </div>
+              <div className="flex items-center gap-2 mt-6">
+                <input
+                  id="teamLeadRequired"
+                  type="checkbox"
+                  checked={teamSize.teamLeadRequired}
+                  onChange={(e) =>
+                    setTeamSize({
+                      ...teamSize,
+                      teamLeadRequired: e.target.checked,
+                    })
+                  }
+                />
+                <Label htmlFor="teamLeadRequired">Team Lead Required</Label>
+              </div>
+            </div>
+
+            {/* Participation Fee */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="mb-1">Participation Fee (per team)</Label>
+                <Input
+                  type="number"
+                  placeholder="5000"
+                  value={participationFee.perTeam === 0 ? "" :participationFee.perTeam}
+                  onChange={(e) =>
+                    setParticipationFee({
+                      ...participationFee,
+                      perTeam: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label className="mb-1">Includes (comma separated)</Label>
+                <Input
+                  type="text"
+                  placeholder="kit, materials"
+                  value={(participationFee.includes || []).join(", ")}
+                  onChange={(e) =>
+                    setParticipationFee({
+                      ...participationFee,
+                      includes: e.target.value.split(",").map((s) => s.trim()),
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Poster Upload */}
+            <div className="space-y-4">
+              <Label>Event Poster</Label>
+              <div className="border-2 border-dashed border-gray-300 p-3 rounded-md text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePosterChange}
+                  id="poster-upload"
+                  className="hidden"
+                />
+                <label htmlFor="poster-upload" className="cursor-pointer">
+                  <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                  <p>Click to upload poster</p>
+                </label>
+              </div>
+              {poster.preview.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {photos.preview.map((img, i) => (
+                  {poster.preview.map((img, i) => (
                     <div key={i} className="relative group">
                       <Image
                         src={img || "/placeholder.svg"}
@@ -411,38 +644,26 @@ const NewProduct = ({ mode, initialProduct }) => {
               )}
             </div>
 
+            {/* Submit */}
             <div className="pt-6">
-              {mode !== "edit" ? (
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full h-12 text-base font-medium"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Product...
-                    </>
-                  ) : (
-                    "Create Product"
-                  )}
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full h-12 text-base font-medium"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Update Product...
-                    </>
-                  ) : (
-                    "update Product"
-                  )}
-                </Button>
-              )}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 text-base font-medium"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {mode === "edit"
+                      ? "Updating Event..."
+                      : "Creating Event..."}
+                  </>
+                ) : mode === "edit" ? (
+                  "Update Event"
+                ) : (
+                  "Create Event"
+                )}
+              </Button>
             </div>
           </form>
         </CardContent>
@@ -451,4 +672,4 @@ const NewProduct = ({ mode, initialProduct }) => {
   );
 };
 
-export default NewProduct;
+export default NewEvent;

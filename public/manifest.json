@@ -1,6 +1,6 @@
 {
-  "name": "Pickle-Shop app",
-  "short_name": "PickleShop",
+  "name": "xihoron app",
+  "short_name": "xihoron",
   "id": "/?source=pwa",
   "start_url": "/",
   "scope": "/",
@@ -12,7 +12,7 @@
   "launch_handler": {
     "client_mode": "auto"
   },
-  "description": "A full-stack online store for handcrafted wool flower bouquets, featuring a seamless shopping experience with order tracking and customizable gift options",
+  "description": "A Online compition platform",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",

@@ -1,5 +1,5 @@
 "use client"
-import { Badge } from "@/components/ui/badge";
+import { deleteOrganizer } from "@/action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -14,23 +14,18 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 
-export function AdminTable({ admins }) {
-  const [loading,setLoading]=useState(false)
-  
-  const handleDelete = async (userId) => {
-    setLoading(true)
+export function OrganizerTable({ organizer }) {
+   const [loading,setLoading]=useState(false)
+  const handleDelete = async (Id) => {
+       setLoading(true)
     try {
-      const res = await fetch(`/api/admin/${userId}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success(data.message || "User deleted");
+      const res = await deleteOrganizer(Id)
+    
+      if (res.success) {
+        toast.success(res.message || "Organizer deleted");
           window.location.reload();
       } else {
-        toast.error(data.message || "Failed to delete user");
+        toast.error(res.message || "Failed to delete Organizer");
       }
     } catch (err) {
       toast.error("Something went wrong");
@@ -42,7 +37,7 @@ export function AdminTable({ admins }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Admin List</CardTitle>
+        <CardTitle>Organizer List</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -50,42 +45,33 @@ export function AdminTable({ admins }) {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Profile</TableHead>
-              <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Delete</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {admins.map((admin) => (
-              <TableRow key={admin.id}>
+            {organizer.Organizer.map((i,idx) => (
+              <TableRow key={idx}>
                 <TableCell className="font-medium">
-                  {admin.first_name} {admin.last_name}
+                  {i.name}
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={admin.profile_image_url}
+                    src={i.photo.url}
                     alt="Profile picture"
                     width={50}
                     height={50}
                     className="rounded-full"
                   />
                 </TableCell>
-                <TableCell>{admin.email_addresses[0].email_address}</TableCell>
                 <TableCell>
-                  <Badge
-                    variant={
-                      admin.public_metadata?.role === "admin"
-                        ? "default"
-                        : "secondary"
-                    }
-                  >
-                    {admin.public_metadata?.role ?? "N/A"}
-                  </Badge>
+                  {i.role}
                 </TableCell>
 
                 <TableCell>
-                  <button onClick={() => handleDelete(admin.id)}>
-                    {loading?<span>Processing...</span>:<FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />}
+                  <button onClick={() => handleDelete(i._id)}>
+                   {loading?<span>Processing...</span>: <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />}
                   </button>
                 </TableCell>
               </TableRow>

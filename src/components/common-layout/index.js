@@ -16,7 +16,7 @@ export async function CommonLayout({ children }) {
       <Header user={JSON.parse(JSON.stringify(user))} role={role} />
 
       {/* main content section */}
-      <main className="lg:px-8 min-h-screen">{children}</main>
+      <main className=" min-h-screen">{children}</main>
 
       <Footer />
       <Toaster

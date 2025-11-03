@@ -2,7 +2,6 @@ import { CommonLayout } from "@/components/common-layout";
 import { ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "./ReduxProvider";
 import { Suspense } from "react";
 import Loading from "./loading";
 
@@ -17,17 +16,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata = {
-  title: "Pickle-shop app",
-  description: "A full-stack online store for authentic, homemade pickles, featuring a seamless shopping experience with order tracking",
+  title: "Xihoron app",
+  description: "A Online Competion platform",
   generator: "Next.js",
-  manifest: "/manifest.json", // ✅ This is enoughy
+  manifest: "/manifest.json", 
  keywords: ["nextjs", "next14", "pwa", "next-pwa"],
   icons: {
-    apple: "/icons/icon-192x192.png", // ✅ Apple touch icon
+    apple: "/icons/icon-192x192.png", 
   },
 };
 export const viewport = {
-  themeColor: '#ffffff', // ✅ Move it here
+  themeColor: '#ffffff', 
 };
 
 export default function RootLayout({ children }) {
@@ -40,11 +39,10 @@ export default function RootLayout({ children }) {
         <ClerkLoading>
           <Loading/>
         </ClerkLoading>
-        <ReduxProvider>
          <Suspense fallback={<Loading/>}>
                 <CommonLayout>{children}</CommonLayout>
               </Suspense>
-        </ReduxProvider>
+        
         
       </body>
     </html>

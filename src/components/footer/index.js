@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold mb-4">Pickle Store</h2>
+            <h2 className="text-2xl font-bold mb-4">Xihorn V1</h2>
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">
                 Explore our collection of authentic homemade pickles, from spicy Bhut Jolokia to tangy Bamboo Shoot, and curated gift sets on <a href="https://www.discoverassam.org/">www.discoverassam.org</a>
             </p>

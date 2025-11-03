@@ -1,292 +1,248 @@
+// "use client";
+// import Image from "next/image";
+// import { useRef } from "react";
+// import Details from "../DetailsAbout";
+// import EventCard from "../EventCard";
+// import { Button } from "../ui/button";
+
+// const Home = ({ user, Event, Organizer }) => {
+//   const competitionRef = useRef(null);
+
+//   const scrollToCompetitions = () => {
+//     competitionRef.current?.scrollIntoView({ behavior: "smooth" });
+//   };
+
+//   return (
+//     <div className="bg-gradient-to-r from-[#0b1e3b] via-[#2b0b49] to-[#442b5c]">
+
+//       <section>
+//         <div className="min-h-screen flex-col bg-gradient-to-br from-[#0b1e3b] via-[#2b0b49] to-[#ff6a3d] flex items-center pt-32 sm:pt-44">
+//           <h1 className="text-6xl sm:text-7xl lg:text-9xl font-bold text-white text-center px-4">
+//             XIHORON V.1.0
+//           </h1>
+//           <div className="flex justify-center flex-col items-center mt-10 text-white text-center px-4">
+//             <p>
+//               The First Session. Hosted by the Department of Computer Science,
+//               Sibsagar University
+//             </p>
+//             <p>
+//               Join us for an unparalleled convergence of innovation, code, and
+//               creativity.
+//             </p>
+//           </div>
+//           <Button onClick={scrollToCompetitions} className="mt-5 text-2xl p-8">
+//             Explore Events
+//           </Button>
+//         </div>
+//       </section>
+
+//       <section className="lg:gap-16 gap-10 my-8 mx-6 sm:mx-12 lg:mx-28 rounded-xl bg-gradient-to-r from-[#0b1e3b] via-[#2b0b49] to-[#442b5c]">
+//         <Details />
+//       </section>
+//       <section ref={competitionRef} id="competitions">
+//         <div className="lg:text-3xl text-2xl flex justify-center items-center my-16 mx-5 text-white">
+//           <h1>Competitions & Workshops</h1>
+//         </div>
+
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+//           {Event.Event.map((i, idx) => (
+//             <EventCard
+//               key={idx}
+//               poster={i.poster[0].url}
+//               title={i.title}
+//               description={i.description}
+//               id={i._id}
+//             />
+//           ))}
+//         </div>
+//       </section>
+//       <section className="pb-10">
+//         <div className="text-3xl sm:text-4xl flex justify-center items-center my-16 mx-5 text-white">
+//           <h1>Organizing Committee</h1>
+//         </div>
+
+//         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 px-6">
+//           {Organizer.Organizer.map((i, idx) => (
+//             <div
+//               key={idx}
+//               className="bg-amber-50 flex flex-col items-center p-4 rounded-xl shadow"
+//             >
+//               <Image
+//                 src={i.photo.url}
+//                 alt={i.role}
+//                 width={120}
+//                 height={100}
+//                 className="rounded-full object-cover border-4 border-amber-200"
+//               />
+//               <div className="text-center mt-3">
+//                 <h1 className="text-xl font-semibold text-gray-800">
+//                   {i.name}
+//                 </h1>
+//                 <span className="text-sm text-gray-600">{i.role}</span>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default Home;
 "use client";
 import Image from "next/image";
-import flower from "../../utils/flower.jpg";
-import mango from "../../utils/home_section/mango.webp";
-import lemon from "../../utils/home_section/lemon.webp";
-import chilli from "../../utils/home_section/chilli.webp";
-import amla from "../../utils/home_section/amla.webp";
-import bambooShoot from "../../utils/home_section/bambooShoot.webp";
-import mix from "../../utils/home_section/mix.webp";
-import p1 from "../../utils/home_section/price1.png";
-import p2 from "../../utils/home_section/price2.png";
-import p3 from "../../utils/home_section/price3.png";
-import p4 from "../../utils/home_section/price4.png";
-import spark1 from "../../utils/home_section/spark-1.svg";
-import spark2 from "../../utils/home_section/spark-2.svg";
-import ProductCard from "../product-card";
-import Link from "next/link";
-const Home = ({topSell, Products, user ,latestProducts}) => {
+import { useRef } from "react";
+import Details from "../DetailsAbout";
+import EventCard from "../EventCard";
+import { Button } from "../ui/button";
+import { motion } from "framer-motion";
+
+const Home = ({  Event, Organizer }) => {
+  const competitionRef = useRef(null);
+
+  const scrollToCompetitions = () => {
+    competitionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="bg-gradient-to-r from-red-500 via-orange-500 to-orange-400">
+    <div className="bg-gradient-to-r from-[#0b1e3b] via-[#2b0b49] to-[#442b5c]">
       <section>
-        <div className="relative w-full h-[200px]">
-          <Image
-            src={flower}
-            alt="Flower"
-            fill
-            className="object-top object-cover"
-            priority
-          />
-        </div>
-        <div className="hidden lg:flex lg:relative lg:w-full lg:h-[300px] ">
-          <Image
-            src={flower}
-            alt="Flower"
-            fill
-            className="object-cover "
-            priority
-          />
-        </div>
-        <div className="flex justify-center items-center lg:m-8 m-2">
-          <Image
-            src={spark1}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-          <h1 className="lg:text-4xl text-lg">Explore Our Range</h1>
-          <Image
-            src={spark2}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-        </div>
-        <main className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 px-2 scrollbar-hide  min-h-36">
-          {Products?.map((i, idx) => (
-            <ProductCard
-              key={idx}
-              id={i._id}
-              name={i.name}
-              price={i.price}
-              stock={i.stock}
-              photos={i.photos[0].url}
-              userId={user?.id}
-            />
-          ))}
-        </main>
+        <motion.div
+          className="min-h-screen flex-col bg-gradient-to-br from-[#0b1e3b] via-[#2b0b49] to-[#ff6a3d] flex items-center pt-32 sm:pt-44"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <motion.h1
+            className="text-6xl sm:text-7xl lg:text-9xl font-bold text-white text-center px-4"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 1 }}
+          >
+            XIHORON V.1.0
+          </motion.h1>
+
+          <motion.div
+            className="flex justify-center flex-col items-center mt-10 text-white text-center px-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 1 }}
+          >
+            <p>
+              The First Session. Hosted by the Department of Computer Science,
+              Sibsagar University
+            </p>
+            <p>
+              Join us for an unparalleled convergence of innovation, code, and
+              creativity.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.9, duration: 0.8 }}
+          >
+            <Button onClick={scrollToCompetitions} className="mt-5 lg:text-2xl text-xl lg:p-8 p-6">
+              Explore Events
+            </Button>
+          </motion.div>
+        </motion.div>
       </section>
 
-      <section className="flex flex-col  items-center lg:gap-16 gap-10 my-8 bg-gradient-to-r from-red-400 via-orange-300 to-orange-200 rounded-xl ">
-        <div className="flex justify-center items-center  mt-6 ">
-          <Image
-            src={spark1}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-          <h1 className="lg:text-4xl text-lg">Choose a Favourite Pickle</h1>
-          <Image
-            src={spark1}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-        </div>
-        <div className="grid grid-cols-3 lg:gap-8 w-full place-items-center h-96 mb-6 ">
-          <Link
-            href={{
-              pathname: "/search",
-              query: { search: "mango" },
-            }}
-            className=" relative w-[100px] h-[100px] bg-yellow-500 rounded-full"
-          >
-            <Image
-              src={mango}
-              alt="mango"
-              className="absolute -top-1 -left-1 w-[100] rounded-full object-cover"
-            />
-            <span className="absolute -bottom-9  right-9 font-semibold">
-              Mango
-            </span>
-          </Link>
-          <Link
-            href={{
-              pathname: "/search",
-              query: { search: "lemon" },
-            }}
-            className=" relative w-[100px] h-[100px] bg-green-700 rounded-full"
-          >
-            <Image
-              src={lemon}
-              alt="lemon"
-              className="absolute -top-1 -left-1 w-[100] rounded-full object-cover"
-            />
-            <span className="absolute -bottom-9   right-9 font-semibold">
-              Lemon
-            </span>
-          </Link>
-          <Link
-            href={{
-              pathname: "/search",
-              query: { search: "Amla" },
-            }}
-            className="relative w-[100px] h-[100px] bg-amber-900  rounded-full "
-          >
-            <Image
-              src={amla}
-              alt="amla Pickle"
-              className="absolute -top-1 -left-1 w-[100]  rounded-full object-cover"
-            />
-            <span className="absolute -bottom-9   right-9 font-semibold">
-              Amla
-            </span>
-          </Link>
-          <Link
-            href={{
-              pathname: "/search",
-              query: { search: "chilli" },
-            }}
-            className="relative w-[100px] h-[100px] bg-green-600 rounded-full"
-          >
-            <Image
-              src={chilli}
-              alt="chilli"
-              className="absolute -top-1 -left-1 w-[100] rounded-full object-cover"
-            />
-            <span className="absolute -bottom-9  right-9 font-semibold">
-              Chilli
-            </span>
-          </Link>
-          <Link
-            href={{
-              pathname: "/search",
-              query: { search: "bambooShot" },
-            }}
-            className="relative w-[100px] h-[100px] rounded-full"
-          >
-            <Image
-              src={bambooShoot}
-              alt="bambooShoot"
-             fill
-              className="rounded-full object-cover"
-            />
-            <span className="absolute -bottom-9 font-semibold">
-              BambooShoot
-            </span>
-          </Link>
-          
-          <Link
-            href={"/search"}
-            className="relative w-[100px] h-[100px] bg-amber-700 rounded-full"
-          >
-            <Image
-              src={mix}
-              alt="pink"
-              className="absolute -top-1 -left-1 w-[100px] h-[100px] rounded-full object-cover"
-            />
-            <span className="absolute -bottom-9 text-gray-900  right-9 font-semibold">
-              Mix
-            </span>
-          </Link>
-        </div>
+      <section className="lg:gap-16 gap-10 my-8 mx-6 sm:mx-12 lg:mx-28 rounded-xl bg-gradient-to-r from-[#0b1e3b] via-[#2b0b49] to-[#442b5c]">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          viewport={{ once: true }}
+        >
+          <Details />
+        </motion.div>
       </section>
-      <section>
-        <div className="flex justify-center items-center lg:m-8 m-2">
-          <Image
-            src={spark1}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-          <h1 className="lg:text-4xl text-lg">Latest Products</h1>
-          <Image
-            src={spark2}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-        </div>
-        <main className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 px-2 scrollbar-hide  min-h-36">
-          {latestProducts?.map((i, idx) => (
-            <ProductCard
+
+      <section ref={competitionRef} id="competitions">
+        <motion.div
+          className="lg:text-3xl text-2xl flex justify-center items-center my-16 mx-5 text-white"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h1>Competitions & Workshops</h1>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6"
+          initial="hidden"
+          whileInView="visible"
+          transition={{ staggerChildren: 0.15 }}
+          viewport={{ once: true }}
+        >
+          {Event.Event.map((i, idx) => (
+            <motion.div
               key={idx}
-              id={i._id}
-              name={i.name}
-              price={i.price}
-              stock={i.stock}
-              photos={i.photos[0].url}
-              userId={user?.id}
-            />
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.6 }}
+            >
+              <EventCard
+                poster={i.poster[0].url}
+                title={i.title}
+                description={i.description}
+                id={i._id}
+              />
+            </motion.div>
           ))}
-        </main>
+        </motion.div>
       </section>
-      <section>
-        <div className="flex justify-center items-center lg:m-8 m-2">
-          <Image
-            src={spark1}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-          <h1 className="lg:text-4xl text-lg">Top Sell</h1>
-          <Image
-            src={spark2}
-            alt="spark"
-            className="w-[50px] h-[50px] lg:m-3"
-          />
-        </div>
-        <main className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4 px-2 scrollbar-hide  min-h-36">
-          {topSell?.map((i, idx) => (
-            <ProductCard
+
+      <section className="pb-10">
+        <motion.div
+          className="text-2xl sm:text-4xl flex justify-center items-center my-16 mx-5 text-white"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h1>Organizing Committee</h1>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 px-6"
+          initial="hidden"
+          whileInView="visible"
+          transition={{ staggerChildren: 0.15 }}
+          viewport={{ once: true }}
+        >
+          {Organizer.Organizer.map((i, idx) => (
+            <motion.div
               key={idx}
-              id={i._id}
-              name={i.name}
-              price={i.price}
-              stock={i.stock}
-              photos={i.photos[0].url}
-              userId={user?.id}
-            />
+              className="bg-amber-50 flex flex-col items-center p-4 rounded-xl shadow"
+              variants={{
+                hidden: { opacity: 0, scale: 0.9 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              transition={{ duration: 0.6 }}
+            >
+              <Image
+                src={i.photo.url}
+                alt={i.role}
+                width={120}
+                height={100}
+                className="rounded-full object-cover border-4 border-amber-200"
+              />
+              <div className="text-center mt-3">
+                <h1 className="text-xl font-semibold text-gray-800">
+                  {i.name}
+                </h1>
+                <span className="text-sm text-gray-600">{i.role}</span>
+              </div>
+            </motion.div>
           ))}
-        </main>
-      </section>
-      <section className="flex flex-col  items-center gap-1 min-h-80">
-        <h1 className="lg:text-3xl text-xl font-bold ">Shop By Budget</h1>
-        <div className="w-full lg:mt-16 m-5">
-          <div className="flex justify-around flex-wrap gap-5">
-            <Link
-              href={{
-                pathname: "/search",
-                query: { maxPrice: "500" },
-              }}
-            >
-              <Image
-                src={p1}
-                alt="price1"
-                className="w-[200px] h-[100px] object-cover  rounded-md"
-              />
-            </Link>
-            <Link
-              href={{
-                pathname: "/search",
-                query: { maxPrice: "1000", minPrice: "500" },
-              }}
-            >
-              <Image
-                src={p2}
-                alt="price2"
-                className="w-[200px] h-[100px] object-cover rounded-md"
-              />
-            </Link>
-            <Link
-              href={{
-                pathname: "/search",
-                query: { maxPrice: "2000", minPrice: "1000" },
-              }}
-            >
-              <Image
-                src={p3}
-                alt="price3"
-                className="w-[200px] h-[100px] object-cover rounded-md"
-              />
-            </Link>
-            <Link
-              href={{
-                pathname: "/search",
-                query: { minPrice: "2000" },
-              }}
-            >
-              <Image
-                src={p4}
-                alt="price4"
-                className="w-[200px] h-[100px] object-cover rounded-md"
-              />
-            </Link>
-          </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );
