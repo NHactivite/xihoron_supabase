@@ -1,10 +1,11 @@
 "use client";
 
-import { getOrganizer } from "@/action";
+import { getCandidates, getOrganizer } from "@/action";
 import AddOrganizer from "@/components/addOrganizer";
 import WigetItem from "@/components/admin/WigetItem";
 import { AdminTable } from "@/components/admin/adminTable";
 import { OrganizerTable } from "@/components/admin/organizerTable";
+import CandidateDetails from "@/components/candidateDetails";
 import { Loader } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,21 +25,24 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [admin, setAdmins] = useState([]);
   const [organizer, setOrganizer] = useState([]);
+  const [candidate,setCandiadate]=useState("")
   const [users, setUsers] = useState(0);
 
   useEffect(() => {
     const getAllData = async () => {
       setLoading(true);
       try {
-        const [listRes, organizerRes] = await Promise.all([
+        const [listRes, organizerRes,candidate] = await Promise.all([
           fetch("/api/list"),
           getOrganizer(),
+          getCandidates()
         ]);
 
         const listData = await listRes.json();
         setUsers(listData.users);
         setAdmins(listData.admins);
         setOrganizer(organizerRes);
+        setCandiadate(candidate)
       } catch (err) {
         console.error("Dashboard fetch error:", err);
       } finally {
@@ -54,6 +58,18 @@ const Page = () => {
       <section className="flex  justify-center mt-2 gap-20">
         <WigetItem properties={"Users"} value={users} />
         <Button onClick={openNewDialog}>Add organizer</Button>
+      </section>
+      <section>
+         {loading ? (
+          <div className="m-20">
+            <Loader />
+          </div>
+        ) : organizer?.Organizer?.length > 0 ? (
+           <CandidateDetails candidate={candidate}/>
+        ) : (
+          <p>No Events</p>
+        )}
+       
       </section>
 
       <Dialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen}>

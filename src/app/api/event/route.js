@@ -5,11 +5,26 @@ import path from "path";
 import { tmpdir } from "os";
 import { v4 as uuidv4 } from "uuid";
 import ConnectDB from "@/database";
-import { Product } from "@/model/organizer";
 import { auth } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/express";
 import { Event } from "@/model/event";
+import { Redis } from "@upstash/redis";
 
+// Check if the required environment variables are set
+if (
+  !process.env.UPSTASH_REDIS_REST_URL ||
+  !process.env.UPSTASH_REDIS_REST_TOKEN
+) {
+  throw new Error(
+    "UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are not set"
+  );
+}
+
+// Create a new Redis client from your environment variables
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+   token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 cloudinary.config({
     cloud_name:process.env.CLOUD_NAME,
     api_key:process.env.CLOUD_API_KEY,
@@ -94,6 +109,15 @@ export async function POST(req) {
       prize:prizes
       
     });
+    const eventCacheKey = "all_events";
+    const candidateSummaryKey = "candidate_event_summary";
+
+    await Promise.all([
+      redis.del(eventCacheKey),
+      redis.del(candidateSummaryKey),
+    ]);
+
+    console.log(`🧼 Deleted Redis cache keys: ${eventCacheKey}, ${candidateSummaryKey}`);
 
     console.log("New event created successfully:", newEvent._id);
 
@@ -223,6 +247,17 @@ export async function PUT(req) {
     }
 
     await event.save();
+   const eventCacheKey = "all_events";
+    const candidateSummaryKey = "candidate_event_summary";
+     const cacheKey = `event:${id}`;
+
+    await Promise.all([
+      redis.del(eventCacheKey),
+      redis.del(candidateSummaryKey),
+      redis.del(cacheKey),
+    ]);
+
+    console.log(`🧼 Deleted Redis cache keys: ${eventCacheKey}, ${candidateSummaryKey}`);
 
     return NextResponse.json({
       success: true,

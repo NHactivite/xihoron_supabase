@@ -6,8 +6,7 @@ import React from 'react'
  export default async function Page(){
 
   const user = await currentUser();
-  console.log(user,"uoo");
-  
+
   const Event=await getEvents()
   const Organizer=await getOrganizer()
  

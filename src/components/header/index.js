@@ -23,6 +23,7 @@ const menuItems = useMemo(() => {
     return [
       { label: "DashBoard", path: "/admin", show: true },
       { label: "Events", path: "/admin/allEvents", show: user },
+      { label: "verify", path: "/admin/verify", show: user },
     ];
   }
 

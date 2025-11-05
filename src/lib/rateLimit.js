@@ -16,7 +16,7 @@ const redis = new Redis({
 // Create a new ratelimiter, that allows 5 requests per 10 seconds
 export const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(300, "10 s"),
+  limiter: Ratelimit.slidingWindow(300, "10s"),
   analytics: true,
   
   prefix: "my-xihoron-app",
