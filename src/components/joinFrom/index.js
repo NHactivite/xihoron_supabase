@@ -1,7 +1,7 @@
 "use client";
 import { createPaymentAction } from "@/action";
 import { load } from "@cashfreepayments/cashfree-js";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 const Join = ({ Event, user }) => {
+  const [loading,setLoading]=useState(false)
   const {
     register,
     handleSubmit,
@@ -22,8 +23,7 @@ const Join = ({ Event, user }) => {
   });
 
   const cashfreeRef = useRef(null);
-  // const payMode=process.env.RUN_MODE == "devlopment"?"sandbox":"production"
-
+ 
   useEffect(() => {
     const initializeSDK = async () => {
       try {
@@ -37,12 +37,14 @@ const Join = ({ Event, user }) => {
     initializeSDK();
   }, []);
 
+
   const Event_details = {
-    name: Event.Event.title,
-    Event_id: Event.Event._id,
+    name: Event?.Event.title,
+    Event_id: Event?.Event._id,
   };
 
   const handlePay = async (Details) => {
+    setLoading(true)
     try {
       if (!cashfreeRef.current?.checkout) {
         toast.error("Payment Gateway is not ready. Please refresh the page.");
@@ -73,13 +75,15 @@ const Join = ({ Event, user }) => {
 
         cashfreeRef.current.checkout(checkoutOptions);
       } else {
-        toast.error("Could not create payment session. Please try again.");
+        toast.error("Please refresh the page");
         localStorage.removeItem("tempOrderData");
       }
     } catch (error) {
-      toast.error("An error occurred while initiating payment.");
+      toast.error("Please refresh the page and check Internet");
       localStorage.removeItem("tempOrderData");
       console.error("Error in handlePay:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -168,8 +172,10 @@ const Join = ({ Event, user }) => {
           <Button
             type="submit"
             className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2 rounded-xl shadow-md transition duration-300"
-          >
-            Pay Now
+            disabled={loading}
+          >{
+            loading?"Processing...":"Pay Now"
+          }
           </Button>
         </motion.div>
       </motion.form>

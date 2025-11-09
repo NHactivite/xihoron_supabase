@@ -9,11 +9,13 @@ import { useState } from "react";
 
 const VerifyCard = () => {
   const [res, setRes] = useState(null);
+  const [loading,setLoading]=useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: { candidate_Id: "" },
   });
 
   const handleVerify = async (data) => {
+    setLoading(true)
     try {
       const result = await verifyCandidateById(data.candidate_Id);
       setRes(result);
@@ -21,6 +23,8 @@ const VerifyCard = () => {
     } catch (error) {
       toast.error("An error occurred while verifying candidate.");
       console.error("Error in handleVerify:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -39,7 +43,7 @@ const VerifyCard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          Verify Candidate
+        Verify Candidate
         </motion.h1>
 
         <div>
@@ -65,7 +69,7 @@ const VerifyCard = () => {
             type="submit"
             className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2 rounded-xl shadow-md transition duration-300"
           >
-            Verify Now
+          { loading?"Processing...":"Verify Now"}
           </Button>
         </motion.div>
       </motion.form>

@@ -243,14 +243,12 @@ export const getEventsById = async (id) => {
 
     const cacheKey = `event:${id}`; // unique key per event
 
-    // 🧠 Try fetching from Redis first
     const cachedEvent = await redis.get(cacheKey);
     if (cachedEvent) {
-      console.log(`✅ Fetched event from Redis cache (Key: ${cacheKey})`);
+      console.log(` Fetched event from Redis cache (Key: ${cacheKey})`);
       return { success: true, Event: JSON.parse(JSON.stringify(cachedEvent)) };
     }
 
-    // ⚙️ If not found in cache, fetch from MongoDB
     const data = await Event.findById(id).lean();
 
     if (!data) {
@@ -259,13 +257,13 @@ export const getEventsById = async (id) => {
 
     const plainData = JSON.parse(JSON.stringify(data));
 
-    // 💾 Cache the event data for 1 hour (3600 seconds)
+    //  Cache the event data for 1 hour (3600 seconds)
     await redis.set(cacheKey, plainData, { ex: 3600 });
-    console.log(`📝 Cached event in Redis (Key: ${cacheKey})`);
+    console.log(`Cached event in Redis (Key: ${cacheKey})`);
 
     return { success: true, Event: plainData };
   } catch (error) {
-    console.error("❌ Error fetching event by ID:", error);
+    console.error("Error fetching event by ID:", error);
     return { success: false, message: error.message };
   }
 };

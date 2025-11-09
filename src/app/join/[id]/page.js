@@ -14,6 +14,8 @@ const Order = async ({ params }) => {
   }
 
   const Event = await getEventsById(id);
+  console.log(Event,"idddevent");
+  
 
   return (
     <div>

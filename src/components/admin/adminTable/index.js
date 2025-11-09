@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,10 +15,10 @@ import toast from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 
 export function AdminTable({ admins }) {
-  const [loading,setLoading]=useState(false)
-  
+  const [deletingId, setDeletingId] = useState(null); 
+
   const handleDelete = async (userId) => {
-    setLoading(true)
+    setDeletingId(userId); // set that specific user's id
     try {
       const res = await fetch(`/api/admin/${userId}`, {
         method: "DELETE",
@@ -28,14 +28,14 @@ export function AdminTable({ admins }) {
 
       if (res.ok) {
         toast.success(data.message || "User deleted");
-          window.location.reload();
+        window.location.reload();
       } else {
         toast.error(data.message || "Failed to delete user");
       }
     } catch (err) {
       toast.error("Something went wrong");
-    }finally{
-      setLoading(false)
+    } finally {
+      setDeletingId(null); // reset after done
     }
   };
 
@@ -82,10 +82,16 @@ export function AdminTable({ admins }) {
                     {admin.public_metadata?.role ?? "N/A"}
                   </Badge>
                 </TableCell>
-
                 <TableCell>
-                  <button onClick={() => handleDelete(admin.id)}>
-                    {loading?<span>Processing...</span>:<FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />}
+                  <button
+                    onClick={() => handleDelete(admin.id)}
+                    disabled={deletingId === admin.id}
+                  >
+                    {deletingId === admin.id ? (
+                      <span>Processing...</span>
+                    ) : (
+                      <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />
+                    )}
                   </button>
                 </TableCell>
               </TableRow>
