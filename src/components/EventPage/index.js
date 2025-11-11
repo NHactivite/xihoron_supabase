@@ -98,6 +98,7 @@ export default function EventPage({ Event }) {
             </motion.div>
 
             {/* Team Size Card */}
+            {Event.Event.teamSize.teamLeadRequired ? (
             <motion.div
               variants={{
                 hidden: { opacity: 0, y: 50 },
@@ -106,6 +107,7 @@ export default function EventPage({ Event }) {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card className="p-6 bg-gray-800 text-gray-200 border-none transition">
+                  
                 <div className="flex items-start gap-4">
                   <Users className="w-8 h-8 flex-shrink-0 mt-1" />
                   <div>
@@ -116,13 +118,14 @@ export default function EventPage({ Event }) {
                     <p className="font-semibold">
                       Maximum: {Event.Event.teamSize.max} members
                     </p>
-                    {Event.Event.teamSize.teamLeadRequired ? (
+                  
                       <p className="text-sm mt-2">1 team lead required</p>
-                    ) : null}
+                    
                   </div>
                 </div>
               </Card>
             </motion.div>
+            ) : null}
 
             {/* Fee Card */}
             <motion.div
@@ -140,12 +143,15 @@ export default function EventPage({ Event }) {
                     <p className="font-semibold text-2xl">
                       ₹ {Event.Event.participationFee.perTeam} Per Team
                     </p>
-                    <p className="mt-2">
+                    {includes?.length>0?
+                     <p className="mt-2">
                       {includes.map((i, idx) => (
                         <span key={idx}>{i} </span>
                       ))}
                       Need Carry
                     </p>
+                    :null}
+                    
                   </div>
                 </div>
               </Card>
@@ -259,7 +265,7 @@ export default function EventPage({ Event }) {
                       <Card className="p-6 bg-gray-800 text-gray-200 border-none text-center transition">
                         <p className="text-2xl mb-2">{item.place}</p>
                         <p className="text-3xl font-bold mb-2">{item.prize}</p>
-                        <p>{item.money}</p>
+                        <p>₹ {item.money}</p>
                       </Card>
                     </motion.div>
                   ))}

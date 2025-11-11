@@ -21,7 +21,7 @@ const Page = () => {
   const [mode, setMode] = useState("create");
   const [initialEvent, setInitialEvent] = useState("");
   const [loading, setLoading] = useState(true);
- const router = useRouter();
+ 
   const openNewDialog = () => {
     setMode("create");
     setIsNewDialogOpen(true);

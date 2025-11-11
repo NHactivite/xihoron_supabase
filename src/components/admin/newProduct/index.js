@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Upload, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ const NewEvent = ({ mode, initialEvent }) => {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-    const [deletephoto, setDeletePhoto] = useState([]);
+  const [deletephoto, setDeletePhoto] = useState([]);
 
   // Basic info
   const [title, setTitle] = useState(initialEvent?.title || "");
@@ -57,7 +57,7 @@ const NewEvent = ({ mode, initialEvent }) => {
       place: p.place || "",
     }));
 
-const prizesChanged =
+  const prizesChanged =
     JSON.stringify(normalizePrizeArray(prizes)) !==
     JSON.stringify(normalizePrizeArray(initialEvent.prize || []));
 
@@ -79,12 +79,12 @@ const prizesChanged =
     const newDetails = details.filter((_, i) => i !== index);
     setDetails(newDetails.length > 0 ? newDetails : [{ key: "", value: "" }]);
   };
- const [poster, setPoster] = useState({
+  const [poster, setPoster] = useState({
     file: [],
     preview: initialEvent.poster ? initialEvent.poster.map((p) => p.url) : [],
     error: "",
   });
- const removeImage = (index) => {
+  const removeImage = (index) => {
     const removedPhoto = poster.preview[index];
 
     // Append to the array instead of replacing
@@ -99,7 +99,6 @@ const prizesChanged =
       error: "",
     });
   };
-
 
   const updateDetailField = (index, field, value) => {
     const newDetails = [...details];
@@ -116,10 +115,12 @@ const prizesChanged =
 
   // Team size
   const [teamSize, setTeamSize] = useState({
-    min: initialEvent?.teamSize?.min || 2,
-    max: initialEvent?.teamSize?.max || 4,
-    teamLeadRequired: initialEvent?.teamSize?.teamLeadRequired ?? true,
+    min: initialEvent?.teamSize?.min || 1,
+    max: initialEvent?.teamSize?.max || 1,
+    teamLeadRequired: initialEvent?.teamSize?.teamLeadRequired ?? false,
   });
+
+  console.log(teamSize.teamLeadRequired, "ooppp");
 
   // Participation Fee
   const [participationFee, setParticipationFee] = useState({
@@ -129,22 +130,21 @@ const prizesChanged =
   });
 
   // Optional event poster
- 
 
   const handlePosterChange = (e) => {
-  const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files);
 
-  if (files.length > 0) {
-    setPoster((prev) => ({
-      file: [...(prev.file || []), ...files],
-      preview: [
-        ...(Array.isArray(prev.preview) ? prev.preview : []),
-        ...files.map((file) => URL.createObjectURL(file)),
-      ],
-      error: "",
-    }));
-  }
-};
+    if (files.length > 0) {
+      setPoster((prev) => ({
+        file: [...(prev.file || []), ...files],
+        preview: [
+          ...(Array.isArray(prev.preview) ? prev.preview : []),
+          ...files.map((file) => URL.createObjectURL(file)),
+        ],
+        error: "",
+      }));
+    }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -160,9 +160,9 @@ const prizesChanged =
       formData.set("participationFee", JSON.stringify(participationFee));
       formData.set("prize", JSON.stringify(prizes));
 
-     if (poster.file && poster.file.length > 0) {
-  poster.file.forEach((file) => formData.append("poster", file));
-}
+      if (poster.file && poster.file.length > 0) {
+        poster.file.forEach((file) => formData.append("poster", file));
+      }
       const initialDetails = initialEvent?.details || {};
 
       if (JSON.stringify(detailsObject) !== JSON.stringify(initialDetails)) {
@@ -277,7 +277,7 @@ const prizesChanged =
         hasChanges = true;
       }
 
-       if (deletephoto && deletephoto.length > 0) {
+      if (deletephoto && deletephoto.length > 0) {
         formData.set("removedPhotos", JSON.stringify(deletephoto));
         hasChanges = true;
       }
@@ -342,7 +342,7 @@ const prizesChanged =
             {/* Event Date & Time */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="mb-1">Date</Label>
+                <Label className="mb-1">Event Date</Label>
                 <Input
                   type="text"
                   placeholder="e.g., December 15, 2024"
@@ -353,19 +353,34 @@ const prizesChanged =
                 />
               </div>
               <div>
-                <Label className="mb-1">Registration Time</Label>
+                <Label className="mb-1">Event Start Time</Label>
                 <Input
                   type="text"
-                  placeholder="8:30 AM"
-                  value={eventDateTime.registrationTime}
+                  placeholder="9:00 AM"
+                  value={eventDateTime.startTime}
                   onChange={(e) =>
                     setEventDateTime({
                       ...eventDateTime,
-                      registrationTime: e.target.value,
+                      startTime: e.target.value,
                     })
                   }
                 />
               </div>
+              <div>
+                <Label className="mb-1">Event End Time</Label>
+                <Input
+                  type="text"
+                  placeholder="6:00 PM"
+                  value={eventDateTime.endTime}
+                  onChange={(e) =>
+                    setEventDateTime({
+                      ...eventDateTime,
+                      endTime: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
               <div>
                 <Label className="mb-1">Registration Last Date</Label>
                 <Input
@@ -381,29 +396,15 @@ const prizesChanged =
                 />
               </div>
               <div>
-                <Label className="mb-1">Start Time</Label>
+                <Label className="mb-1">Registration End Time</Label>
                 <Input
                   type="text"
-                  placeholder="9:00 AM"
-                  value={eventDateTime.startTime}
+                  placeholder="8:30 AM"
+                  value={eventDateTime.registrationTime}
                   onChange={(e) =>
                     setEventDateTime({
                       ...eventDateTime,
-                      startTime: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <Label className="mb-1">End Time</Label>
-                <Input
-                  type="text"
-                  placeholder="6:00 PM"
-                  value={eventDateTime.endTime}
-                  onChange={(e) =>
-                    setEventDateTime({
-                      ...eventDateTime,
-                      endTime: e.target.value,
+                      registrationTime: e.target.value,
                     })
                   }
                 />
@@ -425,14 +426,17 @@ const prizesChanged =
               </div>
               <div className="space-y-3">
                 {details.map((detail, index) => (
-                  <div key={index} className="flex gap-2 items-center">
+                  <div
+                    key={index}
+                    className="grid grid-cols-6 gap-2 items-center"
+                  >
                     <Input
                       placeholder="Detail name (e.g., Material)"
                       value={detail.key}
                       onChange={(e) =>
                         updateDetailField(index, "key", e.target.value)
                       }
-                      className="flex-1"
+                      className="col-span-2"
                     />
                     <Input
                       placeholder="Detail value (e.g., Cotton)"
@@ -440,7 +444,7 @@ const prizesChanged =
                       onChange={(e) =>
                         updateDetailField(index, "value", e.target.value)
                       }
-                      className="flex-1"
+                      className="col-span-4"
                     />
                     {details.length > 1 && (
                       <Button
@@ -448,7 +452,7 @@ const prizesChanged =
                         variant="outline"
                         size="sm"
                         onClick={() => removeDetailField(index)}
-                        className="px-2"
+                        className="px-2 col-span-1"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -505,7 +509,7 @@ const prizesChanged =
                     <Input
                       type="number"
                       placeholder="Money (e.g., 5000)"
-                      value={p.money===0?"":p.money}
+                      value={p.money === 0 ? "" : p.money}
                       onChange={(e) => {
                         const updated = [...prizes];
                         updated[index].money = Number(e.target.value);
@@ -536,26 +540,6 @@ const prizesChanged =
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label className="mb-1">Min Members</Label>
-                <Input
-                  type="number"
-                  value={teamSize.min===0?"":teamSize.min}
-                  onChange={(e) =>
-                    setTeamSize({ ...teamSize, min: Number(e.target.value) })
-                  }
-                />
-              </div>
-              <div>
-                <Label className="mb-1">Max Members</Label>
-                <Input
-                  type="number"
-                  value={teamSize.max ===0?"":teamSize.max }
-                  onChange={(e) =>
-                    setTeamSize({ ...teamSize, max: Number(e.target.value) })
-                  }
-                />
-              </div>
               <div className="flex items-center gap-2 mt-6">
                 <input
                   id="teamLeadRequired"
@@ -568,8 +552,38 @@ const prizesChanged =
                     })
                   }
                 />
-                <Label htmlFor="teamLeadRequired">Team Lead Required</Label>
+                <Label htmlFor="teamLeadRequired">Group Event</Label>
               </div>
+              {teamSize.teamLeadRequired ? (
+                <>
+                  <div>
+                    <Label className="mb-1">Min Members</Label>
+                    <Input
+                      type="number"
+                      value={teamSize.min === 0 ? "" : teamSize.min}
+                      onChange={(e) =>
+                        setTeamSize({
+                          ...teamSize,
+                          min: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label className="mb-1">Max Members</Label>
+                    <Input
+                      type="number"
+                      value={teamSize.max === 0 ? "" : teamSize.max}
+                      onChange={(e) =>
+                        setTeamSize({
+                          ...teamSize,
+                          max: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                </>
+              ) : null}
             </div>
 
             {/* Participation Fee */}
@@ -579,7 +593,11 @@ const prizesChanged =
                 <Input
                   type="number"
                   placeholder="5000"
-                  value={participationFee.perTeam === 0 ? "" :participationFee.perTeam}
+                  value={
+                    participationFee.perTeam === 0
+                      ? ""
+                      : participationFee.perTeam
+                  }
                   onChange={(e) =>
                     setParticipationFee({
                       ...participationFee,

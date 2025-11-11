@@ -20,9 +20,9 @@ const eventSchema = new mongoose.Schema({
   },
 
   teamSize: {
-    min: { type: Number, required: true },
-    max: { type: Number, required: true },
-    teamLeadRequired: { type: Boolean, default: true },
+    min: { type: Number },
+    max: { type: Number },
+    teamLeadRequired: { type: Boolean, default: false },
   },
 
   poster: {
@@ -66,7 +66,7 @@ const eventSchema = new mongoose.Schema({
   participationFee: {
     perTeam: { type: Number, required: true },
     currency: { type: String, default: "INR", required: true },
-    includes: { type: [String], default: [], required: true },
+    includes: { type: [String] },
   },
 
   createdAt: { type: Date, default: Date.now },

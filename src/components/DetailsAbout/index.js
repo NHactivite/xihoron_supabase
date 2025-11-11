@@ -55,7 +55,7 @@ const Details = () => {
             Department of Computer Science, Sibsagar University
           </h1>
           <p className="text-lg text-justify mt-3 text-gray-300 leading-relaxed max-w-5xl">
-            Established in [Year], the Department of Computer Science at
+            Established in 2022, the Department of Computer Science at
             Sibsagar University has been at the forefront of technological
             education and research in the region. Our mission is to cultivate a
             rich learning environment that fosters innovation, critical
