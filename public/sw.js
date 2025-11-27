@@ -12,7 +12,7 @@
  */
 
 // If the loader is already loaded, just stop.
-const CACHE_VERSION = "v3";   // <= CHANGE this every time you update logo/icons
+const CACHE_VERSION = "v4";   // <= CHANGE this every time you update logo/icons
 
 if (!self.define) { 
   let registry = {};
