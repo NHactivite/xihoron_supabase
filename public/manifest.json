@@ -5,7 +5,10 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "orientation": "portrait",
@@ -27,7 +30,7 @@
   ],
   "screenshots": [
     {
-      "src":"/screenshots/mobileView.png",
+      "src": "/screenshots/mobileView.png",
       "sizes": "443x794",
       "type": "image/png",
       "form_factor": "narrow"
