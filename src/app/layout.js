@@ -24,7 +24,7 @@ export const metadata = {
   manifest: "/manifest.json", 
  keywords: ["nextjs", "next14", "pwa", "next-pwa"],
   icons: {
-    apple: "/icons/192.png", 
+    apple: "/icons/512.png", 
   },
 };
 export const viewport = {

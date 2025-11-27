@@ -1,31 +1,37 @@
-
-import withPWA from 'next-pwa';
+import withPWA from "next-pwa";
+import runtimeCaching from "next-pwa/cache";
 
 let mydisable;
 let myremoveConsole;
-process.env.RUN_MODE=="devlopment"?mydisable=true:mydisable=false
-process.env.RUN_MODE=="devlopment"?myremoveConsole=false:myremoveConsole=true
+
+process.env.RUN_MODE == "devlopment"
+  ? (mydisable = true)
+  : (mydisable = false);
+process.env.RUN_MODE == "devlopment"
+  ? (myremoveConsole = false)
+  : (myremoveConsole = true);
 
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
   compiler: {
-    removeConsole:myremoveConsole,
+    removeConsole: myremoveConsole,
   },
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'images.clerk.dev', pathname: '/**' },
-      { protocol: 'https', hostname: 'www.gravatar.com', pathname: '/avatar/**' },
+      { protocol: "https", hostname: "res.cloudinary.com", pathname: "/**" },
+      { protocol: "https", hostname: "images.clerk.dev", pathname: "/**" },
+      { protocol: "https", hostname: "www.gravatar.com", pathname: "/avatar/**" },
     ],
   },
 };
 
 export default withPWA({
-  dest: 'public',
-  disable:false,
+  dest: "public",
+  disable: false,
   register: true,
   skipWaiting: true,
-  scope: '/',
-  sw: 'sw.js',
+  scope: "/",
+  sw: "sw.js",
+  runtimeCaching,            // <-- ADD THIS LINE
 })(nextConfig);
