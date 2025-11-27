@@ -27,7 +27,7 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshots/mobileView.png",
+      "src":"/screenshots/mobileView.png",
       "sizes": "443x794",
       "type": "image/png",
       "form_factor": "narrow"
