@@ -28,5 +28,5 @@ export default withPWA({
   skipWaiting: true,
   scope: '/',
   sw: 'sw.js',
-   runtimeCaching,
+  
 })(nextConfig);

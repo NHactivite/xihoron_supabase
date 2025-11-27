@@ -2,9 +2,7 @@ import { CommonLayout } from "@/components/common-layout";
 import { ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Suspense } from "react";
 
-import { Loader } from "@/components/loading";
 import Loading from "./loading";
 
 
@@ -18,7 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata = {
-  title: "Xihoron app",
+  title: "xihoron app",
   description: "A Online Competion platform",
   generator: "Next.js",
   manifest: "/manifest.json", 
