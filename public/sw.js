@@ -12,11 +12,11 @@
  */
 
 // If the loader is already loaded, just stop.
-if (!self.define) {
+const CACHE_VERSION = "v3";   // <= CHANGE this every time you update logo/icons
+
+if (!self.define) { 
   let registry = {};
 
-  // Used for `eval` and `importScripts` where we can't get script URL by other means.
-  // In both cases, it's safe to use a global var because those functions are synchronous.
   let nextDefineUri;
 
   const singleRequire = (uri, parentUri) => {
@@ -49,7 +49,6 @@ if (!self.define) {
   self.define = (depsNames, factory) => {
     const uri = nextDefineUri || ("document" in self ? document.currentScript.src : "") || location.href;
     if (registry[uri]) {
-      // Module is already loading or loaded.
       return;
     }
     let exports = {};
@@ -67,34 +66,44 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-e43f5367'], (function (workbox) { 'use strict';
+
+define(['./workbox-e43f5367'], function (workbox) {
+  'use strict';
 
   importScripts();
+
+  // ⚡ IMPORTANT: instantly replace old service worker
   self.skipWaiting();
   workbox.clientsClaim();
-  workbox.registerRoute("/", new workbox.NetworkFirst({
-    "cacheName": "start-url",
-    plugins: [{
-      cacheWillUpdate: async ({
-        request,
-        response,
-        event,
-        state
-      }) => {
-        if (response && response.type === 'opaqueredirect') {
-          return new Response(response.body, {
-            status: 200,
-            statusText: 'OK',
-            headers: response.headers
-          });
-        }
-        return response;
-      }
-    }]
-  }), 'GET');
-  workbox.registerRoute(/.*/i, new workbox.NetworkOnly({
-    "cacheName": "dev",
-    plugins: []
-  }), 'GET');
 
-}));
+  // 🚀 Start URL cache (with version)
+  workbox.registerRoute(
+    "/",
+    new workbox.NetworkFirst({
+      cacheName: "start-url-" + CACHE_VERSION,
+      plugins: [{
+        cacheWillUpdate: async ({ response }) => {
+          if (response && response.type === "opaqueredirect") {
+            return new Response(response.body, {
+              status: 200,
+              statusText: "OK",
+              headers: response.headers
+            });
+          }
+          return response;
+        }
+      }]
+    }),
+    "GET"
+  );
+
+  // 🔥 All other files (new dev cache)
+  workbox.registerRoute(
+    /.*/i,
+    new workbox.NetworkOnly({
+      cacheName: "dev-" + CACHE_VERSION,
+      plugins: []
+    }),
+    "GET"
+  );
+});
