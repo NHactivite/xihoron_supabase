@@ -5,170 +5,125 @@ import path from "path";
 import { tmpdir } from "os";
 import { v4 as uuidv4 } from "uuid";
 import ConnectDB from "@/database";
-import { auth } from "@clerk/nextjs/server";
-import { clerkClient } from "@clerk/express";
 import { Event } from "@/model/event";
 import { Redis } from "@upstash/redis";
 
-// Check if the required environment variables are set
-if (
-  !process.env.UPSTASH_REDIS_REST_URL ||
-  !process.env.UPSTASH_REDIS_REST_TOKEN
-) {
-  throw new Error(
-    "UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are not set"
-  );
+// Validate Upstash env early
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  throw new Error("UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are not set");
 }
 
-// Create a new Redis client from your environment variables
+// Init Redis
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
-   token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
-cloudinary.config({
-    cloud_name:process.env.CLOUD_NAME,
-    api_key:process.env.CLOUD_API_KEY,
-    api_secret:process.env.CLOUD_API_SECRET
-})
 
-if (!process.env.CLOUD_NAME|| !process.env.CLOUD_API_KEY || !process.env.CLOUD_API_SECRET) {
+// Cloudinary config
+if (!process.env.CLOUD_NAME || !process.env.CLOUD_API_KEY || !process.env.CLOUD_API_SECRET) {
   throw new Error("Cloudinary environment variables are not set");
+}
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+// Helper: upload a File object to Cloudinary
+async function uploadFileToCloudinary(file) {
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const tempPath = path.join(tmpdir(), `${uuidv4()}-${file.name}`);
+  await writeFile(tempPath, buffer);
+  const result = await cloudinary.v2.uploader.upload(tempPath, { folder: "xihoron" });
+  return { public_id: result.public_id, url: result.secure_url };
 }
 
 
+// ==================== POST handler (create event) ====================
 export async function POST(req) {
   try {
+    // Auth + admin
+    const auth = await authenticateAndEnsureAdmin(req);
+    if (!auth.ok) return NextResponse.json(auth.body, { status: auth.status });
+
     await ConnectDB();
-    console.log("Database connected.");
-    
+
     const formData = await req.formData();
-    console.log(formData,"lppp");
-    
-    // --- 1. Get all data from FormData ---
+
     const title = formData.get("title");
-     const details = formData.get("details");
+    const details = formData.get("details");
     const description = formData.get("description");
     const eventDateTimeString = formData.get("eventDateTime");
     const teamSizeString = formData.get("teamSize");
-    const prize = formData.getAll("prize");
+    const prize = formData.get("prize") || formData.getAll("prize");
     const participationFeeString = formData.get("participationFee");
-    const posterFile = formData.get("poster"); // This is a single File object
+    const posterFile = formData.get("poster"); // single File
 
-    // Basic validation
-    if (!title ||  !details|| !eventDateTimeString || !teamSizeString || !participationFeeString||!posterFile||!description) {
+    if (!title || !details || !eventDateTimeString || !teamSizeString || !participationFeeString || !description) {
       return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
     }
-     
-    const parse = JSON.parse(details);
-    const parsedDetails = { ...parse };
-    const prizes = JSON.parse(prize);
-    // --- 2. Handle the Poster Upload (if it exists) ---
-    let uploadedPoster = null; // Default value if no poster is uploaded
-    
-    // Check if posterFile is a valid file
-    if (posterFile && posterFile.size > 0) {
-      console.log("Processing poster upload...");
-      
-      // Convert file to buffer
-      const buffer = Buffer.from(await posterFile.arrayBuffer());
-      
-      // Create a temporary path
-      const tempPath = path.join(tmpdir(), `${uuidv4()}-${posterFile.name}`);
-      
-      // Write file to temp path
-      await writeFile(tempPath, buffer);
-      
-      // Upload to Cloudinary
-      const result = await cloudinary.v2.uploader.upload(tempPath, {
-        folder: "xihoron", // A specific folder for event posters
-      });
 
-  
-      // Store the Cloudinary response
-      uploadedPoster = {
-        public_id: result.public_id,
-        url: result.secure_url,
-      };
-      
-      console.log("Poster uploaded to Cloudinary:", uploadedPoster.url);
+    // parse fields
+    let parsedDetails;
+    try { parsedDetails = JSON.parse(details); } catch(e) { parsedDetails = typeof details === "string" ? { raw: details } : details; }
+
+    let prizes;
+    try { prizes = typeof prize === "string" ? JSON.parse(prize) : prize; } catch (e) { prizes = prize; }
+
+    let eventDateTime, teamSize, participationFee;
+    try {
+      eventDateTime = JSON.parse(eventDateTimeString);
+      teamSize = JSON.parse(teamSizeString);
+      participationFee = JSON.parse(participationFeeString);
+    } catch (e) {
+      return NextResponse.json({ success: false, message: "Invalid JSON fields" }, { status: 400 });
     }
 
-    // --- 3. Parse JSON strings back into objects ---
-    const eventDateTime = JSON.parse(eventDateTimeString);
-    const teamSize = JSON.parse(teamSizeString);
-    const participationFee = JSON.parse(participationFeeString);
+    // upload poster if provided
+    let uploadedPoster = null;
+    if (posterFile && posterFile.size > 0 && posterFile.name) {
+      uploadedPoster = await uploadFileToCloudinary(posterFile);
+    }
 
     const newEvent = await Event.create({
       title,
       description,
-      eventDateTime,    // Pass the parsed object
-      teamSize,         // Pass the parsed object
-      participationFee,  // Pass the parsed object
-      poster: uploadedPoster, // Pass the Cloudinary object (or null)
-      details:parsedDetails,
-      prize:prizes
-      
+      eventDateTime,
+      teamSize,
+      participationFee,
+      poster: uploadedPoster ? [uploadedPoster] : [],
+      details: parsedDetails,
+      prize: prizes,
     });
-    const eventCacheKey = "all_events";
-    const candidateSummaryKey = "candidate_event_summary";
 
-    await Promise.all([
-      redis.del(eventCacheKey),
-      redis.del(candidateSummaryKey),
-    ]);
+    // resilient cache invalidation
+    const keys = ["all_events", "candidate_event_summary"];
+    try {
+      const results = await Promise.allSettled(keys.map(k => redis.del(k)));
+      results.forEach((r, i) => { if (r.status === "rejected") console.warn(`Redis delete failed for ${keys[i]}:`, r.reason); });
+    } catch (e) {
+      console.warn("Redis invalidation unexpected error:", e);
+    }
 
-    console.log(`🧼 Deleted Redis cache keys: ${eventCacheKey}, ${candidateSummaryKey}`);
-
-    console.log("New event created successfully:", newEvent._id);
-
-    return NextResponse.json(
-      { success: true, message: "Event created successfully", event: newEvent },
-      { status: 201 } // 201 Created is more specific
-    );
-
+    return NextResponse.json({ success: true, message: "Event created successfully", event: newEvent }, { status: 201 });
   } catch (error) {
-   
-    return NextResponse.json(
-      { success: false, message: "Server Error", error: error.message },
-      { status: 500 }
-    );
+    console.error("POST /events error:", error);
+    return NextResponse.json({ success: false, message: "Server Error", error: error.message || error }, { status: 500 });
   }
 }
 
-
-
+// ==================== PUT handler (update event) ====================
 export async function PUT(req) {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return NextResponse.json(
-      { success: false, message: "Unauthorized: Please login" },
-      { status: 401 }
-    );
-  }
-
-  const user = await clerkClient.users.getUser(userId);
-  const role = user.publicMetadata?.role;
-
-  if (role !== "admin") {
-    return NextResponse.json(
-      { success: false, message: "Forbidden: Admin access only" },
-      { status: 403 }
-    );
-  }
-
   try {
+    // Auth + admin
+    const auth = await authenticateAndEnsureAdmin(req);
+    if (!auth.ok) return NextResponse.json(auth.body, { status: auth.status });
+
     await ConnectDB();
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json(
-        { success: false, message: "Event ID missing in query" },
-        { status: 400 }
-      );
-    }
+    if (!id) return NextResponse.json({ success: false, message: "Event ID missing in query" }, { status: 400 });
 
     const formData = await req.formData();
 
@@ -179,96 +134,80 @@ export async function PUT(req) {
     const teamSizeString = formData.get("teamSize");
     const prize = formData.get("prize");
     const participationFeeString = formData.get("participationFee");
-    const posterFile = formData.getAll("poster");
+    const posterFiles = formData.getAll("poster");
     const removedPhotos = JSON.parse(formData.get("removedPhotos") || "[]");
 
-    console.log("📤 Received poster files:", posterFile);
-    console.log("🗑️ To remove poster URLs:", removedPhotos);
-
     const event = await Event.findById(id);
-    if (!event) {
-      return NextResponse.json(
-        { success: false, message: "Event not found" },
-        { status: 404 }
-      );
-    }
+    if (!event) return NextResponse.json({ success: false, message: "Event not found" }, { status: 404 });
 
-    // ✅ Conditionally update fields
+    // Update fields
     if (title) event.title = title;
     if (description) event.description = description;
-    if (prize) event.prize = prize;
-    if (eventDateTimeString) event.eventDateTime = JSON.parse(eventDateTimeString);
-    if (teamSizeString) event.teamSize = JSON.parse(teamSizeString);
-    if (participationFeeString) event.participationFee = JSON.parse(participationFeeString);
-    if (details) event.details = JSON.parse(details);
+    if (prize) {
+      try { event.prize = typeof prize === "string" ? JSON.parse(prize) : prize; } catch(e) { event.prize = prize; }
+    }
+    if (eventDateTimeString) {
+      try { event.eventDateTime = JSON.parse(eventDateTimeString); } catch(e) {}
+    }
+    if (teamSizeString) {
+      try { event.teamSize = JSON.parse(teamSizeString); } catch(e) {}
+    }
+    if (participationFeeString) {
+      try { event.participationFee = JSON.parse(participationFeeString); } catch(e) {}
+    }
+    if (details) {
+      try { event.details = JSON.parse(details); } catch(e) { event.details = typeof details === "string" ? { raw: details } : details; }
+    }
 
-    // ✅ Remove any selected old photos from Cloudinary
-    if (removedPhotos.length > 0) {
+    // Remove selected old photos from Cloudinary
+    if (Array.isArray(removedPhotos) && removedPhotos.length > 0) {
       for (const url of removedPhotos) {
-        // Extract the public_id from the Cloudinary URL
         const match = url.match(/xihoron\/([^/.]+)/);
-        if (!match) {
-          console.log("⚠️ Skipping invalid Cloudinary URL:", url);
-          continue;
-        }
-
+        if (!match) { console.warn("Skipping invalid Cloudinary URL:", url); continue; }
         const publicId = `xihoron/${match[1]}`;
-        console.log("🧩 Extracted public_id:", publicId);
-
-        // Delete from Cloudinary
-        const result = await cloudinary.v2.uploader.destroy(publicId);
-        if (result.result === "ok") {
-          event.poster = event.poster.filter((p) => p.url !== url);
-          console.log("✅ Deleted from Cloudinary:", publicId);
-        } else {
-          console.log("❌ Cloudinary deletion failed:", result);
+        try {
+          const delRes = await cloudinary.v2.uploader.destroy(publicId);
+          if (delRes?.result === "ok") {
+            if (Array.isArray(event.poster)) event.poster = event.poster.filter((p) => p.url !== url);
+            console.log("Deleted from Cloudinary:", publicId);
+          } else {
+            console.warn("Cloudinary deletion result:", delRes);
+          }
+        } catch (err) {
+          console.error("Cloudinary deletion error for", publicId, err);
         }
       }
     }
 
-    // ✅ Upload new photos if provided
-    if (posterFile && posterFile.length > 0 && posterFile[0].name !== "undefined") {
-      for (const file of posterFile) {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const tempPath = path.join(tmpdir(), `${uuidv4()}-${file.name}`);
-        await writeFile(tempPath, buffer);
-
-        const uploadResult = await cloudinary.v2.uploader.upload(tempPath, {
-          folder: "xihoron",
-        });
-
-        event.poster.push({
-          public_id: uploadResult.public_id,
-          url: uploadResult.secure_url,
-        });
-
-        console.log("📸 Uploaded new poster:", uploadResult.public_id);
+    // Upload new poster files
+    if (posterFiles && posterFiles.length > 0) {
+      for (const file of posterFiles) {
+        if (!file || file.name === "undefined") continue;
+        try {
+          const upload = await uploadFileToCloudinary(file);
+          if (!Array.isArray(event.poster)) event.poster = [];
+          event.poster.push(upload);
+          console.log("Uploaded new poster:", upload.public_id);
+        } catch (err) {
+          console.error("Failed to upload poster:", err);
+        }
       }
     }
 
     await event.save();
-   const eventCacheKey = "all_events";
-    const candidateSummaryKey = "candidate_event_summary";
-     const cacheKey = `event:${id}`;
 
-    await Promise.all([
-      redis.del(eventCacheKey),
-      redis.del(candidateSummaryKey),
-      redis.del(cacheKey),
-    ]);
-
-    console.log(`🧼 Deleted Redis cache keys: ${eventCacheKey}, ${candidateSummaryKey}`);
-
-    return NextResponse.json({
-      success: true,
-      message: "Event updated successfully",
-      event,
-    });
+    // resilient cache invalidation for PUT
+    const keys = ["all_events", "candidate_event_summary", `event:${id}`];
+    try {
+      const results = await Promise.allSettled(keys.map(k => redis.del(k)));
+      results.forEach((r, i) => { if (r.status === "rejected") console.warn(`Redis delete failed for ${keys[i]}:`, r.reason); });
+    } catch (e) {
+      console.warn("Redis invalidation unexpected error:", e);
+    }
+    
+    return NextResponse.json({ success: true, message: "Event updated successfully", event }, { status: 200 });
   } catch (error) {
-    console.error("🔥 Server Error:", error);
-    return NextResponse.json(
-      { success: false, message: "Server Error", error: error.message },
-      { status: 500 }
-    );
+    console.log("PUT /events error:", error);
+    return NextResponse.json({ success: false, message: "Server Error", error: error.message || error }, { status: 500 });
   }
 }

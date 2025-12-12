@@ -4,7 +4,7 @@ import { Redis } from "@upstash/redis";
 
 // Check if the required environment variables are set
 if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-  throw new Error("UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are not set");
+  console.warn("UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are not set");
 }
 
 // Create a new Redis client from your environment variables
@@ -16,8 +16,7 @@ const redis = new Redis({
 // Create a new ratelimiter, that allows 5 requests per 10 seconds
 export const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(300, "10s"),
+  limiter: Ratelimit.slidingWindow(10, "10s"),
   analytics: true,
-  
-  prefix: "my-xihoron-app",
+  prefix: "my-xihoron-supabase",
 });

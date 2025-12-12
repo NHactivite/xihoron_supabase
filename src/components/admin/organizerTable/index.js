@@ -14,23 +14,24 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 
-export function OrganizerTable({ organizer }) {
-   const [loading,setLoading]=useState(false)
+export function OrganizerTable({ organizer,onlyForEvent }) {
+   const [delItm,setDelItem]=useState("")
+   
   const handleDelete = async (Id) => {
-       setLoading(true)
+      
+       setDelItem(Id)
     try {
       const res = await deleteOrganizer(Id)
-    
       if (res.success) {
         toast.success(res.message || "Organizer deleted");
-          window.location.reload();
+        await onlyForEvent()
       } else {
         toast.error(res.message || "Failed to delete Organizer");
       }
     } catch (err) {
       toast.error("Something went wrong");
     }finally{
-      setLoading(false)
+      setDelItem("")
     }
   };
 
@@ -71,7 +72,7 @@ export function OrganizerTable({ organizer }) {
 
                 <TableCell>
                   <button onClick={() => handleDelete(i._id)}>
-                   {loading?<span>Processing...</span>: <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />}
+                   {delItm==i._id?<span>Processing...</span>: <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />}
                   </button>
                 </TableCell>
               </TableRow>

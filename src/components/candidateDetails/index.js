@@ -1,8 +1,6 @@
 "use client"
-import { useEffect } from 'react';
 const CandidateDetails = ({candidate}) => {
- 
-  return (
+   return (
     <div className='mt-5'>
         <div>
             <span className="ml-10 font-bold">Total Events: {Array.isArray(candidate?.eventsSummary) ? candidate?.eventsSummary?.length:"No Event Created"}</span>

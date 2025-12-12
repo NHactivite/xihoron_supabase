@@ -12,7 +12,7 @@
  */
 
 // If the loader is already loaded, just stop.
-if (!self.define) { 
+if (!self.define) {
   let registry = {};
 
   // Used for `eval` and `importScripts` where we can't get script URL by other means.

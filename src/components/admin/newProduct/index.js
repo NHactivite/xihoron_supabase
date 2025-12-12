@@ -1,20 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
-import { Upload, X, Loader2 } from "lucide-react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
-const NewEvent = ({ mode, initialEvent }) => {
-  console.log(initialEvent, "kooo");
+const NewEvent = ({ mode, initialEvent, refreshEvents, onClose }) => {
 
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [deletephoto, setDeletePhoto] = useState([]);
 
@@ -36,7 +34,7 @@ const NewEvent = ({ mode, initialEvent }) => {
   });
   const [prizes, setPrizes] = useState(
     initialEvent?.prize?.length
-      ? initialEvent.prize.map((p) => ({
+      ? initialEvent?.prize.map((p) => ({
           money: p.money || "",
           prize: p.prize || "",
           place: p.place || "",
@@ -59,7 +57,7 @@ const NewEvent = ({ mode, initialEvent }) => {
 
   const prizesChanged =
     JSON.stringify(normalizePrizeArray(prizes)) !==
-    JSON.stringify(normalizePrizeArray(initialEvent.prize || []));
+    JSON.stringify(normalizePrizeArray(initialEvent?.prize || []));
 
   const [details, setDetails] = useState(() => {
     if (initialEvent?.details) {
@@ -81,7 +79,7 @@ const NewEvent = ({ mode, initialEvent }) => {
   };
   const [poster, setPoster] = useState({
     file: [],
-    preview: initialEvent.poster ? initialEvent.poster.map((p) => p.url) : [],
+    preview: initialEvent?.poster ? initialEvent?.poster.map((p) => p.url) : [],
     error: "",
   });
   const removeImage = (index) => {
@@ -119,8 +117,6 @@ const NewEvent = ({ mode, initialEvent }) => {
     max: initialEvent?.teamSize?.max || 1,
     teamLeadRequired: initialEvent?.teamSize?.teamLeadRequired ?? false,
   });
-
-  console.log(teamSize.teamLeadRequired, "ooppp");
 
   // Participation Fee
   const [participationFee, setParticipationFee] = useState({
@@ -170,13 +166,25 @@ const NewEvent = ({ mode, initialEvent }) => {
       }
 
       //  console.log([...formData.entries()],"picklesss");
+      const Supabase = await createClient();
+      const {
+        data: { session },
+      } = await Supabase.auth.getSession();
 
       const res = await fetch("/api/event", {
         method: "POST",
         body: formData,
+        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        // Response wasn't JSON — preserve the raw text for logging
+        data = { success: false, message: text };
+      }
 
       if (data.success) {
         toast.success("Event created!");
@@ -188,8 +196,13 @@ const NewEvent = ({ mode, initialEvent }) => {
         setTeamSize({});
         setParticipationFee({});
         setPoster({ file: [], preview: [], error: "" });
-
-        router.refresh();
+        
+        if (typeof refreshEvents === "function") {
+          await refreshEvents();
+        }
+        if (typeof onClose === "function") {
+          await onClose();
+        }
       } else {
         toast.error(data.message || "Something went wrong");
       }
@@ -212,15 +225,11 @@ const NewEvent = ({ mode, initialEvent }) => {
       // Compare and append changed fields
       if (title !== initialEvent.title) {
         formData.set("title", title);
-        console.log("title");
-
         hasChanges = true;
       }
 
       if (description !== initialEvent.description) {
         formData.set("description", description);
-        console.log("des");
-
         hasChanges = true;
       }
 
@@ -229,14 +238,12 @@ const NewEvent = ({ mode, initialEvent }) => {
         JSON.stringify(initialEvent.eventDateTime)
       ) {
         formData.set("eventDateTime", JSON.stringify(eventDateTime));
-        console.log("enttime");
 
         hasChanges = true;
       }
 
       if (JSON.stringify(teamSize) !== JSON.stringify(initialEvent.teamSize)) {
         formData.set("teamSize", JSON.stringify(teamSize));
-        console.log("team");
 
         hasChanges = true;
       }
@@ -246,14 +253,12 @@ const NewEvent = ({ mode, initialEvent }) => {
         JSON.stringify(initialEvent.participationFee)
       ) {
         formData.set("participationFee", JSON.stringify(participationFee));
-        console.log("part");
 
         hasChanges = true;
       }
 
       if (prizesChanged) {
         formData.set("prize", JSON.stringify(prizes));
-        console.log("prize");
 
         hasChanges = true;
       }
@@ -263,7 +268,6 @@ const NewEvent = ({ mode, initialEvent }) => {
         poster.file.forEach((file) => {
           formData.append("poster", file);
         });
-        console.log("phot");
 
         hasChanges = true;
       }
@@ -272,7 +276,6 @@ const NewEvent = ({ mode, initialEvent }) => {
       const initialDetails = initialEvent?.details || {};
       if (JSON.stringify(detailsObject) !== JSON.stringify(initialDetails)) {
         formData.set("details", JSON.stringify(detailsObject));
-        console.log("details");
 
         hasChanges = true;
       }
@@ -282,24 +285,39 @@ const NewEvent = ({ mode, initialEvent }) => {
         hasChanges = true;
       }
 
-      console.log(hasChanges, "joo");
-
       if (!hasChanges) {
         toast("No changes detected.");
         setIsLoading(false);
         return;
       }
+      const Supabase = await createClient();
+      const {
+        data: { session },
+      } = await Supabase.auth.getSession();
 
       const res = await fetch(`/api/event?id=${initialEvent._id}`, {
         method: "PUT",
         body: formData,
+        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        // Response wasn't JSON — preserve the raw text for logging
+        data = { success: false, message: text };
+      }
 
       if (data.success) {
         toast.success("Event updated successfully!");
-        router.refresh();
+        if (typeof refreshEvents === "function") {
+          await refreshEvents();
+        }
+        if (typeof onClose === "function") {
+          await onClose();
+        }
       } else {
         toast.error(data.message || "Failed to update event");
       }

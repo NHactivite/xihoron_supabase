@@ -1,22 +1,22 @@
 import { getEventsById } from '@/action';
+import checkRole from '@/app/auth/checkRole';
 import Join from '@/components/joinFrom';
-import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 const Order = async ({ params }) => {
   const id = params.id;
-  const user = await currentUser();
-  const safeUser = user ? JSON.parse(JSON.stringify(user)) : null;
+   const {user}=await checkRole()
+   const safeUser = user ? JSON.parse(JSON.stringify(user)) : null;
 
   if (!safeUser) {
     // Server-side redirect (instant)
-   redirect('/sign-in?message=login-required');
+   redirect('/login?message=login-required');
   }
 
   const Event = await getEventsById(id);
-  console.log(Event,"idddevent");
-  
 
+  console.log(safeUser,"safe from from");
+  
   return (
     <div>
       <Join Event={Event} user={safeUser} />

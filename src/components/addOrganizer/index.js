@@ -5,20 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Upload, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
 
-const AddOrganizer = ({ mode, initialData }) => {
-  const router = useRouter();
+const AddOrganizer = ({ initialData, onlyForEvent, openNewDialog }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Basic info
   const [name, setname] = useState(initialData?.name || "");
   const [role, setrole] = useState(initialData?.role || "");
-  
+
   // Optional event poster
   const [photo, setPhoto] = useState({
     file: null,
@@ -46,24 +44,35 @@ const AddOrganizer = ({ mode, initialData }) => {
       formData.set("role", role);
       if (photo.file) formData.append("photo", photo.file);
 
+      const Supabase = await createClient();
+      const {
+        data: { session },
+      } = await Supabase.auth.getSession();
 
-      console.log(formData, "dtata");
-
-      const res = await fetch("/api/organizer", {
+      const res = await fetch(`/api/organizer`, {
         method: "POST",
         body: formData,
+        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        // Response wasn't JSON — preserve the raw text for logging
+        data = { success: false, message: text };
+      }
 
       if (data.success) {
         toast.success(
-          `Event ${mode === "edit" ? "updated" : "created"} successfully!`
+          `Event created successfully!`
         );
-        setname("")
-        setPhoto({})
-        setrole("")
-        router.refresh();
+        setname("");
+        setPhoto({});
+        setrole("");
+        await onlyForEvent();
+        await openNewDialog();
       } else {
         toast.error(data.message || "Something went wrong");
       }
@@ -118,7 +127,7 @@ const AddOrganizer = ({ mode, initialData }) => {
               </div>
               {photo.preview && (
                 <div className="relative w-40">
-                  <Image
+                  <img
                     src={photo.preview}
                     alt="Event poster"
                     width={160}
@@ -146,12 +155,8 @@ const AddOrganizer = ({ mode, initialData }) => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {mode === "edit"
-                      ? "Updating Event..."
-                      : "Creating Event..."}
+                    Creating Organizer...
                   </>
-                ) : mode === "edit" ? (
-                  "Update Event"
                 ) : (
                   "Create Event"
                 )}

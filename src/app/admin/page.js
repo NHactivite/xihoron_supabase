@@ -1,6 +1,6 @@
 "use client";
 
-import { getCandidates, getOrganizer } from "@/action";
+import { checkAdminList, getCandidates, getOrganizer } from "@/action";
 import AddOrganizer from "@/components/addOrganizer";
 import WigetItem from "@/components/admin/WigetItem";
 import { AdminTable } from "@/components/admin/adminTable";
@@ -14,33 +14,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const Page = () => {
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+
   const openNewDialog = () => {
-    setIsNewDialogOpen(true);
+    setIsNewDialogOpen(!isNewDialogOpen);
   };
 
   const [loading, setLoading] = useState(true);
+  const [onlyForOgLoad, setOnlyForOgLoad] = useState(false);
   const [admin, setAdmins] = useState([]);
   const [organizer, setOrganizer] = useState([]);
   const [candidate,setCandiadate]=useState("")
   const [users, setUsers] = useState(0);
 
-  useEffect(() => {
-    const getAllData = async () => {
-      setLoading(true);
+
+  const getAllData=useCallback( async()=>{
+    console.log("run every");
+     setLoading(true);
       try {
         const [listRes, organizerRes,candidate] = await Promise.all([
-          fetch("/api/list"),
+          checkAdminList(),
           getOrganizer(),
           getCandidates()
         ]);
 
-        const listData = await listRes.json();
-        setUsers(listData.users);
-        setAdmins(listData.admins);
+        setUsers(listRes.users);
+        setAdmins(listRes.admins);
         setOrganizer(organizerRes);
         setCandiadate(candidate)
       } catch (err) {
@@ -48,12 +50,29 @@ const Page = () => {
       } finally {
         setLoading(false);
       }
-    };
+  })
 
+  const onlyForEvent=async()=>{
+    console.log("run only");
+    
+     setOnlyForOgLoad(true);
+     try{
+   const res=await getOrganizer();
+     setOrganizer(res)
+     }catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setOnlyForOgLoad(false);
+      }
+    
+  }
+     
+  useEffect(() => {
     getAllData();
   }, []);
-
+ 
   return (
+    
     <div className="relative">
       <section className="flex  justify-center mt-2 gap-20">
         <WigetItem properties={"Users"} value={users} />
@@ -64,11 +83,12 @@ const Page = () => {
           <div className="m-20">
             <Loader />
           </div>
-        ) : organizer?.Organizer?.length > 0 ? (
+        ) : candidate?.eventsSummary?.length > 0 ? (
            <CandidateDetails candidate={candidate}/>
         ) : (
-          <p>No Events</p>
-        )}
+          <p>No Candidate</p>
+        )
+      }
        
       </section>
 
@@ -77,7 +97,7 @@ const Page = () => {
           <DialogHeader>
             <DialogTitle>Create New Organizer</DialogTitle>
           </DialogHeader>
-          <AddOrganizer mode="create" initialProduct={""} />
+          <AddOrganizer initialProduct={""} onlyForEvent={onlyForEvent}   openNewDialog={ openNewDialog}/>
         </DialogContent>
       </Dialog>
 
@@ -93,12 +113,12 @@ const Page = () => {
         )}
       </section>
       <section className="mt-2">
-        {loading ? (
+        {onlyForOgLoad || loading ? (
           <div className="m-20">
             <Loader />
           </div>
         ) : organizer?.Organizer?.length > 0 ? (
-          <OrganizerTable organizer={organizer} />
+          <OrganizerTable organizer={organizer} onlyForEvent={onlyForEvent} />
         ) : (
           <p>No Organizer</p>
         )}

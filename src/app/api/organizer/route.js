@@ -6,6 +6,24 @@ import { NextResponse } from "next/server";
 import { tmpdir } from "os";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import { Redis } from "@upstash/redis";
+import { authenticateAndEnsureAdmin } from "@/lib/ensureAdmin";
+
+// Check if the required environment variables are set
+if (
+  !process.env.UPSTASH_REDIS_REST_URL ||
+  !process.env.UPSTASH_REDIS_REST_TOKEN
+) {
+  throw new Error(
+    "UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are not set"
+  );
+}
+
+// Create a new Redis client from your environment variables
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+   token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 cloudinary.config({
     cloud_name:process.env.CLOUD_NAME,
@@ -20,9 +38,16 @@ if (!process.env.CLOUD_NAME|| !process.env.CLOUD_API_KEY || !process.env.CLOUD_A
 
 export async function POST(req) {
   try {
-    await ConnectDB();
-    console.log("Database connected.");
     
+     const auth = await authenticateAndEnsureAdmin(req);
+     if (!auth.ok) return NextResponse.json(auth.body, { status: auth.status });
+    
+    await ConnectDB();
+
+    console.log("Database connected.");
+
+   
+
     const formData = await req.formData();
     console.log(formData,"lppp");
     
@@ -73,6 +98,9 @@ export async function POST(req) {
       role,
       photo:uploadedPoster
     });
+    
+    const cacheKey = "all_organizers";
+    await redis.del(cacheKey)
 
     console.log("New event created successfully:", newOrganizer._id);
 

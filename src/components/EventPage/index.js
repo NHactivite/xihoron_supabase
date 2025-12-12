@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { ArrowLeft, Clock, DollarSign, Users, CheckCircle2 } from "lucide-react"
-import { FaRupeeSign } from "react-icons/fa"
 import { motion } from "framer-motion"
+import { CheckCircle2, Clock, Users } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { FaRupeeSign } from "react-icons/fa"
 
 export default function EventPage({ Event }) {
   const [selectedTab, setSelectedTab] = useState("rules")
@@ -16,7 +15,6 @@ export default function EventPage({ Event }) {
     setIncludes(Event.Event.participationFee.includes)
   }, [])
 
-  console.log(Event, "recive")
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-orange-400 to-[#60338a] relative">

@@ -15,7 +15,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'images.clerk.dev', pathname: '/**' },
+      { protocol: 'https', hostname: "lh3.googleusercontent.com", pathname: '/**' },
       { protocol: 'https', hostname: 'www.gravatar.com', pathname: '/avatar/**' },
     ],
   },
@@ -23,7 +23,7 @@ const nextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable:false,
+  disable:true,
   register: true,
   skipWaiting: true,
   scope: '/',

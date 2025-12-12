@@ -10,35 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { FaTrash } from "react-icons/fa";
 
 export function AdminTable({ admins }) {
-  const [deletingId, setDeletingId] = useState(null); 
-
-  const handleDelete = async (userId) => {
-    setDeletingId(userId); // set that specific user's id
-    try {
-      const res = await fetch(`/api/admin/${userId}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success(data.message || "User deleted");
-        window.location.reload();
-      } else {
-        toast.error(data.message || "Failed to delete user");
-      }
-    } catch (err) {
-      toast.error("Something went wrong");
-    } finally {
-      setDeletingId(null); // reset after done
-    }
-  };
-
+  console.log(admins,"from adimtab");
+  
   return (
     <Card>
       <CardHeader>
@@ -59,40 +34,22 @@ export function AdminTable({ admins }) {
             {admins.map((admin) => (
               <TableRow key={admin.id}>
                 <TableCell className="font-medium">
-                  {admin.first_name} {admin.last_name}
+                  {admin.username}
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={admin.profile_image_url}
+                    src={admin.avatar_url}
                     alt="Profile picture"
                     width={50}
                     height={50}
                     className="rounded-full"
                   />
                 </TableCell>
-                <TableCell>{admin.email_addresses[0].email_address}</TableCell>
+                <TableCell>{admin.email}</TableCell>
                 <TableCell>
-                  <Badge
-                    variant={
-                      admin.public_metadata?.role === "admin"
-                        ? "default"
-                        : "secondary"
-                    }
-                  >
-                    {admin.public_metadata?.role ?? "N/A"}
+                  <Badge>
+                    {admin.role ?? "N/A"}
                   </Badge>
-                </TableCell>
-                <TableCell>
-                  <button
-                    onClick={() => handleDelete(admin.id)}
-                    disabled={deletingId === admin.id}
-                  >
-                    {deletingId === admin.id ? (
-                      <span>Processing...</span>
-                    ) : (
-                      <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer" />
-                    )}
-                  </button>
                 </TableCell>
               </TableRow>
             ))}

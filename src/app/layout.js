@@ -1,10 +1,7 @@
-import { CommonLayout } from "@/components/common-layout";
-import { ClerkLoading, ClerkProvider } from "@clerk/nextjs";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-import Loading from "./loading";
-
+import { CommonLayout } from "../components/common_layout/index.js";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,20 +27,15 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+   
   return (
-   <ClerkProvider   publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-     <html lang="en" >
+   <html lang="en" >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkLoading>
-         
-         
-          <Loading/>
-        </ClerkLoading>
-                <CommonLayout>{children}</CommonLayout>
+      <CommonLayout>{children}</CommonLayout>
       </body>
     </html>
-   </ClerkProvider>
+   
   );
 }

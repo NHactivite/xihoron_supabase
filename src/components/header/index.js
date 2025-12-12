@@ -1,13 +1,12 @@
 "use client";
 
-// import { UserButton ,SignOutButton} from "@clerk/nextjs";
-import { SignOutButton } from "@clerk/nextjs";
 import { AlignJustify } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { signOut} from "@/action/index.js";
 
 function Header({ user, role, isAdmin }) {
     const [open, setOpen] = useState(false);
@@ -29,13 +28,17 @@ const menuItems = useMemo(() => {
 
   return [
     { label: "Home", path: "/", show: true },
-    { label: "admin", path: "/admin", show: role },
-    { label: "Login", path: "/sign-in", show: !user },
-    { label: "Register", path: "/sign-up", show: !user },
+    { label: "admin", path: "/admin", show: role==="admin"?true:false },
+    { label: "Login", path: "/login", show: !user },
+    { label: "Register", path: "/register", show: !user },
     { label: "ticket", path: "/ticket", show: user },
     
   ];
 }, [pathname, user, role]);
+
+const handleLogOut=async()=>{
+    signOut()
+}
 
   return (
     <header className="flex h-16 w-full shrink-0 items-center sticky top-0 bg-gray-200 z-50 p-4  shadow">
@@ -75,7 +78,7 @@ const menuItems = useMemo(() => {
               ) : null
             )}
             <div className="mt-4 border-t border-white/20 pt-4 z-50">
-            {user && <SignOutButton className="group inline-flex h-9 w-max items-center rounded-md bg-white text-black px-4 py-2 text-sm font-medium active:bg-black active:text-white">Logout</SignOutButton>}
+            {user &&<Button  onClick={handleLogOut}>Logout</Button>}
             </div>
           </div>
         </SheetContent>
@@ -107,7 +110,7 @@ const menuItems = useMemo(() => {
           ) : null
         )}
         {isAdmin && <Link href="/admin" className="group inline-flex h-9 w-max items-center rounded-md bg-white px-4 py-2 text-sm font-medium active:bg-black active:text-white">Admin</Link>}
-        {user && <SignOutButton className="group inline-flex h-9 w-max items-center rounded-md bg-white px-4 py-2 text-sm font-medium active:bg-black active:text-white">Logout</SignOutButton>}
+        {user &&<Button  onClick={handleLogOut}>Logout</Button>}
       </nav>
     </header>
   );

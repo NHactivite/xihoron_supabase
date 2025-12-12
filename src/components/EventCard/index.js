@@ -1,10 +1,8 @@
-import React from "react";
-import { Card, CardContent } from "../ui/card";
 import Link from "next/link";
+import { CardContent } from "../ui/card";
 
 const EventCard = ({ title, description, id, poster }) => {
-  console.log(id, "card");
-
+ 
   return (
     <div
       className="relative transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] rounded-xl overflow-hidden bg-cover bg-center h-60"

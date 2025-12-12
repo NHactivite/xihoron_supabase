@@ -1,16 +1,16 @@
 import { getEvents, getOrganizer } from '@/action';
-import Home from '@/components/home'
-import { currentUser } from '@clerk/nextjs/server';
-import React from 'react'
+import Home from '@/components/home';
+import React from 'react';
 
- export default async function Page(){
+export default async function Page() {
+   
+  const Event = await getEvents();
+  const Organizer = await getOrganizer();
 
-  const user = await currentUser();
-
-  const Event=await getEvents()
-  const Organizer=await getOrganizer()
- 
   return (
-   <Home Event={Event} Organizer={Organizer}  user={JSON.parse(JSON.stringify(user))}/>
-  )
+    <Home
+      Event={Event}
+      Organizer={Organizer}
+    />
+  );
 }

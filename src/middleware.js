@@ -1,80 +1,50 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 import { ratelimit } from "./lib/rateLimit";
+import { updateSession } from "./lib/supabase/middleware"
 
-const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/",
-    "/product(.*)",
-    "/about",
-    "/privacy",
-    "/contact",
-    "/search(.*)", 
-  "/manifest.json",
-  "/sw.js",
-  "/favicon.ico",
-  "/icons/(.*)",
-  "/payment-verification",
-  "/events(.*)",
-  "/join(.*)"
+export async function middleware(request) {
+  if (!ratelimit) {
+    console.warn("ratelimit not configured; skipping");
+    return await updateSession(request);
+  }
+   // Choose a key: prefer user-id if available, otherwise IP
+  // Try to read supabase auth cookie or session if you already parse it in updateSession.
+  // For a generic approach, use IP:
+  const xff = request.headers.get("x-forwarded-for");
+  const cfIp = request.headers.get("cf-connecting-ip");
+  const ip = (xff && xff.split(",")[0].trim()) || cfIp || "anonymous";
 
-]);
+  // Optionally include pathname to create different buckets per route
+  const url = new URL(request.url);
+  const key = `rl:${url.pathname}:${ip}`;
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
-
-export default clerkMiddleware(async (auth, req) => {
   try {
-    
-  //   rate limit logiccccccc------------------
-  // Get the IP address of the requester.
-  // The `x-forwarded-for` header is important for getting the true client IP
-  // when deployed behind a proxy or load balancer.
- const ip = req.headers.get("x-forwarded-for") ?? req.ip ?? '127.0.0.1';
+    const { success } = await ratelimit.limit(key);
 
-// // Rate limit the user based on their IP address.
-  const { success, limit, remaining, reset } = await ratelimit.limit(ip);
-  
-  // If the user has exceeded the limit, return a 429 Too Many Requests response.
-  if (!success) {
-    return new NextResponse('Too many requests. Please try again later.', {
-      status: 429,
-      headers: {
-        'X-RateLimit-Limit': limit.toString(),
-        'X-RateLimit-Remaining': remaining.toString(),
-        'X-RateLimit-Reset': new Date(reset).toUTCString(),
-      },
-    });
+    if (!success) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  } catch (err) {
+     console.warn("Rate limit check failed:");
   }
-// ------------------------------------------c-----------------
 
-  if (!isPublicRoute(req)) {
-    await auth.protect();
-  }
-  // Protect all routes starting with `/admin`
-
-  if (
-    isAdminRoute(req) &&
-    (await auth()).sessionClaims?.metadata?.role !== "admin"
-  ) {
-    const url = new URL("/", req.url);
-    return NextResponse.redirect(url);
-  
+  // proceed to update session (your existing logic)
+  return await updateSession(request);
 }
-  } catch (error) {
-    console.error("MIDDLEWARE ERROR:", error);
 
-    // Return a generic error response to the user
-    return new NextResponse("An internal server error occurred.", { status: 500,msg:error });
-  }
-}
-);
+
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-};
+}
