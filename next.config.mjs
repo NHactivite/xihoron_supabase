@@ -1,16 +1,16 @@
 
 import withPWA from 'next-pwa';
 
-let mydisable;
-let myremoveConsole;
-process.env.RUN_MODE=="devlopment"?mydisable=true:mydisable=false
-process.env.RUN_MODE=="devlopment"?myremoveConsole=false:myremoveConsole=true
+// let mydisable;
+// let myremoveConsole;
+// process.env.RUN_MODE=="devlopment"?mydisable=true:mydisable=false
+// process.env.RUN_MODE=="devlopment"?myremoveConsole=false:myremoveConsole=true
 
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
   compiler: {
-    removeConsole:myremoveConsole,
+    removeConsole:true,
   },
   images: {
     remotePatterns: [
@@ -23,7 +23,7 @@ const nextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable:true,
+  disable:false,
   register: true,
   skipWaiting: true,
   scope: '/',
