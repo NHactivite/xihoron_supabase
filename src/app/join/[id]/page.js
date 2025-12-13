@@ -4,7 +4,7 @@ import Join from '@/components/joinFrom';
 import { redirect } from 'next/navigation';
 
 const Order = async ({ params }) => {
-  const id = params.id;
+  const { id } = await params
    const {user}=await checkRole()
    const safeUser = user ? JSON.parse(JSON.stringify(user)) : null;
 

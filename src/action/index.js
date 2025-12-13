@@ -50,26 +50,17 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Cashfree credentials are missing in environment variables");
 }
 // Initialize Cashfree with your credentials
-
-// let cashfree;
-
-// process.env.RUN_MODE == "devlopment"
-//   ? (cashfree = new Cashfree(
-//       CFEnvironment.SANDBOX,
-//       process.env.CLIENT_ID,
-//       process.env.CLIENT_SECRET
-//     ))
-//   : (cashfree = new Cashfree(
-//       CFEnvironment.PRODUCTION,
-//       process.env.CLIENT_ID,
-//       process.env.CLIENT_SECRET
-//     ));
-
 const cashfree = new Cashfree(
-  CFEnvironment.SANDBOX,
+  CFEnvironment.PRODUCTION,
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
+
+// const cashfree = new Cashfree(
+//   CFEnvironment.SANDBOX,
+//   process.env.CLIENT_ID,
+//   process.env.CLIENT_SECRET
+// );
 // crete profile action
 
 export const createPaymentAction = async (data) => {

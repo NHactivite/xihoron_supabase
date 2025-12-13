@@ -28,7 +28,7 @@ const Join = ({ Event, user }) => {
     const initializeSDK = async () => {
       try {
         cashfreeRef.current = await load({
-          mode:"sandbox", // change to "production" for live
+          mode:"production", // change to "production" for live
         });
       } catch (error) {
         console.error("Failed to load payment gateway:", error);
