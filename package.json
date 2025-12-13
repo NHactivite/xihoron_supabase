@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "next start",
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "lint": "next lint"
   },
   "dependencies": {
@@ -60,3 +60,4 @@
     "tw-animate-css": "^1.3.4"
   }
 }
+
