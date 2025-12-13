@@ -592,7 +592,7 @@ export async function signInWithGithub(id) {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider:id,
     options: {
-    redirectTo: `${origin}/auth/callback`,
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
   }
 })
 
@@ -608,7 +608,7 @@ export async function forgatPassword(formData){
   const {error}=await supabase.auth.resetPasswordForEmail(
     formData.get("email") ,
     {
-        redirectTo:`${origin}/reset-password`
+        redirectTo:`${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`
     }
   )
 

@@ -20,7 +20,8 @@ export async function GET(request) {
 // ---------------------------------------------
     const {data,error:useError}=await supabase.auth.getUser();
     if(useError){
-        return NextResponse.redirect(`${origin}/error`)
+        //return NextResponse.redirect(`${origin}/error`)
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/error`)
     }
     const {data:existingUser}=await supabase
      .from("user_Profiles")
@@ -37,7 +38,7 @@ export async function GET(request) {
         });
         if(inserError){
               console.error("User profile insertion failed:", inserError);
-               return NextResponse.redirect(`${origin}/error?message=ProfileInsertFailed`)
+               return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/error?message=ProfileInsertFailed`)
             
         }
      }
@@ -57,5 +58,5 @@ export async function GET(request) {
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/auth/auth-code-error`)
 }
