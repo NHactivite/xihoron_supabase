@@ -256,6 +256,7 @@ export const getOrganizer = async () => {
 export const getEventsById = async (id) => {
   try {
     await ConnectDB();
+    
 
     const cacheKey = `event:${id}`; // unique key per event
 

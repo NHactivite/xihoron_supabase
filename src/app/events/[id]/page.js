@@ -4,8 +4,8 @@ import React from 'react'
 
 const page = async({params}) => {
    
-   const EventId=  params.id
-   const Event=await getEventsById(EventId)
+  const { id } = await params
+  const Event = await getEventsById(id)
   
   return (
     <div><EventPage Event={Event} /></div>

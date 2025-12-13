@@ -11,6 +11,7 @@ export default function EventPage({ Event }) {
   const [selectedTab, setSelectedTab] = useState("rules")
   const [includes, setIncludes] = useState([])
 
+
   useEffect(() => {
     setIncludes(Event.Event.participationFee.includes)
   }, [])
