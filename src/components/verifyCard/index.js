@@ -1,5 +1,4 @@
 
-
 "use client";
 import { verifyCandidateById } from "@/action";
 import { useForm } from "react-hook-form";
@@ -19,7 +18,7 @@ const VerifyCard = () => {
   const videoRef = useRef(null);
   const scannerRef = useRef(null);
 
-  const { register, handleSubmit, formState: { errors }} = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: { candidate_Id: "" },
   });
 
@@ -46,8 +45,8 @@ const VerifyCard = () => {
         if (result?.data) {
           const scannedId = result.data;
           setQrData(scannedId);
+          // close modal
           handleVerify({ candidate_Id: scannedId }); // auto verify
-          // setOpenScanner(false);
         }
       },
       {
@@ -86,9 +85,12 @@ const VerifyCard = () => {
           <Input
             type="text"
             placeholder="Ticket ID"
-            {...register("candidate_Id")}
+            {...register("candidate_Id", { required: "Candidate ID is required" })}
             className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg lg:w-xl"
           />
+          {errors.candidate_Id && (
+            <p className="text-red-500 text-sm mt-1">{errors.candidate_Id.message}</p>
+          )}
         </div>
 
         <motion.div
