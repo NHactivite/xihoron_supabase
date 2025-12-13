@@ -1,21 +1,14 @@
 {
-  "name": "xihoron app",
-  "short_name": "xihoron",
+  "name": "Xihoron App",
+  "short_name": "Xihoron",
+  "description": "An online competition and event management platform",
   "id": "/?source=pwa",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": [
-    "window-controls-overlay",
-    "standalone"
-  ],
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "orientation": "portrait",
-  "launch_handler": {
-    "client_mode": "auto"
-  },
-  "description": "A Online compition platform",
   "icons": [
     {
       "src": "/icons/192.png",
@@ -41,6 +34,5 @@
       "type": "image/png",
       "form_factor": "wide"
     }
-  ],
-  "splash_pages": null
+  ]
 }

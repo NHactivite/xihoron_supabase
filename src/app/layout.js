@@ -13,23 +13,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata = {
-  title: "xihoron app",
-  description: "A Online Competion platform",
+  title: "Xihoron",
+  description: "An online competition and event management platform",
   generator: "Next.js",
-  manifest: "/manifest.json", 
- keywords: ["nextjs", "next14", "pwa", "next-pwa"],
+  keywords: ["nextjs", "pwa", "competition", "events"],
   icons: {
-    apple: "/icons/512.png", 
+    apple: "/icons/512.png",
   },
 };
-export const viewport = {
-  themeColor: '#ffffff', 
-};
 
+export const viewport = {
+  themeColor: "#000000",
+};
 export default function RootLayout({ children }) {
    
   return (
    <html lang="en" >
+    <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
