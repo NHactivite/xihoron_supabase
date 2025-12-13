@@ -19,7 +19,7 @@ const VerifyCard = () => {
   const videoRef = useRef(null);
   const scannerRef = useRef(null);
 
-  const { register, handleSubmit, formState: { errors } ,setValue} = useForm({
+  const { register, handleSubmit, formState: { errors }} = useForm({
     defaultValues: { candidate_Id: "" },
   });
 
@@ -45,7 +45,6 @@ const VerifyCard = () => {
       (result) => {
         if (result?.data) {
           const scannedId = result.data;
-          setValue("candidate_Id", scannedId);
           setQrData(scannedId);
           handleVerify({ candidate_Id: scannedId }); // auto verify
           // setOpenScanner(false);
@@ -87,7 +86,7 @@ const VerifyCard = () => {
           <Input
             type="text"
             placeholder="Ticket ID"
-            {...register("candidate_Id", { required: "Candidate ID is required" })}
+            {...register("candidate_Id")}
             className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg lg:w-xl"
           />
         </div>
