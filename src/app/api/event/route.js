@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import ConnectDB from "@/database";
 import { Event } from "@/model/event";
 import { Redis } from "@upstash/redis";
+import { authenticateAndEnsureAdmin } from "@/lib/ensureAdmin";
 
 // Validate Upstash env early
 if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
