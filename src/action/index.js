@@ -373,40 +373,42 @@ export const getCandidates = async () => {
 
     const cacheKey = "candidate_event_summary";
 
-    const cached=await redis.get(cacheKey);
-    //const cached =mydisable?null: await redis.get(cacheKey);
+    const cached = await redis.get(cacheKey);
     if (cached) {
       console.log("Fetched summary from Redis cache");
       return { success: true, eventsSummary: cached };
     }
 
-    const data = await Candidate.find().lean();
-    if (!data || data.length === 0) {
-      return { success: false, message: "No candidates found" };
-    }
+    const events = await Event.find({}, { name: 1 }).lean();
+
+    const candidates = await Candidate.find({}, { Event: 1 }).lean();
 
     const eventCountMap = {};
 
-    data.forEach((item) => {
-      const eventName = item.Event?.name || "Unknown Event";
-      eventCountMap[eventName] = (eventCountMap[eventName] || 0) + 1;
+    candidates.forEach((item) => {
+      const eventName = item.Event?.name;
+      if (eventName) {
+        eventCountMap[eventName] = (eventCountMap[eventName] || 0) + 1;
+      }
     });
 
-    const eventsSummary = Object.entries(eventCountMap).map(
-      ([eventName, count]) => ({
-        eventName,
-        totalCandidates: count,
-      })
-    );
+    const eventsSummary = events.map((event) => ({
+      eventName: event.name,
+      totalCandidates: eventCountMap[event.name] || 0,
+    }));
 
-    await redis.set(cacheKey, eventsSummary, { ex: 3600 });
-    //mydisable?null: await redis.set(cacheKey, eventsSummary, { ex: 3600 });
-    console.log(" Stored summary in Redis cache");
+    await redis.set(cacheKey, eventsSummary, "EX", 60 * 5);
 
-    return { success: true, eventsSummary };
+    return {
+      success: true,
+      eventsSummary,
+    };
   } catch (error) {
-    console.error(" Error fetching candidates summary:", error);
-    return { success: false, message: error.message };
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to fetch candidate summary",
+    };
   }
 };
 

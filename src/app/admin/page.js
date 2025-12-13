@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { logDisallowedDynamicError } from "next/dist/server/app-render/dynamic-rendering";
 import { useCallback, useEffect, useState } from "react";
 
 const Page = () => {
@@ -32,7 +33,6 @@ const Page = () => {
 
 
   const getAllData=useCallback( async()=>{
-    console.log("run every");
      setLoading(true);
       try {
         const [listRes, organizerRes,candidate] = await Promise.all([
@@ -44,6 +44,8 @@ const Page = () => {
         setUsers(listRes.users);
         setAdmins(listRes.admins);
         setOrganizer(organizerRes);
+        console.log(candidate,"plooo");
+        
         setCandiadate(candidate)
       } catch (err) {
         console.error("Dashboard fetch error:", err);
@@ -52,9 +54,9 @@ const Page = () => {
       }
   })
 
+
   const onlyForEvent=async()=>{
-    console.log("run only");
-    
+ 
      setOnlyForOgLoad(true);
      try{
    const res=await getOrganizer();
@@ -71,6 +73,7 @@ const Page = () => {
     getAllData();
   }, []);
  
+
   return (
     
     <div className="relative">

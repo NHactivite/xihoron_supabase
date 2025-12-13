@@ -1,5 +1,5 @@
-
 "use client";
+
 import { verifyCandidateById } from "@/action";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -17,37 +17,58 @@ const VerifyCard = () => {
 
   const videoRef = useRef(null);
   const scannerRef = useRef(null);
+  const verifiedRef = useRef(false); // 🔒 prevents multiple calls
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
     defaultValues: { candidate_Id: "" },
   });
 
-  const handleVerify = async (data) => {
+  // ===================== VERIFY HANDLER =====================
+  const handleVerify = async ({ candidate_Id }) => {
+    if (loading) return; // 🛑 prevent double submit
+
     setLoading(true);
     try {
-      const result = await verifyCandidateById(data.candidate_Id);
+      const result = await verifyCandidateById(candidate_Id);
       setRes(result);
-      openScanner?setOpenScanner(false):null;
+
+      if (!result?.success) {
+        toast.error("Invalid ticket");
+      }
     } catch (error) {
-      toast.error("Error verifying candidate.");
+      toast.error("Error verifying candidate");
     } finally {
       setLoading(false);
+      setOpenScanner(false);
+      reset();
     }
   };
 
-  // Run scanner only when modal is open
+  // ===================== QR SCANNER EFFECT =====================
   useEffect(() => {
     if (!openScanner || !videoRef.current) return;
 
+    verifiedRef.current = false; // reset lock on open
+
     scannerRef.current = new QrScanner(
       videoRef.current,
-      (result) => {
-        if (result?.data) {
-          const scannedId = result.data;
-          setQrData(scannedId);
-          // close modal
-          handleVerify({ candidate_Id: scannedId }); // auto verify
-        }
+      async (result) => {
+        if (!result?.data) return;
+        if (verifiedRef.current) return; // 🛑 stop repeats
+
+        verifiedRef.current = true;
+
+        const scannedId = result.data;
+        setQrData(scannedId);
+
+        await handleVerify({ candidate_Id: scannedId });
+
+        scannerRef.current?.stop(); // 🛑 stop camera
       },
       {
         highlightScanRegion: true,
@@ -59,72 +80,78 @@ const VerifyCard = () => {
 
     return () => {
       scannerRef.current?.stop();
+      scannerRef.current = null;
     };
   }, [openScanner]);
 
+  // ===================== UI =====================
   return (
     <div className="w-full">
-      {/* Manual Verify Form */}
+      {/* ================= FORM ================= */}
       <motion.form
         onSubmit={handleSubmit(handleVerify)}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6 }}
         className="flex lg:flex-row flex-col justify-center px-4 lg:gap-8 gap-5 py-8 rounded-2xl w-full"
       >
         <motion.h1
           className="font-extrabold text-xl lg:block hidden text-center text-indigo-700"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
         >
           Verify Candidate
         </motion.h1>
 
-        <div>
-          <Input
-            type="text"
-            placeholder="Ticket ID"
-            {...register("candidate_Id", { required: "Candidate ID is required" })}
-            className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg lg:w-xl"
-          />
-          {errors.candidate_Id && (
-            <p className="text-red-500 text-sm mt-1">{errors.candidate_Id.message}</p>
-          )}
-        </div>
+        <Input
+          type="text"
+          placeholder="Ticket ID"
+          {...register("candidate_Id", {
+            required: "Candidate ID is required",
+          })}
+          className="border-gray-300 rounded-lg lg:w-xl"
+        />
 
-        <motion.div
-          className="flex justify-center gap-5"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          
-        >
+        <div className="flex justify-center gap-5">
           <Button
             type="submit"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2 rounded-xl shadow-md transition duration-300"
+            disabled={loading}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2 rounded-xl"
           >
             {loading ? "Processing..." : "Verify Now"}
           </Button>
+
           <Button
-          onClick={() => setOpenScanner(true)}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl shadow-md"
-        >
-          Scan QR Code
-        </Button>
-        </motion.div>
+            type="button"
+            disabled={loading}
+            onClick={() => setOpenScanner(true)}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl"
+          >
+            Scan QR Code
+          </Button>
+        </div>
       </motion.form>
-    
-      {/* QR Scanner Modal */}
+
+      {/* ================= QR MODAL ================= */}
       {openScanner && (
         <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 shadow-xl w-[300px] text-center relative">
+          <div className="bg-white rounded-2xl p-6 shadow-xl w-[300px] text-center">
             <h2 className="text-lg font-bold mb-3">Scan Ticket QR</h2>
 
-            <video ref={videoRef} className="w-full h-64 rounded-xl bg-black object-cover" />
-            {qrData && ( <p className="mt-3 text-green-600 font-semibold"> Scanned Ticket ID: {qrData} </p> )}
+            <video
+              ref={videoRef}
+              className="w-full h-64 rounded-xl bg-black object-cover"
+            />
+
+            {qrData && (
+              <p className="mt-3 text-green-600 font-semibold">
+                Scanned Ticket ID: {qrData}
+              </p>
+            )}
+
             <Button
               onClick={() => setOpenScanner(false)}
-              className="mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl"
+              className="mt-4 w-full bg-red-600 hover:bg-red-700 text-white"
             >
               Close Scanner
             </Button>
@@ -132,10 +159,10 @@ const VerifyCard = () => {
         </div>
       )}
 
-      {/* Verfied Result */}
+      {/* ================= RESULT ================= */}
       {res?.success && res.verifyData && (
         <section className="mt-6 px-6">
-          <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
+          <div className="bg-white shadow-lg rounded-xl p-6 border">
             <h2 className="text-lg font-bold text-indigo-700 mb-3">
               Candidate Verified ✅
             </h2>
