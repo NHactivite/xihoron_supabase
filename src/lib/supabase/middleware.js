@@ -36,7 +36,11 @@ export async function updateSession(request) {
     '/register',
     '/forgot-password',
     '/reset-password',
-    '/auth'
+    '/auth',
+    "/manifest.json",
+  "/sw.js",
+  "/favicon.ico",
+  "/icons/(.*)",
   ]
   const path = request.nextUrl.pathname
   const isPublic = publicRoutes.some((route) => path === route || path.startsWith(route + '/')) || publicRoutes.includes(path)

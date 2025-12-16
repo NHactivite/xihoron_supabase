@@ -1,5 +1,5 @@
 
-import withPWA from 'next-pwa';
+import withPWA from "next-pwa";
 
 // let mydisable;
 // let myremoveConsole;

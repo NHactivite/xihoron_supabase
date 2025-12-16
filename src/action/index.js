@@ -26,16 +26,8 @@ if (
   );
 }
 
-// Create a new Redis client from your environment variables
-// let mydisable;
-// process.env.RUN_MODE=="devlopment"? mydisable=true:mydisable=false
 
-// let redis;
-// mydisable? " ":redis = new Redis({
-//   url: process.env.UPSTASH_REDIS_REST_URL,
-//   token: process.env.UPSTASH_REDIS_REST_TOKEN,
-// });
-const redis = new Redis({
+let redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
@@ -219,7 +211,7 @@ export const getOrganizer = async () => {
     //const cachedOrganizers =  mydisable?null:await redis.get(cacheKey);
     if (cachedOrganizers) {
       console.log(" Fetched organizers from Redis cache");
-      return { success: true, Organizer:  JSON.parse(JSON.stringify(cachedOrganizers)) };
+      return { success: true, Organizer: JSON.parse(JSON.stringify(cachedOrganizers)) };
     }
 
     // Fetch from MongoDB if not cached
@@ -397,7 +389,9 @@ export const getCandidates = async () => {
       totalCandidates: eventCountMap[event.name] || 0,
     }));
 
-    await redis.set(cacheKey, eventsSummary, "EX", 60 * 5);
+ await redis.set(cacheKey, eventsSummary, {
+  ex: 60 * 5,
+});
 
     return {
       success: true,
