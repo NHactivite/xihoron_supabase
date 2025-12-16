@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "app.vercel.xihoron.twa",
-        "sha256_cert_fingerprints": ["F8:BD:74:E8:A6:88:F2:28:62:41:3A:FA:05:B4:3F:96:0D:C7:D6:63:A9:DE:01:31:BD:C2:74:86:F4:63:B1:33"]
+        "package_name": "app.vercel.xihoron_supabase.twa",
+        "sha256_cert_fingerprints": ["83:97:7F:E0:A9:79:05:90:11:C1:25:7F:7C:77:7C:47:BE:5F:61:5F:66:C3:C0:AE:D2:08:75:40:7C:28:B5:67"]
       }
     }]
