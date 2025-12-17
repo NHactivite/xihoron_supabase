@@ -371,7 +371,7 @@ export const getCandidates = async () => {
       return { success: true, eventsSummary: cached };
     }
 
-    const events = await Event.find({}, { name: 1 }).lean();
+    const events = await Event.find({}, { title: 1 }).lean();
 
     const candidates = await Candidate.find({}, { Event: 1 }).lean();
 
@@ -383,12 +383,12 @@ export const getCandidates = async () => {
         eventCountMap[eventName] = (eventCountMap[eventName] || 0) + 1;
       }
     });
-
+   
     const eventsSummary = events.map((event) => ({
-      eventName: event.name,
-      totalCandidates: eventCountMap[event.name] || 0,
+      eventName: event.title,
+      totalCandidates: eventCountMap[event.title] || 0,
     }));
-
+   
  await redis.set(cacheKey, eventsSummary, {
   ex: 60 * 5,
 });

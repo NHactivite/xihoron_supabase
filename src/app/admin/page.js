@@ -14,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { logDisallowedDynamicError } from "next/dist/server/app-render/dynamic-rendering";
 import { useCallback, useEffect, useState } from "react";
 
 const Page = () => {
